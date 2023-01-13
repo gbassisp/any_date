@@ -76,7 +76,7 @@ void main() {
             (date, sep1, sep2) => '${date.year}/${date.day}/${date.month}');
       });
       test('yyyy d M with multiple separators', () {
-        print('yyyy.M.d (any separator) format:');
+        print('yyyy.d.M (any separator) format:');
         testRange(
             parser,
             (date, sep1, sep2) =>
