@@ -19,7 +19,7 @@ class DateParserInfo {
 /// main class, containing most [DateTime] utils
 class AnyDate {
   final DateParserInfo info;
-  const AnyDate({this.info = const DateParserInfo()});
+  AnyDate({this.info = const DateParserInfo()});
 
   /// parses a string in any format into a [DateTime] object.
   /// missing components will be assumed to default value:

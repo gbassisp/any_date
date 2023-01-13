@@ -20,7 +20,7 @@ void main() {
       final range = DateTimeRange(start: DateTime(1999), end: DateTime(2005));
 
       test('matches DateTime.parse', () {
-        const parser = AnyDate();
+        final parser = AnyDate();
         for (var d in range.days) {
           expect(DateTime.parse('$d'), parser.parse('$d'));
         }
