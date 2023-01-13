@@ -18,11 +18,10 @@ void testRange(
     for (var a in separators) {
       for (var b in separators) {
         String f = formatter(date, a, b);
-        String k = '$f with parser ${parser.hashCode}';
-        if (!cache.contains(k)) {
+        if (!cache.contains(f)) {
           expect(parser.parse(f), date);
           count++;
-          cache.add(k);
+          cache.add(f);
         }
       }
     }
