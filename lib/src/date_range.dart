@@ -1,3 +1,5 @@
+import 'package:any_date/src/extensions.dart';
+
 /// A range between two DateTime objects.
 /// Inspired by Flutter > Material > DateTimeRange class
 class DateTimeRange {
@@ -29,6 +31,14 @@ class DateTimeRange {
   ///
   /// See [DateTime.difference] for more details.
   Duration get duration => end.difference(start);
+
+  Iterable<DateTime> get days sync* {
+    DateTime d = start;
+    while (d.isAfter(end)) {
+      yield d;
+      d = d.nextDay;
+    }
+  }
 
   @override
   bool operator ==(Object other) {
