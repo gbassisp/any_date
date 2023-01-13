@@ -45,14 +45,14 @@ class AnyDate {
     /// overrides value on [DateParserInfo]
     bool? yearFirst,
   }) {
-    final _info = DateParserInfo(
-      dayFirst: dayFirst ?? info.dayFirst,
-      yearFirst: yearFirst ?? info.yearFirst,
+    final info = DateParserInfo(
+      dayFirst: dayFirst ?? this.info.dayFirst,
+      yearFirst: yearFirst ?? this.info.yearFirst,
     );
 
     formattedString = formattedString.trim().toLowerCase();
 
-    return _applyRules(formattedString, _info).firstWhere((e) => e != null)
+    return _applyRules(formattedString, info).firstWhere((e) => e != null)
         as DateTime;
   }
 
