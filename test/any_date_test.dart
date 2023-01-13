@@ -30,18 +30,17 @@ void main() {
           expect(parser.parse('$d'), DateTime.parse('$d'));
           count++;
         }
-        print('tested $count cases');
+        print('tested $count cases iso format');
       });
       test('yyyy M d with / separator', () {
         final parser = AnyDate();
         int count = 0;
         for (var date in range.days) {
           String f = '${date.year}/${date.month}/${date.day}';
-          print(f);
           expect(parser.parse(f), date);
           count++;
         }
-        print('tested $count cases');
+        print('tested $count cases yyyy/M/d');
       });
       test('yyyy M d with multiple separators', () {
         final parser = AnyDate();
@@ -56,7 +55,7 @@ void main() {
             }
           }
         }
-        print('tested $count cases');
+        print('tested $count cases yyyy.M.d (any separator)');
       });
     },
     skip: !exhaustiveTests,
