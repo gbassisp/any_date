@@ -46,14 +46,28 @@ class AnyDate {
         as DateTime;
   }
 
+  // apply all rules
   Iterable<DateTime?> _applyRules(
     String formattedString,
     DateParserInfo info, {
     bool throwOnInvalid = true,
   }) sync* {
-    // apply all rules
+    // default rule from DateTime
     yield _dateTimeTryParse(formattedString);
 
+    // all MDY rules
+    yield _mdy(formattedString, info);
+
+    // all DMY rules
+    yield _dmy(formattedString, info);
+
+    // all YMD rules
+    yield _ymd(formattedString, info);
+
+    // all YDM rules
+    yield _ydm(formattedString, info);
+
+    // finally force try parsing
     if (throwOnInvalid) {
       yield _noValidFormatFound(formattedString);
     }
