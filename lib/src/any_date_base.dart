@@ -1,3 +1,5 @@
+part 'any_date_rules.dart';
+
 class DateParserInfo {
   /// interpret the first value in an ambiguous case (e.g. 01/01/01)
   /// as day [true] or month [false].
@@ -27,7 +29,7 @@ class AnyDate {
   /// if year is missing, the closest result to today is chosen.
   DateTime parse(
     /// required string representation of a date to be parsed
-    String timestamp, {
+    String formattedString, {
 
     /// overrides value on [DateParserInfo]
     bool? dayFirst,
@@ -35,6 +37,25 @@ class AnyDate {
     /// overrides value on [DateParserInfo]
     bool? yearFirst,
   }) {
-    return DateTime.parse(timestamp);
+    final _info = DateParserInfo(
+      dayFirst: dayFirst ?? info.dayFirst,
+      yearFirst: yearFirst ?? info.yearFirst,
+    );
+
+    return _applyRules(formattedString, _info).firstWhere((e) => e != null)
+        as DateTime;
+  }
+
+  Iterable<DateTime?> _applyRules(
+    String formattedString,
+    DateParserInfo info, {
+    bool throwOnInvalid = true,
+  }) sync* {
+    // apply all rules
+    yield _dateTimeTryParse(formattedString);
+
+    if (throwOnInvalid) {
+      yield _noValidFormatFound(formattedString);
+    }
   }
 }
