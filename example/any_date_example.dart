@@ -1,6 +1,6 @@
 import 'package:any_date/any_date.dart';
 
 void main() {
-  var awesome = Awesome();
-  print('awesome: ${awesome.isAwesome}');
+  DateTime date = AnyDate.parse('2023-May-23');
+  print('awesome: $date');
 }
