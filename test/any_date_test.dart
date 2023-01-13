@@ -4,11 +4,12 @@ import 'package:test/test.dart';
 
 /// used to run tests on a wide range of dates
 const exhaustiveTests = bool.fromEnvironment('exhaustive', defaultValue: true);
-
+final range = DateTimeRange(start: DateTime(1999), end: DateTime(2005));
+final singleDate = DateTime(2023, 1, 2, 3, 4, 5, 6, 7);
 void main() {
   group('basic AnyDate().parse tests', () {
     test('matches DateTime.parse', () {
-      final d = DateTime(2023, 1, 2, 3, 4, 5, 6, 7).toString();
+      final d = '$singleDate';
 
       expect(AnyDate().parse(d), DateTime.parse(d));
     });
@@ -22,12 +23,22 @@ void main() {
   group(
     'exhaustive AnyDate().parse tests',
     () {
-      final range = DateTimeRange(start: DateTime(1999), end: DateTime(2005));
-
       test('matches DateTime.parse', () {
         final parser = AnyDate();
         for (var d in range.days) {
           expect(parser.parse('$d'), DateTime.parse('$d'));
+        }
+      });
+      test('yyyy M d with multiple separators', () {
+        final parser = AnyDate();
+        final separators = parser.allowedSeparators;
+        for (var date in range.days) {
+          for (var a in separators) {
+            for (var b in separators) {
+              String f = '${date.year}$a${date.month}$b${date.day}';
+              expect(parser.parse(f), date);
+            }
+          }
         }
       });
     },

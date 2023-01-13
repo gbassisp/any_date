@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 part 'any_date_rules.dart';
 
 class DateParserInfo {
@@ -20,8 +22,12 @@ class DateParserInfo {
 
 /// main class, containing most [DateTime] utils
 class AnyDate {
+  /// settings for parsing and resolving ambiguous cases
   final DateParserInfo info;
   AnyDate({this.info = const DateParserInfo()});
+
+  @visibleForTesting
+  final allowedSeparators = [' ', '/', '-'];
 
   /// parses a string in any format into a [DateTime] object.
   /// missing components will be assumed to default value:
@@ -41,6 +47,8 @@ class AnyDate {
       dayFirst: dayFirst ?? info.dayFirst,
       yearFirst: yearFirst ?? info.yearFirst,
     );
+
+    formattedString = formattedString.trim().toLowerCase();
 
     return _applyRules(formattedString, _info).firstWhere((e) => e != null)
         as DateTime;
