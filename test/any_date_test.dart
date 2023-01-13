@@ -60,4 +60,34 @@ void main() {
     },
     skip: !exhaustiveTests,
   );
+  group(
+    'exhaustive dayFirst tests',
+    () {
+      final parser = AnyDate(info: DateParserInfo(dayFirst: true));
+      test('yyyy d M with / separator', () {
+        int count = 0;
+        for (var date in range.days) {
+          String f = '${date.year}/${date.day}/${date.month}';
+          expect(parser.parse(f), date);
+          count++;
+        }
+        print('tested $count cases yyyy/M/d');
+      });
+      test('yyyy d M with multiple separators', () {
+        final separators = parser.allowedSeparators;
+        int count = 0;
+        for (var date in range.days) {
+          for (var a in separators) {
+            for (var b in separators) {
+              String f = '${date.year}$a${date.day}$b${date.month}';
+              expect(parser.parse(f), date);
+              count++;
+            }
+          }
+        }
+        print('tested $count cases yyyy.M.d (any separator)');
+      });
+    },
+    skip: !exhaustiveTests,
+  );
 }

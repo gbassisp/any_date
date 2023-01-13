@@ -63,7 +63,9 @@ class AnyDate {
     bool throwOnInvalid = true,
   }) sync* {
     // default rule from DateTime
-    yield _dateTimeTryParse(formattedString);
+    if (!info.dayFirst) {
+      yield _dateTimeTryParse(formattedString);
+    }
 
     // all MDY rules
     yield _mdy(formattedString, info, allowedSeparators);
@@ -71,12 +73,13 @@ class AnyDate {
     // all DMY rules
     yield _dmy(formattedString, info, allowedSeparators);
 
-    // all YMD rules
-    yield _ymd(formattedString, info, allowedSeparators);
-
-    // all YDM rules
-    yield _ydm(formattedString, info, allowedSeparators);
-
+    if (info.dayFirst) {
+      yield _ydm(formattedString, info, allowedSeparators);
+      yield _ymd(formattedString, info, allowedSeparators);
+    } else {
+      yield _ymd(formattedString, info, allowedSeparators);
+      yield _ydm(formattedString, info, allowedSeparators);
+    }
     // finally force try parsing
     if (throwOnInvalid) {
       yield _noValidFormatFound(formattedString);
