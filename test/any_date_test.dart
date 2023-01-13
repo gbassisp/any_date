@@ -10,7 +10,7 @@ void main() {
     test('matches DateTime.parse', () {
       final d = DateTime(2023, 1, 2, 3, 4, 5, 6, 7).toString();
 
-      expect(DateTime.parse(d), AnyDate.parse(d));
+      expect(DateTime.parse(d), AnyDate().parse(d));
     });
   });
 
@@ -20,8 +20,9 @@ void main() {
       final range = DateTimeRange(start: DateTime(1999), end: DateTime(2005));
 
       test('matches DateTime.parse', () {
+        const parser = AnyDate();
         for (var d in range.days) {
-          expect(DateTime.parse('$d'), AnyDate.parse('$d'));
+          expect(DateTime.parse('$d'), parser.parse('$d'));
         }
       });
     },
