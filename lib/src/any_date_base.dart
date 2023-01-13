@@ -66,16 +66,16 @@ class AnyDate {
     yield _dateTimeTryParse(formattedString);
 
     // all MDY rules
-    yield _mdy(formattedString, info);
+    yield _mdy(formattedString, info, allowedSeparators);
 
     // all DMY rules
-    yield _dmy(formattedString, info);
+    yield _dmy(formattedString, info, allowedSeparators);
 
     // all YMD rules
-    yield _ymd(formattedString, info);
+    yield _ymd(formattedString, info, allowedSeparators);
 
     // all YDM rules
-    yield _ydm(formattedString, info);
+    yield _ydm(formattedString, info, allowedSeparators);
 
     // finally force try parsing
     if (throwOnInvalid) {

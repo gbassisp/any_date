@@ -34,7 +34,6 @@ void main() {
       });
       test('yyyy M d with / separator', () {
         final parser = AnyDate();
-        final separators = parser.allowedSeparators;
         int count = 0;
         for (var date in range.days) {
           String f = '${date.year}/${date.month}/${date.day}';
@@ -58,7 +57,7 @@ void main() {
           }
         }
         print('tested $count cases');
-      }, skip: 'far from being implemented');
+      });
     },
     skip: !exhaustiveTests,
   );

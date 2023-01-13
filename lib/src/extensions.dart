@@ -23,7 +23,7 @@ extension DateTimeExtension on DateTime {
 
   DateTime copyWithJson(Map<String, Object?> json) {
     final j = json.map((key, value) => MapEntry(key.toLowerCase(), value));
-    print(json);
+
     return copyWith(
       year: '${j['year']}'.tryToInt(),
       month: '${j['month']}'.tryToInt(),

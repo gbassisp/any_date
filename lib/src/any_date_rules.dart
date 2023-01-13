@@ -24,14 +24,26 @@ DateTime? _try(RegExp format, String formattedString) {
   return null;
 }
 
-DateTime? _ymd(String formattedString, DateParserInfo info) {
-  final re = RegExp(r'(?<year>\d+)/(?<month>\d+)/(?<day>\d+)');
+DateTime? _ymd(
+    String formattedString, DateParserInfo info, List<String> separators) {
+  final s = _separatorPattern(separators);
+  final re = RegExp(r'(?<year>\d{1,4})'
+      '$s'
+      r'(?<month>\d{1,2})'
+      '$s'
+      r'(?<day>\d{1,2})');
 
   return _try(re, formattedString);
 }
 
-DateTime? _ydm(String formattedString, DateParserInfo info) {}
+DateTime? _ydm(
+    String formattedString, DateParserInfo info, List<String> separators) {}
 
-DateTime? _dmy(String formattedString, DateParserInfo info) {}
+DateTime? _dmy(
+    String formattedString, DateParserInfo info, List<String> separators) {}
 
-DateTime? _mdy(String formattedString, DateParserInfo info) {}
+DateTime? _mdy(
+    String formattedString, DateParserInfo info, List<String> separators) {}
+
+String _separatorPattern(List<String> separators) =>
+    '[${separators.reduce((v1, v2) => '$v1,$v2')}]';
