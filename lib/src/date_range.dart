@@ -34,7 +34,7 @@ class DateTimeRange {
 
   Iterable<DateTime> get days sync* {
     DateTime d = start;
-    while (d.isAfter(end)) {
+    while (!d.isAfter(end)) {
       yield d;
       d = d.nextDay;
     }
