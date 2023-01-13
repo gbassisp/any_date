@@ -20,4 +20,13 @@ extension DateTimeExtension on DateTime {
       microsecond ?? this.microsecond,
     );
   }
+
+  DateTime get nextDay {
+    final dateOnly = DateTime(year, month, day);
+    final next = dateOnly.add(
+      Duration(hours: 36),
+    ); // avoid daylight savings, leap seconds, etc... issues
+
+    return copyWith(year: next.year, month: next.month, day: next.day);
+  }
 }
