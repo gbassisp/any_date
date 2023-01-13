@@ -6,6 +6,30 @@ import 'package:test/test.dart';
 const exhaustiveTests = bool.fromEnvironment('exhaustive', defaultValue: true);
 final range = DateTimeRange(start: DateTime(1999), end: DateTime(2005));
 final singleDate = DateTime(2023, 1, 2, 3, 4, 5, 6, 7);
+
+void testRange(
+  AnyDate parser,
+  String Function(DateTime date, String sep1, String sep2) formatter,
+) {
+  Set cache = <String>{};
+  final separators = parser.allowedSeparators;
+  int count = 0;
+  for (var date in range.days) {
+    for (var a in separators) {
+      for (var b in separators) {
+        String f = formatter(date, a, b);
+        String k = '$f with parser ${parser.hashCode}';
+        if (!cache.contains(k)) {
+          expect(parser.parse(f), date);
+          count++;
+          cache.add(k);
+        }
+      }
+    }
+  }
+  print('tested $count cases');
+}
+
 void main() {
   group('basic AnyDate().parse tests', () {
     test('matches DateTime.parse', () {
@@ -21,41 +45,24 @@ void main() {
   });
 
   group(
-    'exhaustive AnyDate().parse tests',
+    'exhaustive default AnyDate()',
     () {
+      final parser = AnyDate();
       test('matches DateTime.parse', () {
-        final parser = AnyDate();
-        int count = 0;
-        for (var d in range.days) {
-          expect(parser.parse('$d'), DateTime.parse('$d'));
-          count++;
-        }
-        print('tested $count cases iso format');
+        print('iso format:');
+        testRange(parser, (date, sep1, sep2) => '$date');
       });
       test('yyyy M d with / separator', () {
-        final parser = AnyDate();
-        int count = 0;
-        for (var date in range.days) {
-          String f = '${date.year}/${date.month}/${date.day}';
-          expect(parser.parse(f), date);
-          count++;
-        }
-        print('tested $count cases yyyy/M/d');
+        print('yyyy/M/d format:');
+        testRange(parser,
+            (date, sep1, sep2) => '${date.year}/${date.month}/${date.day}');
       });
       test('yyyy M d with multiple separators', () {
-        final parser = AnyDate();
-        final separators = parser.allowedSeparators;
-        int count = 0;
-        for (var date in range.days) {
-          for (var a in separators) {
-            for (var b in separators) {
-              String f = '${date.year}$a${date.month}$b${date.day}';
-              expect(parser.parse(f), date);
-              count++;
-            }
-          }
-        }
-        print('tested $count cases yyyy.M.d (any separator)');
+        print('yyyy.M.d (any separator) format:');
+        testRange(
+            parser,
+            (date, sep1, sep2) =>
+                '${date.year}$sep1${date.month}$sep2${date.day}');
       });
     },
     skip: !exhaustiveTests,
@@ -65,27 +72,16 @@ void main() {
     () {
       final parser = AnyDate(info: DateParserInfo(dayFirst: true));
       test('yyyy d M with / separator', () {
-        int count = 0;
-        for (var date in range.days) {
-          String f = '${date.year}/${date.day}/${date.month}';
-          expect(parser.parse(f), date);
-          count++;
-        }
-        print('tested $count cases yyyy/M/d');
+        print('yyyy.M.d (any separator) format:');
+        testRange(parser,
+            (date, sep1, sep2) => '${date.year}/${date.day}/${date.month}');
       });
       test('yyyy d M with multiple separators', () {
-        final separators = parser.allowedSeparators;
-        int count = 0;
-        for (var date in range.days) {
-          for (var a in separators) {
-            for (var b in separators) {
-              String f = '${date.year}$a${date.day}$b${date.month}';
-              expect(parser.parse(f), date);
-              count++;
-            }
-          }
-        }
-        print('tested $count cases yyyy.M.d (any separator)');
+        print('yyyy.M.d (any separator) format:');
+        testRange(
+            parser,
+            (date, sep1, sep2) =>
+                '${date.year}$sep1${date.day}$sep2${date.month}');
       });
     },
     skip: !exhaustiveTests,
