@@ -25,22 +25,40 @@ void main() {
     () {
       test('matches DateTime.parse', () {
         final parser = AnyDate();
+        int count = 0;
         for (var d in range.days) {
           expect(parser.parse('$d'), DateTime.parse('$d'));
+          count++;
         }
+        print('tested $count cases');
+      });
+      test('yyyy M d with / separator', () {
+        final parser = AnyDate();
+        final separators = parser.allowedSeparators;
+        int count = 0;
+        for (var date in range.days) {
+          String f = '${date.year}/${date.month}/${date.day}';
+          print(f);
+          expect(parser.parse(f), date);
+          count++;
+        }
+        print('tested $count cases');
       });
       test('yyyy M d with multiple separators', () {
         final parser = AnyDate();
         final separators = parser.allowedSeparators;
+        int count = 0;
         for (var date in range.days) {
           for (var a in separators) {
             for (var b in separators) {
               String f = '${date.year}$a${date.month}$b${date.day}';
               expect(parser.parse(f), date);
+              count++;
             }
           }
         }
-      });
+        print('tested $count cases');
+      }, skip: 'far from being implemented');
     },
     skip: !exhaustiveTests,
   );

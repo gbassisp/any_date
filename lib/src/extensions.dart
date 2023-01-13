@@ -21,6 +21,21 @@ extension DateTimeExtension on DateTime {
     );
   }
 
+  DateTime copyWithJson(Map<String, Object?> json) {
+    final j = json.map((key, value) => MapEntry(key.toLowerCase(), value));
+    print(json);
+    return copyWith(
+      year: '${j['year']}'.tryToInt(),
+      month: '${j['month']}'.tryToInt(),
+      day: '${j['day']}'.tryToInt(),
+      hour: '${j['hour']}'.tryToInt(),
+      minute: '${j['minute']}'.tryToInt(),
+      second: '${j['second']}'.tryToInt(),
+      millisecond: '${j['millisecond']}'.tryToInt(),
+      microsecond: '${j['microsecond']}'.tryToInt(),
+    );
+  }
+
   DateTime get nextDay {
     final dateOnly = DateTime(year, month, day);
     final next = dateOnly.add(
@@ -29,4 +44,8 @@ extension DateTimeExtension on DateTime {
 
     return copyWith(year: next.year, month: next.month, day: next.day);
   }
+}
+
+extension StringParsers on String {
+  int? tryToInt() => int.tryParse(trim());
 }

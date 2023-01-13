@@ -1,3 +1,5 @@
+import 'package:any_date/src/extensions.dart';
+
 import 'package:meta/meta.dart';
 
 part 'any_date_rules.dart';
