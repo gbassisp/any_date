@@ -54,54 +54,30 @@ class AnyDate {
   /// e.g. 'Jan 2023' becomes DateTime(2023, 1), which is 1 Jan 2023
   /// if year is missing, the closest result to today is chosen.
   DateTime parse(
-    /// required string representation of a date to be parsed
-    String formattedString, {
 
-    /// overrides value on [DateParserInfo]
-    bool? dayFirst,
-
-    /// overrides value on [DateParserInfo]
-    bool? yearFirst,
-  }) {
-    return tryParse(formattedString,
-            dayFirst: dayFirst, yearFirst: yearFirst) ??
-        _noValidFormatFound(formattedString);
+      /// required string representation of a date to be parsed
+      String formattedString) {
+    return tryParse(formattedString) ?? _noValidFormatFound(formattedString);
   }
 
   /// parses a string in any format into a [DateTime] object.
   /// missing components will be assumed to default value:
   /// e.g. 'Jan 2023' becomes DateTime(2023, 1), which is 1 Jan 2023
   /// if year is missing, the closest result to today is chosen.
-  DateTime? tryParse(
-    /// required string representation of a date to be parsed
-    String formattedString, {
-
-    /// overrides value on [DateParserInfo]
-    bool? dayFirst,
-
-    /// overrides value on [DateParserInfo]
-    bool? yearFirst,
-  }) {
-    final info = DateParserInfo(
-      dayFirst: dayFirst ?? this.info.dayFirst,
-      yearFirst: yearFirst ?? this.info.yearFirst,
-    );
-
+  DateTime? tryParse(String formattedString) {
     formattedString = formattedString.trim().toLowerCase();
 
-    return _applyRules(formattedString, info).firstWhere(
+    return _applyRules(formattedString).firstWhere(
       (e) => e != null,
       orElse: () => null,
     );
-    ;
   }
 
   // apply all rules
   Iterable<DateTime?> _applyRules(
     String formattedString,
-    DateParserInfo info,
   ) sync* {
-    final params = DateParsingParameters(
+    final p = DateParsingParameters(
         formattedString: formattedString, parserInfo: info);
 
     // default rule from DateTime
@@ -117,9 +93,9 @@ class AnyDate {
 
     if (info.dayFirst) {
       yield _ydm(formattedString, info, allowedSeparators);
-      yield _ymd(formattedString, info, allowedSeparators);
+      yield _ymd(p);
     } else {
-      yield _ymd(formattedString, info, allowedSeparators);
+      yield _ymd(p);
       yield _ydm(formattedString, info, allowedSeparators);
     }
     // finally force try parsing

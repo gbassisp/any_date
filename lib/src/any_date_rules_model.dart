@@ -31,7 +31,9 @@ class _MultipleRules extends _DateParsingRule {
 
   Iterable<DateTime?> _applyAll(DateParsingParameters parameters) sync* {
     for (var r in rules) {
-      yield r.apply(parameters);
+      try {
+        yield r.apply(parameters);
+      } catch (_) {}
     }
   }
 }

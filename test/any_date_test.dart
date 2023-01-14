@@ -12,7 +12,7 @@ void testRange(
   String Function(DateTime date, String sep1, String sep2) formatter,
 ) {
   Set cache = <String>{};
-  final separators = parser.allowedSeparators;
+  final separators = parser.info.allowedSeparators;
   int count = 0;
   for (var date in range.days) {
     for (var a in separators) {

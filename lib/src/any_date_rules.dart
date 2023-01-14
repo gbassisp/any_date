@@ -10,6 +10,7 @@ DateTime _noValidFormatFound(String formattedString) {
   return DateTime.parse(formattedString);
 }
 
+///
 DateTime? _try(RegExp format, String formattedString) {
   try {
     final now = DateTime(DateTime.now().year);
@@ -24,16 +25,15 @@ DateTime? _try(RegExp format, String formattedString) {
   return null;
 }
 
-DateTime? _ymd(
-    String formattedString, DateParserInfo info, List<String> separators) {
-  final s = _separatorPattern(separators);
+DateTime? _ymd(DateParsingParameters params) {
+  final s = _separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(r'(?<year>\d{1,4})'
       '$s'
       r'(?<month>\d{1,2})'
       '$s'
       r'(?<day>\d{1,2})');
 
-  return _try(re, formattedString);
+  return _try(re, params.formattedString);
 }
 
 DateTime? _ydm(
