@@ -27,22 +27,34 @@ DateTime? _try(RegExp format, String formattedString) {
 
 final _DateParsingRule _ymd = _SimpleRule((params) {
   final s = _separatorPattern(params.parserInfo.allowedSeparators);
-  final re = RegExp(r'(?<year>\d{1,4})'
-      '$s+'
-      r'(?<month>\d{1,2})'
-      '$s+'
-      r'(?<day>\d{1,2})');
+  final re = RegExp(
+    r'^'
+    r'(?<year>\d{1,4})'
+    '$s+'
+    r'(?<month>\d{1,2})'
+    '$s+'
+    r'(?<day>\d{1,2})'
+    r'$'
+    //
+    ,
+  );
 
   return _try(re, params.formattedString);
 });
 
 final _DateParsingRule _ydm = _SimpleRule((params) {
   final s = _separatorPattern(params.parserInfo.allowedSeparators);
-  final re = RegExp(r'(?<year>\d{1,4})'
-      '$s+'
-      r'(?<day>\d{1,2})'
-      '$s+'
-      r'(?<month>\d{1,2})');
+  final re = RegExp(
+    r'^'
+    r'(?<year>\d{1,4})'
+    '$s+'
+    r'(?<day>\d{1,2})'
+    '$s+'
+    r'(?<month>\d{1,2})'
+    r'$'
+    //
+    ,
+  );
 
   return _try(re, params.formattedString);
 });
@@ -50,11 +62,13 @@ final _DateParsingRule _ydm = _SimpleRule((params) {
 final _DateParsingRule _mdy = _SimpleRule((params) {
   final s = _separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
+    r'^'
     r'(?<month>\d{1,2})'
     '$s+'
     r'(?<day>\d{1,2})'
     '$s+'
     r'(?<year>\d{1,4})'
+    r'$'
     //
     ,
   );
@@ -65,11 +79,13 @@ final _DateParsingRule _mdy = _SimpleRule((params) {
 final _DateParsingRule _dmy = _SimpleRule((params) {
   final s = _separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
+    r'^'
     r'(?<day>\d{1,2})'
     '$s+'
     r'(?<month>\d{1,2})'
     '$s+'
     r'(?<year>\d{1,4})'
+    r'$'
     //
     ,
   );

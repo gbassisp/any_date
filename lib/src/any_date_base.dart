@@ -85,11 +85,11 @@ class AnyDate {
       yield _dateTimeTryParse(formattedString);
     }
 
-    // // all MDY rules
-    // yield _mdy.apply(p);
+    // all MDY rules
+    yield _mdy.apply(p);
 
-    // // all DMY rules
-    // yield _dmy.apply(p);
+    // all DMY rules
+    yield _dmy.apply(p);
 
     final r = _MultipleRules(info.dayFirst ? _dayFirst : _defaultRules);
     yield r.apply(p);

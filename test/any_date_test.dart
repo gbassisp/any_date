@@ -19,7 +19,10 @@ void testRange(
       for (var b in separators) {
         String f = formatter(date, a, b);
         if (!cache.contains(f)) {
-          expect(parser.parse(f), date);
+          DateTime g = parser.parse(f);
+          // print(f);
+          // print(g.toString());
+          expect(g, date);
           count++;
           cache.add(f);
         }

@@ -9,16 +9,54 @@ extension DateTimeExtension on DateTime {
     int? millisecond,
     int? microsecond,
   }) {
-    return DateTime(
-      year ?? this.year,
-      month ?? this.month,
-      day ?? this.day,
-      hour ?? this.hour,
-      minute ?? this.minute,
-      second ?? this.second,
-      millisecond ?? this.millisecond,
-      microsecond ?? this.microsecond,
+    year ??= this.year;
+    month ??= this.month;
+    day ??= this.day;
+    hour ??= this.hour;
+    minute ??= this.minute;
+    second ??= this.second;
+    millisecond ??= this.millisecond;
+    microsecond ??= this.microsecond;
+
+    final copied = DateTime(
+      year,
+      month,
+      day,
+      hour,
+      minute,
+      second,
+      millisecond,
+      microsecond,
     );
+
+    if (month > 0 &&
+        month <= 12 &&
+        day > 0 &&
+        day <= 31 &&
+        hour >= 0 &&
+        hour < 24 &&
+        minute >= 0 &&
+        minute < 60 &&
+        second >= 0 &&
+        second < 60 &&
+        millisecond >= 0 &&
+        millisecond < 1000 &&
+        microsecond >= 0 &&
+        microsecond < 1000 &&
+
+        // DateTime constructor accepts any int and rolls over values (e.g. 13 months = 1y1mo)
+        !(copied.year == year &&
+            copied.month == month &&
+            copied.day == day &&
+            copied.hour == hour &&
+            copied.minute == minute &&
+            copied.second == second &&
+            copied.millisecond == millisecond &&
+            copied.microsecond == microsecond)) {
+      throw FormatException('invalid date time $copied');
+    }
+
+    return copied;
   }
 
   DateTime copyWithJson(Map<String, Object?> json) {
