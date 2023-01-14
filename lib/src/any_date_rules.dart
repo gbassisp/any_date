@@ -25,7 +25,7 @@ DateTime? _try(RegExp format, String formattedString) {
   return null;
 }
 
-DateTime? _ymd(DateParsingParameters params) {
+final _DateParsingRule _ymd = _SimpleRule((params) {
   final s = _separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(r'(?<year>\d{1,4})'
       '$s'
@@ -34,19 +34,18 @@ DateTime? _ymd(DateParsingParameters params) {
       r'(?<day>\d{1,2})');
 
   return _try(re, params.formattedString);
-}
+});
 
-DateTime? _ydm(
-    String formattedString, DateParserInfo info, List<String> separators) {
-  final s = _separatorPattern(separators);
+final _DateParsingRule _ydm = _SimpleRule((params) {
+  final s = _separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(r'(?<year>\d{1,4})'
       '$s'
       r'(?<day>\d{1,2})'
       '$s'
       r'(?<month>\d{1,2})');
 
-  return _try(re, formattedString);
-}
+  return _try(re, params.formattedString);
+});
 
 DateTime? _dmy(
     String formattedString, DateParserInfo info, List<String> separators) {}

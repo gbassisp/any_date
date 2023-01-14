@@ -92,11 +92,11 @@ class AnyDate {
     yield _dmy(formattedString, info, allowedSeparators);
 
     if (info.dayFirst) {
-      yield _ydm(formattedString, info, allowedSeparators);
-      yield _ymd(p);
+      yield _ydm.apply(p);
+      yield _ymd.apply(p);
     } else {
-      yield _ymd(p);
-      yield _ydm(formattedString, info, allowedSeparators);
+      yield _ymd.apply(p);
+      yield _ydm.apply(p);
     }
     // finally force try parsing
   }
