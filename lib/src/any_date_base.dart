@@ -3,6 +3,17 @@ import 'package:any_date/src/extensions.dart';
 import 'package:meta/meta.dart';
 
 part 'any_date_rules.dart';
+part 'any_date_rules_model.dart';
+
+class DateParsingParameters {
+  final String formattedString;
+  final DateParserInfo parserInfo;
+
+  DateParsingParameters({
+    required this.formattedString,
+    required this.parserInfo,
+  });
+}
 
 class DateParserInfo {
   /// interpret the first value in an ambiguous case (e.g. 01/01/01)
@@ -19,7 +30,14 @@ class DateParserInfo {
   /// Defaults to false.
   final bool yearFirst;
 
-  const DateParserInfo({this.dayFirst = false, this.yearFirst = false});
+  /// separators used when parsing the date string
+  final List<String> allowedSeparators;
+
+  const DateParserInfo({
+    this.dayFirst = false,
+    this.yearFirst = false,
+    this.allowedSeparators = const [' ', '/', '-'],
+  });
 }
 
 /// main class, containing most [DateTime] utils
@@ -29,13 +47,32 @@ class AnyDate {
   AnyDate({this.info = const DateParserInfo()});
 
   @visibleForTesting
-  final allowedSeparators = [' ', '/', '-'];
+  List<String> get allowedSeparators => info.allowedSeparators;
 
   /// parses a string in any format into a [DateTime] object.
   /// missing components will be assumed to default value:
   /// e.g. 'Jan 2023' becomes DateTime(2023, 1), which is 1 Jan 2023
   /// if year is missing, the closest result to today is chosen.
   DateTime parse(
+    /// required string representation of a date to be parsed
+    String formattedString, {
+
+    /// overrides value on [DateParserInfo]
+    bool? dayFirst,
+
+    /// overrides value on [DateParserInfo]
+    bool? yearFirst,
+  }) {
+    return tryParse(formattedString,
+            dayFirst: dayFirst, yearFirst: yearFirst) ??
+        _noValidFormatFound(formattedString);
+  }
+
+  /// parses a string in any format into a [DateTime] object.
+  /// missing components will be assumed to default value:
+  /// e.g. 'Jan 2023' becomes DateTime(2023, 1), which is 1 Jan 2023
+  /// if year is missing, the closest result to today is chosen.
+  DateTime? tryParse(
     /// required string representation of a date to be parsed
     String formattedString, {
 
@@ -52,16 +89,21 @@ class AnyDate {
 
     formattedString = formattedString.trim().toLowerCase();
 
-    return _applyRules(formattedString, info).firstWhere((e) => e != null)
-        as DateTime;
+    return _applyRules(formattedString, info).firstWhere(
+      (e) => e != null,
+      orElse: () => null,
+    );
+    ;
   }
 
   // apply all rules
   Iterable<DateTime?> _applyRules(
     String formattedString,
-    DateParserInfo info, {
-    bool throwOnInvalid = true,
-  }) sync* {
+    DateParserInfo info,
+  ) sync* {
+    final params = DateParsingParameters(
+        formattedString: formattedString, parserInfo: info);
+
     // default rule from DateTime
     if (!info.dayFirst) {
       yield _dateTimeTryParse(formattedString);
@@ -81,8 +123,5 @@ class AnyDate {
       yield _ydm(formattedString, info, allowedSeparators);
     }
     // finally force try parsing
-    if (throwOnInvalid) {
-      yield _noValidFormatFound(formattedString);
-    }
   }
 }
