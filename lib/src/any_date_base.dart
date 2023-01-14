@@ -85,19 +85,25 @@ class AnyDate {
       yield _dateTimeTryParse(formattedString);
     }
 
-    // all MDY rules
-    yield _mdy(formattedString, info, allowedSeparators);
+    // // all MDY rules
+    // yield _mdy.apply(p);
 
-    // all DMY rules
-    yield _dmy(formattedString, info, allowedSeparators);
+    // // all DMY rules
+    // yield _dmy.apply(p);
 
-    if (info.dayFirst) {
-      yield _ydm.apply(p);
-      yield _ymd.apply(p);
-    } else {
-      yield _ymd.apply(p);
-      yield _ydm.apply(p);
-    }
+    final r = _MultipleRules(info.dayFirst ? _dayFirst : _defaultRules);
+    yield r.apply(p);
+
     // finally force try parsing
   }
 }
+
+final List<_DateParsingRule> _defaultRules = [
+  _ymd,
+  _ydm,
+];
+
+final List<_DateParsingRule> _dayFirst = [
+  _ydm,
+  _ymd,
+];

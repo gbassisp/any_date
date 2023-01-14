@@ -47,11 +47,35 @@ final _DateParsingRule _ydm = _SimpleRule((params) {
   return _try(re, params.formattedString);
 });
 
-DateTime? _dmy(
-    String formattedString, DateParserInfo info, List<String> separators) {}
+final _DateParsingRule _mdy = _SimpleRule((params) {
+  final s = _separatorPattern(params.parserInfo.allowedSeparators);
+  final re = RegExp(
+    r'(?<month>\d{1,2})'
+    '$s'
+    r'(?<day>\d{1,2})'
+    '$s'
+    r'(?<year>\d{1,4})'
+    //
+    ,
+  );
 
-DateTime? _mdy(
-    String formattedString, DateParserInfo info, List<String> separators) {}
+  return _try(re, params.formattedString);
+});
+
+final _DateParsingRule _dmy = _SimpleRule((params) {
+  final s = _separatorPattern(params.parserInfo.allowedSeparators);
+  final re = RegExp(
+    r'(?<day>\d{1,2})'
+    '$s'
+    r'(?<month>\d{1,2})'
+    '$s'
+    r'(?<year>\d{1,4})'
+    //
+    ,
+  );
+
+  return _try(re, params.formattedString);
+});
 
 String _separatorPattern(List<String> separators) =>
     '[${separators.reduce((v1, v2) => '$v1,$v2')}]';
