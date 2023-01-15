@@ -1,5 +1,6 @@
 import 'package:any_date/any_date.dart';
 import 'package:any_date/src/date_range.dart';
+import 'package:intl/intl.dart';
 import 'package:test/test.dart';
 
 /// used to run tests on a wide range of dates
@@ -80,15 +81,15 @@ void main() {
       });
       test('yyyy M d with / separator', () {
         print('yyyy/M/d format:');
-        testRange(parser,
-            (date, sep1, sep2) => '${date.year}/${date.month}/${date.day}');
+        testRange(
+            parser, (date, sep1, sep2) => DateFormat('yyyy/M/d').format(date));
       });
       test('yyyy M d with multiple separators', () {
         print('yyyy.M.d (any separator) format:');
         testRange(
             parser,
             (date, sep1, sep2) =>
-                '${date.year}$sep1${date.month}$sep2${date.day}');
+                DateFormat('yyyy${sep1}M${sep2}d').format(date));
       });
     },
     skip: !exhaustiveTests,
@@ -104,15 +105,15 @@ void main() {
       );
       test('yyyy d M with / separator', () {
         print('yyyy.d.M (any separator) format:');
-        testRange(parser,
-            (date, sep1, sep2) => '${date.year}/${date.day}/${date.month}');
+        testRange(
+            parser, (date, sep1, sep2) => DateFormat('yyyy/d/M').format(date));
       });
       test('yyyy d M with multiple separators', () {
         print('yyyy.d.M (any separator) format:');
         testRange(
             parser,
             (date, sep1, sep2) =>
-                '${date.year}$sep1${date.day}$sep2${date.month}');
+                DateFormat('yyyy${sep1}d${sep2}M').format(date));
       });
     },
     skip: !exhaustiveTests,
