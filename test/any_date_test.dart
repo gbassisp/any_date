@@ -4,6 +4,16 @@ import 'package:test/test.dart';
 
 /// used to run tests on a wide range of dates
 const exhaustiveTests = bool.fromEnvironment('exhaustive', defaultValue: true);
+const separators = [
+  ' ',
+  ',',
+  '\n',
+  ':',
+  '_',
+  '/',
+  '-',
+];
+
 final range = DateTimeRange(
   start: DateTime(
     1999, // y

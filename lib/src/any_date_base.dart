@@ -15,6 +15,13 @@ class DateParsingParameters {
   });
 }
 
+class Month {
+  final int number;
+  final String name;
+
+  const Month({required this.number, required this.name});
+}
+
 class DateParserInfo {
   /// interpret the first value in an ambiguous case (e.g. 01/01/01)
   /// as day [true] or month [false].
@@ -33,10 +40,20 @@ class DateParserInfo {
   /// separators used when parsing the date string
   final List<String> allowedSeparators;
 
+  /// keywords to identify months (to support multiple languages)
+  final List<Month> months;
+
   const DateParserInfo({
     this.dayFirst = false,
     this.yearFirst = false,
-    this.allowedSeparators = const [' ', '/', '-'],
+    this.allowedSeparators = const [
+      ' ',
+      ',',
+      '_',
+      '/',
+      '-',
+    ],
+    this.months = _allMonths,
   });
 }
 
@@ -104,3 +121,35 @@ final List<_DateParsingRule> _dayFirst = [
   _ydm,
   _ymd,
 ];
+
+const _months = [
+  Month(number: 1, name: 'January'),
+  Month(number: 2, name: 'February'),
+  Month(number: 3, name: 'March'),
+  Month(number: 4, name: 'April'),
+  Month(number: 5, name: 'May'),
+  Month(number: 6, name: 'June'),
+  Month(number: 7, name: 'July'),
+  Month(number: 8, name: 'August'),
+  Month(number: 9, name: 'September'),
+  Month(number: 10, name: 'October'),
+  Month(number: 11, name: 'November'),
+  Month(number: 12, name: 'December'),
+];
+
+const _shortMonths = [
+  Month(number: 1, name: 'Jan'),
+  Month(number: 2, name: 'Feb'),
+  Month(number: 3, name: 'Mar'),
+  Month(number: 4, name: 'Apr'),
+  Month(number: 5, name: 'May'),
+  Month(number: 6, name: 'Jun'),
+  Month(number: 7, name: 'Jul'),
+  Month(number: 8, name: 'Aug'),
+  Month(number: 9, name: 'Sep'),
+  Month(number: 10, name: 'Oct'),
+  Month(number: 11, name: 'Nov'),
+  Month(number: 12, name: 'Dec'),
+];
+
+const _allMonths = [..._months, ..._shortMonths];
