@@ -4,14 +4,15 @@ import 'package:test/test.dart';
 
 /// used to run tests on a wide range of dates
 const exhaustiveTests = bool.fromEnvironment('exhaustive', defaultValue: true);
-const separators = [
+final defaultParser = AnyDate();
+final separators = [
   ' ',
   ',',
   '\n',
   ':',
   '_',
   '/',
-  '-',
+  ...defaultParser.allowedSeparators,
 ];
 
 final range = DateTimeRange(
@@ -95,9 +96,14 @@ void main() {
   group(
     'exhaustive dayFirst tests',
     () {
-      final parser = AnyDate(info: DateParserInfo(dayFirst: true));
+      final parser = AnyDate(
+        info: DateParserInfo(
+          dayFirst: true,
+          allowedSeparators: separators,
+        ),
+      );
       test('yyyy d M with / separator', () {
-        print('yyyy.M.d (any separator) format:');
+        print('yyyy.d.M (any separator) format:');
         testRange(parser,
             (date, sep1, sep2) => '${date.year}/${date.day}/${date.month}');
       });

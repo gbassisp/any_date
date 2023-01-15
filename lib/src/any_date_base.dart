@@ -51,7 +51,7 @@ class DateParserInfo {
       ',',
       '_',
       '/',
-      '-',
+      '-', // TODO: avoid messing up regex with special chars
     ],
     this.months = _allMonths,
   });
