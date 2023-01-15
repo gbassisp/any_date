@@ -80,21 +80,18 @@ class AnyDate {
     final p = DateParsingParameters(
         formattedString: formattedString, parserInfo: info);
 
-    // default rule from DateTime
-    if (!info.dayFirst) {
-      yield _dateTimeTryParse(formattedString);
-    }
-
-    // all MDY rules
-    yield _mdy.apply(p);
-
-    // all DMY rules
-    yield _dmy.apply(p);
+    yield _MultipleRules([
+      _mdy,
+      _dmy,
+    ]).apply(p);
 
     final r = _MultipleRules(info.dayFirst ? _dayFirst : _defaultRules);
     yield r.apply(p);
 
-    // finally force try parsing
+    // default rule from DateTime
+    if (!info.dayFirst) {
+      yield _dateTimeTryParse(formattedString);
+    }
   }
 }
 

@@ -4,7 +4,20 @@ import 'package:test/test.dart';
 
 /// used to run tests on a wide range of dates
 const exhaustiveTests = bool.fromEnvironment('exhaustive', defaultValue: true);
-final range = DateTimeRange(start: DateTime(1999), end: DateTime(2005));
+final range = DateTimeRange(
+  start: DateTime(
+    1999, // y
+    1, // m
+    1, // d
+    // 1, // h
+  ),
+  end: DateTime(
+    2005, // y
+    1, // m
+    1, // d
+    // 1, // h
+  ),
+);
 final singleDate = DateTime(2023, 1, 2, 3, 4, 5, 6, 7);
 
 void testRange(
