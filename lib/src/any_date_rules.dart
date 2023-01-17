@@ -35,23 +35,27 @@ DateTime? _tryTextMonth(
     for (var n in match.groupNames) {
       map[n] = match.namedGroup(n);
     }
-    map['month'] = map['month'];
+    map['month'] = months
+        .firstWhere((element) => element.name.toLowerCase() == map['month'])
+        .number;
     return now.copyWithJson(map);
   } catch (_) {}
 
   return null;
 }
 
-final _DateParsingRule _ymd = _MultipleRules([_ymdRegex]);
+final _DateParsingRule _ymd = _MultipleRules([
+  _ymdTextMonthRegex,
+  _ymdRegex,
+]);
 
 _DateParsingRule _ymdTextMonthRegex = _SimpleRule((params) {
   final s = _separatorPattern(params.parserInfo.allowedSeparators);
-  final m = _monthsPattern(params.parserInfo.months);
   final re = RegExp(
     r'^'
     r'(?<year>\d{1,4})'
     '$s+'
-    '$m'
+    r'(?<month>\w+)'
     '$s+'
     r'(?<day>\d{1,2})'
     r'$'
@@ -59,7 +63,7 @@ _DateParsingRule _ymdTextMonthRegex = _SimpleRule((params) {
     ,
   );
 
-  return _try(re, params.formattedString);
+  return _tryTextMonth(re, params.formattedString, params.parserInfo.months);
 });
 
 final _DateParsingRule _ymdRegex = _SimpleRule((params) {
@@ -132,6 +136,3 @@ final _DateParsingRule _dmy = _SimpleRule((params) {
 
 String _separatorPattern(List<String> separators) =>
     '[${separators.reduce((v1, v2) => '$v1,$v2')}]';
-
-String _monthsPattern(List<Month> months) =>
-    '[${months.map((e) => e.name.toLowerCase()).reduce((v1, v2) => '$v1,$v2')}]';
