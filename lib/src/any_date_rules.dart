@@ -54,6 +54,16 @@ final _DateParsingRule _ydm = _MultipleRules([
   _ydmRegex,
 ]);
 
+final _DateParsingRule _dmy = _MultipleRules([
+  _dmyTextMonthRegex,
+  _dmyRegex,
+]);
+
+final _DateParsingRule _mdy = _MultipleRules([
+  _mdyTextMonthRegex,
+  _mdyRegex,
+]);
+
 _DateParsingRule _ymdTextMonthRegex = _SimpleRule((params) {
   final s = _separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
@@ -122,7 +132,7 @@ _DateParsingRule _ydmTextMonthRegex = _SimpleRule((params) {
   return _tryTextMonth(re, params.formattedString, params.parserInfo.months);
 });
 
-final _DateParsingRule _mdy = _SimpleRule((params) {
+final _DateParsingRule _mdyRegex = _SimpleRule((params) {
   final s = _separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
     r'^'
@@ -139,7 +149,24 @@ final _DateParsingRule _mdy = _SimpleRule((params) {
   return _try(re, params.formattedString);
 });
 
-final _DateParsingRule _dmy = _SimpleRule((params) {
+_DateParsingRule _mdyTextMonthRegex = _SimpleRule((params) {
+  final s = _separatorPattern(params.parserInfo.allowedSeparators);
+  final re = RegExp(
+    r'^'
+    r'(?<month>\w+)'
+    '$s+'
+    r'(?<day>\d{1,2})'
+    '$s+'
+    r'(?<year>\d{1,4})'
+    r'$'
+    //
+    ,
+  );
+
+  return _tryTextMonth(re, params.formattedString, params.parserInfo.months);
+});
+
+final _DateParsingRule _dmyRegex = _SimpleRule((params) {
   final s = _separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
     r'^'
@@ -154,6 +181,23 @@ final _DateParsingRule _dmy = _SimpleRule((params) {
   );
 
   return _try(re, params.formattedString);
+});
+
+_DateParsingRule _dmyTextMonthRegex = _SimpleRule((params) {
+  final s = _separatorPattern(params.parserInfo.allowedSeparators);
+  final re = RegExp(
+    r'^'
+    r'(?<day>\d{1,2})'
+    '$s+'
+    r'(?<month>\w+)'
+    '$s+'
+    r'(?<year>\d{1,4})'
+    r'$'
+    //
+    ,
+  );
+
+  return _tryTextMonth(re, params.formattedString, params.parserInfo.months);
 });
 
 String _separatorPattern(List<String> separators) =>
