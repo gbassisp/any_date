@@ -105,6 +105,20 @@ void main() {
             (date, sep1, sep2) =>
                 DateFormat('yyyy${sep1}MMMM${sep2}d').format(date));
       });
+      test('yyyy d MMM with multiple separators', () {
+        print('yyyy.d.MMM (any separator) format:');
+        testRange(
+            parser,
+            (date, sep1, sep2) =>
+                DateFormat('yyyy${sep1}d${sep2}MMM').format(date));
+      });
+      test('yyyy d MMMM with multiple separators', () {
+        print('yyyy.d.MMMM (any separator) format:');
+        testRange(
+            parser,
+            (date, sep1, sep2) =>
+                DateFormat('yyyy${sep1}d${sep2}MMMM').format(date));
+      });
     },
     skip: !exhaustiveTests,
   );

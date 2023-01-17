@@ -49,6 +49,11 @@ final _DateParsingRule _ymd = _MultipleRules([
   _ymdRegex,
 ]);
 
+final _DateParsingRule _ydm = _MultipleRules([
+  _ydmTextMonthRegex,
+  _ydmRegex,
+]);
+
 _DateParsingRule _ymdTextMonthRegex = _SimpleRule((params) {
   final s = _separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
@@ -83,7 +88,7 @@ final _DateParsingRule _ymdRegex = _SimpleRule((params) {
   return _try(re, params.formattedString);
 });
 
-final _DateParsingRule _ydm = _SimpleRule((params) {
+final _DateParsingRule _ydmRegex = _SimpleRule((params) {
   final s = _separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
     r'^'
@@ -98,6 +103,23 @@ final _DateParsingRule _ydm = _SimpleRule((params) {
   );
 
   return _try(re, params.formattedString);
+});
+
+_DateParsingRule _ydmTextMonthRegex = _SimpleRule((params) {
+  final s = _separatorPattern(params.parserInfo.allowedSeparators);
+  final re = RegExp(
+    r'^'
+    r'(?<year>\d{1,4})'
+    '$s+'
+    r'(?<day>\d{1,2})'
+    '$s+'
+    r'(?<month>\w+)'
+    r'$'
+    //
+    ,
+  );
+
+  return _tryTextMonth(re, params.formattedString, params.parserInfo.months);
 });
 
 final _DateParsingRule _mdy = _SimpleRule((params) {
