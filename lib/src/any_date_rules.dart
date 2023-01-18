@@ -45,6 +45,7 @@ DateTime? _tryTextMonth(
 }
 
 final _DateParsingRule _ymd = _MultipleRules([
+  _ymdhmsTextMonthRegex,
   _ymdTextMonthRegex,
   _ymdRegex,
 ]);
@@ -64,14 +65,39 @@ final _DateParsingRule _mdy = _MultipleRules([
   _mdyRegex,
 ]);
 
+_DateParsingRule _ymdhmsTextMonthRegex = _SimpleRule((params) {
+  final separators = params.parserInfo.allowedSeparators;
+  final s = _separatorPattern(separators);
+  final hms = _hmsPattern(separators);
+  final re = RegExp(
+    r'^'
+    // '($hms'
+    // '$s)?'
+    r'(?<year>\d{1,4})'
+    '$s'
+    r'(?<month>\w+)'
+    '$s'
+    r'(?<day>\d{1,2})'
+    '$s'
+    '($hms)?'
+    r'$'
+    //
+    ,
+  );
+
+  print(re);
+
+  return _tryTextMonth(re, params.formattedString, params.parserInfo.months);
+});
+
 _DateParsingRule _ymdTextMonthRegex = _SimpleRule((params) {
   final s = _separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
     r'^'
     r'(?<year>\d{1,4})'
-    '$s+'
+    '$s'
     r'(?<month>\w+)'
-    '$s+'
+    '$s'
     r'(?<day>\d{1,2})'
     r'$'
     //
@@ -86,9 +112,9 @@ final _DateParsingRule _ymdRegex = _SimpleRule((params) {
   final re = RegExp(
     r'^'
     r'(?<year>\d{1,4})'
-    '$s+'
+    '$s'
     r'(?<month>\d{1,2})'
-    '$s+'
+    '$s'
     r'(?<day>\d{1,2})'
     r'$'
     //
@@ -103,9 +129,9 @@ final _DateParsingRule _ydmRegex = _SimpleRule((params) {
   final re = RegExp(
     r'^'
     r'(?<year>\d{1,4})'
-    '$s+'
+    '$s'
     r'(?<day>\d{1,2})'
-    '$s+'
+    '$s'
     r'(?<month>\d{1,2})'
     r'$'
     //
@@ -120,9 +146,9 @@ _DateParsingRule _ydmTextMonthRegex = _SimpleRule((params) {
   final re = RegExp(
     r'^'
     r'(?<year>\d{1,4})'
-    '$s+'
+    '$s'
     r'(?<day>\d{1,2})'
-    '$s+'
+    '$s'
     r'(?<month>\w+)'
     r'$'
     //
@@ -137,9 +163,9 @@ final _DateParsingRule _mdyRegex = _SimpleRule((params) {
   final re = RegExp(
     r'^'
     r'(?<month>\d{1,2})'
-    '$s+'
+    '$s'
     r'(?<day>\d{1,2})'
-    '$s+'
+    '$s'
     r'(?<year>\d{1,4})'
     r'$'
     //
@@ -154,9 +180,9 @@ _DateParsingRule _mdyTextMonthRegex = _SimpleRule((params) {
   final re = RegExp(
     r'^'
     r'(?<month>\w+)'
-    '$s+'
+    '$s'
     r'(?<day>\d{1,2})'
-    '$s+'
+    '$s'
     r'(?<year>\d{1,4})'
     r'$'
     //
@@ -171,9 +197,9 @@ final _DateParsingRule _dmyRegex = _SimpleRule((params) {
   final re = RegExp(
     r'^'
     r'(?<day>\d{1,2})'
-    '$s+'
+    '$s'
     r'(?<month>\d{1,2})'
-    '$s+'
+    '$s'
     r'(?<year>\d{1,4})'
     r'$'
     //
@@ -188,9 +214,9 @@ _DateParsingRule _dmyTextMonthRegex = _SimpleRule((params) {
   final re = RegExp(
     r'^'
     r'(?<day>\d{1,2})'
-    '$s+'
+    '$s'
     r'(?<month>\w+)'
-    '$s+'
+    '$s'
     r'(?<year>\d{1,4})'
     r'$'
     //
@@ -201,4 +227,31 @@ _DateParsingRule _dmyTextMonthRegex = _SimpleRule((params) {
 });
 
 String _separatorPattern(List<String> separators) =>
-    '[${separators.reduce((v1, v2) => '$v1,$v2')}]';
+    '[${separators.reduce((v1, v2) => '$v1,$v2')}]+?';
+
+String _hmsPattern(List<String> separators) {
+  final s = _separatorPattern(separators);
+
+  return '$s*'
+          r'(?<hour>\d{1,2})?'
+          '$s?'
+          r'(?<minute>\d{1,2})?'
+          '$s*'
+          r'(?<second>\d{1,2})?'
+          '$s*'
+      //
+      ;
+}
+
+bool isAmPm(String formattedDate) {
+  final r = RegExp(r'\w+');
+  for (var element in r.allMatches(formattedDate.toLowerCase())) {
+    for (int i = 0; i < element.groupCount; i++) {
+      var e = element.group(i);
+      if (e!.contains('am') || e.contains('pm')) {
+        return true;
+      }
+    }
+  }
+  return false;
+}

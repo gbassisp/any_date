@@ -5,6 +5,8 @@ import 'package:test/test.dart';
 
 /// used to run tests on a wide range of dates
 const exhaustiveTests = bool.fromEnvironment('exhaustive', defaultValue: true);
+const hugeRange = bool.fromEnvironment('huge', defaultValue: false);
+
 final defaultParser = AnyDate();
 final separators = [
   ' ',
@@ -24,7 +26,7 @@ final range = DateTimeRange(
     // 1, // h
   ),
   end: DateTime(
-    2005, // y
+    hugeRange ? 2005 : 2000, // y
     1, // m
     1, // d
     // 1, // h
