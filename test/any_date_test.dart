@@ -34,14 +34,13 @@ final range = DateTimeRange(
 );
 final singleDate = DateTime(2023, 1, 2, 3, 4, 5, 6, 7);
 
-void testRange(
-  AnyDate parser,
-  String Function(DateTime date, String sep1, String sep2) formatter,
-) {
+void testRange(AnyDate parser,
+    String Function(DateTime date, String sep1, String sep2) formatter,
+    [DateTimeRange? _range]) {
   Set cache = <String>{};
   final separators = parser.info.allowedSeparators;
   int count = 0;
-  for (var date in range.days) {
+  for (var date in (_range ?? range).days) {
     for (var a in separators) {
       for (var b in separators) {
         String f = formatter(date, a, b);
