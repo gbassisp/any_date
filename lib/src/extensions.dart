@@ -1,14 +1,14 @@
 extension DateTimeExtension on DateTime {
-  DateTime copyWith({
-    int? year,
-    int? month,
-    int? day,
-    int? hour,
-    int? minute,
-    int? second,
-    int? millisecond,
-    int? microsecond,
-  }) {
+  DateTime copyWith(
+      {int? year,
+      int? month,
+      int? day,
+      int? hour,
+      int? minute,
+      int? second,
+      int? millisecond,
+      int? microsecond,
+      bool allowRollover = false}) {
     year ??= this.year;
     month ??= this.month;
     day ??= this.day;
@@ -29,7 +29,8 @@ extension DateTimeExtension on DateTime {
       microsecond,
     );
 
-    if (month > 0 &&
+    if (!allowRollover &&
+        month > 0 &&
         month <= 12 &&
         day > 0 &&
         day <= 31 &&
@@ -80,7 +81,12 @@ extension DateTimeExtension on DateTime {
       Duration(hours: 36),
     ); // avoid daylight savings, leap seconds, etc... issues
 
-    return copyWith(year: next.year, month: next.month, day: next.day);
+    return copyWith(
+      year: next.year,
+      month: next.month,
+      day: next.day,
+      allowRollover: true,
+    );
   }
 }
 
