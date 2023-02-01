@@ -1,16 +1,16 @@
-part of 'any_date_base.dart';
+import 'any_date_base.dart';
 
-abstract class _DateParsingRule {
-  final List<_DateParsingRule> rules;
+abstract class DateParsingRule {
+  final List<DateParsingRule> rules;
 
-  _DateParsingRule(this.rules);
+  DateParsingRule(this.rules);
 
   DateTime? apply(DateParsingParameters parameters);
 }
 
-class _SimpleRule extends _DateParsingRule {
+class SimpleRule extends DateParsingRule {
   final DateTime? Function(DateParsingParameters params) _rule;
-  _SimpleRule(this._rule) : super([]);
+  SimpleRule(this._rule) : super([]);
 
   @override
   DateTime? apply(DateParsingParameters parameters) {
@@ -18,8 +18,8 @@ class _SimpleRule extends _DateParsingRule {
   }
 }
 
-class _MultipleRules extends _DateParsingRule {
-  _MultipleRules(super.rules);
+class MultipleRules extends DateParsingRule {
+  MultipleRules(super.rules);
 
   @override
   DateTime? apply(DateParsingParameters parameters) {

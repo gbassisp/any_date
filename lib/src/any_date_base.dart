@@ -1,9 +1,7 @@
-import 'package:any_date/src/extensions.dart';
-
 import 'package:meta/meta.dart';
 
-part 'any_date_rules.dart';
-part 'any_date_rules_model.dart';
+import 'any_date_rules.dart';
+import 'any_date_rules_model.dart';
 
 class DateParsingParameters {
   final String formattedString;
@@ -75,7 +73,7 @@ class AnyDate {
 
       /// required string representation of a date to be parsed
       String formattedString) {
-    return tryParse(formattedString) ?? _noValidFormatFound(formattedString);
+    return tryParse(formattedString) ?? noValidFormatFound(formattedString);
   }
 
   /// parses a string in any format into a [DateTime] object.
@@ -98,29 +96,29 @@ class AnyDate {
     final p = DateParsingParameters(
         formattedString: formattedString, parserInfo: info);
 
-    yield _MultipleRules([
-      _mdy,
-      _dmy,
+    yield MultipleRules([
+      mdy,
+      dmy,
     ]).apply(p);
 
-    final r = _MultipleRules(info.dayFirst ? _dayFirst : _defaultRules);
+    final r = MultipleRules(info.dayFirst ? _dayFirst : _defaultRules);
     yield r.apply(p);
 
     // default rule from DateTime
     if (!info.dayFirst) {
-      yield _dateTimeTryParse(formattedString);
+      yield dateTimeTryParse(formattedString);
     }
   }
 }
 
-final List<_DateParsingRule> _defaultRules = [
-  _ymd,
-  _ydm,
+final List<DateParsingRule> _defaultRules = [
+  ymd,
+  ydm,
 ];
 
-final List<_DateParsingRule> _dayFirst = [
-  _ydm,
-  _ymd,
+final List<DateParsingRule> _dayFirst = [
+  ydm,
+  ymd,
 ];
 
 const _months = [
