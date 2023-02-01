@@ -36,7 +36,7 @@ final singleDate = DateTime(2023, 1, 2, 3, 4, 5, 6, 7);
 
 void testRange(AnyDate parser,
     String Function(DateTime date, String sep1, String sep2) formatter,
-    [DateTimeRange? _range]) {
+    [DateTimeRange? _range, bool dayOnly = true]) {
   Set cache = <String>{};
   final separators = parser.info.allowedSeparators;
   int count = 0;
@@ -48,6 +48,11 @@ void testRange(AnyDate parser,
           DateTime g = parser.parse(f);
           // print(f);
           // print(g.toString());
+          if (dayOnly) {
+            expect(g.year, date.year);
+            expect(g.month, date.month);
+            expect(g.day, date.day);
+          }
           expect(g, date);
           count++;
           cache.add(f);
