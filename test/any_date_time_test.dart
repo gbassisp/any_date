@@ -10,13 +10,21 @@ final _range = DateTimeRange(
     1999, // y
     1, // m
     1, // d
-    1, // h
+    2, // h
+    3, // m
+    4, // s
+    // 5, // ms
+    // 6, // us
   ),
   end: DateTime(
     hugeRange ? 2005 : 2000, // y
     1, // m
     1, // d
-    1, // h
+    2, // h
+    3, // m
+    4, // s
+    // 5, // ms
+    // 6, // us
   ),
 );
 void main() {
@@ -39,11 +47,11 @@ void main() {
     test(
       'yyyy.M.d h:m:S',
       () {
-        print('yyyy.M.d h:m:S (any separator) format:');
+        print('yyyy.M.d h:m:SSSSSS (any separator) format:');
         testRange(
           parser,
           (date, sep1, sep2) =>
-              DateFormat('yyyy${sep1}MMMM${sep2}d H-m-s.S').format(date),
+              DateFormat('yyyy${sep1}MMMM${sep2}d H-m-s.SSSSSS').format(date),
           _range,
           false,
         );
