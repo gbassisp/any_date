@@ -59,7 +59,7 @@ Map<String, dynamic> _parseMap(
 
   if (map.containsKey('second')) {
     double second = double.parse(map['second']!);
-    print(second);
+    // print(second);
     map['second'] = second.toInt();
     map['millisecond'] = (second - second.toInt()) * 1000;
     map['microsecond'] = (second - second.toInt()) * 1000000;
