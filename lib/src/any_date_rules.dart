@@ -44,7 +44,7 @@ DateTime? _tryTextMonth(
 
 Map<String, dynamic> _parseMap(
     Map<String, dynamic> map, String formattedString, List<Month> months) {
-  print(map);
+  // print(map);
   map['month'] = months
       .firstWhere((element) => element.name.toLowerCase() == map['month'])
       .number;
@@ -267,7 +267,7 @@ bool _isAmPm(String formattedString) {
 
 bool _isPm(String formattedString) {
   if (formattedString.contains('pm')) {
-    print('is pm');
+    // print('is pm');
     return true;
   }
   return false;
@@ -275,7 +275,7 @@ bool _isPm(String formattedString) {
 
 bool _isAm(String formattedString) {
   if (formattedString.contains('am')) {
-    print('is am');
+    // print('is am');
     return true;
   }
   return false;

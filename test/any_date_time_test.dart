@@ -74,6 +74,6 @@ void main() {
   });
 }
 
-extension Printer on String {
-  void p() => print(this);
-}
+// extension Printer on String {
+  // void p() => print(this);
+// }
