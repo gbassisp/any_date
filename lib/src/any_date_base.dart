@@ -46,6 +46,8 @@ class DateParserInfo {
     this.yearFirst = false,
     this.allowedSeparators = const [
       ' ',
+      't',
+      'T',
       ':',
       ',',
       '_',
