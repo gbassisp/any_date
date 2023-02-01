@@ -67,6 +67,7 @@ Map<String, dynamic> _parseMap(
 
 final _DateParsingRule _ymd = _MultipleRules([
   _ymdhmsTextMonthRegex,
+  _ymdhmTextMonthRegex,
   _ymdTextMonthRegex,
   _ymdRegex,
 ]);
@@ -99,6 +100,29 @@ _DateParsingRule _ymdhmsTextMonthRegex = _SimpleRule((params) {
     r'(?<day>\d{1,2})'
     '$s'
     '$hms'
+
+    //
+    ,
+  );
+
+  // print(re);
+
+  return _tryTextMonth(re, params.formattedString, params.parserInfo.months);
+});
+
+_DateParsingRule _ymdhmTextMonthRegex = _SimpleRule((params) {
+  final separators = params.parserInfo.allowedSeparators;
+  final s = _separatorPattern(separators);
+  final hm = _hmPattern(separators);
+  final re = RegExp(
+    r'^'
+    r'(?<year>\d+)'
+    '$s'
+    r'(?<month>\w+)'
+    '$s'
+    r'(?<day>\d{1,2})'
+    '$s'
+    '$hm'
 
     //
     ,
@@ -256,6 +280,17 @@ String _hmsPattern(List<String> separators) {
           r'(?<minute>\d{1,2})?'
           '$s'
           r'(?<second>\d{1,2}\.?\d*)?'
+
+      //
+      ;
+}
+
+String _hmPattern(List<String> separators) {
+  final s = _separatorPattern(separators);
+
+  return r'(?<hour>\d{1,2})?'
+          '$s'
+          r'(?<minute>\d{1,2})?'
 
       //
       ;
