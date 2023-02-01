@@ -91,8 +91,8 @@ final DateParsingRule mdy = MultipleRules([
 
 DateParsingRule ymdhmsTextMonthRegex = SimpleRule((params) {
   final separators = params.parserInfo.allowedSeparators;
-  final s = _separatorPattern(separators);
-  final hms = _hmsPattern(separators);
+  final s = separatorPattern(separators);
+  final hms = hmsPattern(separators);
   final re = RegExp(
     r'^'
     r'(?<year>\d+)'
@@ -114,8 +114,8 @@ DateParsingRule ymdhmsTextMonthRegex = SimpleRule((params) {
 
 DateParsingRule ymdhmTextMonthRegex = SimpleRule((params) {
   final separators = params.parserInfo.allowedSeparators;
-  final s = _separatorPattern(separators);
-  final hm = _hmPattern(separators);
+  final s = separatorPattern(separators);
+  final hm = hmPattern(separators);
   final re = RegExp(
     r'^'
     r'(?<year>\d+)'
@@ -136,7 +136,7 @@ DateParsingRule ymdhmTextMonthRegex = SimpleRule((params) {
 });
 
 DateParsingRule ymdTextMonthRegex = SimpleRule((params) {
-  final s = _separatorPattern(params.parserInfo.allowedSeparators);
+  final s = separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
     r'^'
     r'(?<year>\d+)'
@@ -153,7 +153,7 @@ DateParsingRule ymdTextMonthRegex = SimpleRule((params) {
 });
 
 final DateParsingRule ymdRegex = SimpleRule((params) {
-  final s = _separatorPattern(params.parserInfo.allowedSeparators);
+  final s = separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
     r'^'
     r'(?<year>\d+)'
@@ -170,7 +170,7 @@ final DateParsingRule ymdRegex = SimpleRule((params) {
 });
 
 final DateParsingRule ydmRegex = SimpleRule((params) {
-  final s = _separatorPattern(params.parserInfo.allowedSeparators);
+  final s = separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
     r'^'
     r'(?<year>\d+)'
@@ -187,7 +187,7 @@ final DateParsingRule ydmRegex = SimpleRule((params) {
 });
 
 DateParsingRule ydmTextMonthRegex = SimpleRule((params) {
-  final s = _separatorPattern(params.parserInfo.allowedSeparators);
+  final s = separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
     r'^'
     r'(?<year>\d+)'
@@ -204,7 +204,7 @@ DateParsingRule ydmTextMonthRegex = SimpleRule((params) {
 });
 
 final DateParsingRule mdyRegex = SimpleRule((params) {
-  final s = _separatorPattern(params.parserInfo.allowedSeparators);
+  final s = separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
     r'^'
     r'(?<month>\d{1,2})'
@@ -221,7 +221,7 @@ final DateParsingRule mdyRegex = SimpleRule((params) {
 });
 
 DateParsingRule mdyTextMonthRegex = SimpleRule((params) {
-  final s = _separatorPattern(params.parserInfo.allowedSeparators);
+  final s = separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
     r'^'
     r'(?<month>\w+)'
@@ -238,7 +238,7 @@ DateParsingRule mdyTextMonthRegex = SimpleRule((params) {
 });
 
 final DateParsingRule dmyRegex = SimpleRule((params) {
-  final s = _separatorPattern(params.parserInfo.allowedSeparators);
+  final s = separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
     r'^'
     r'(?<day>\d{1,2})'
@@ -255,7 +255,7 @@ final DateParsingRule dmyRegex = SimpleRule((params) {
 });
 
 DateParsingRule dmyTextMonthRegex = SimpleRule((params) {
-  final s = _separatorPattern(params.parserInfo.allowedSeparators);
+  final s = separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
     r'^'
     r'(?<day>\d{1,2})'
@@ -271,11 +271,11 @@ DateParsingRule dmyTextMonthRegex = SimpleRule((params) {
   return _tryTextMonth(re, params.formattedString, params.parserInfo.months);
 });
 
-String _separatorPattern(List<String> separators) =>
+String separatorPattern(List<String> separators) =>
     '[${separators.reduce((v1, v2) => '$v1,$v2')}]+?';
 
-String _hmsPattern(List<String> separators) {
-  final s = _separatorPattern(separators);
+String hmsPattern(List<String> separators) {
+  final s = separatorPattern(separators);
 
   return r'(?<hour>\d{1,2})?'
           '$s'
@@ -287,8 +287,8 @@ String _hmsPattern(List<String> separators) {
       ;
 }
 
-String _hmPattern(List<String> separators) {
-  final s = _separatorPattern(separators);
+String hmPattern(List<String> separators) {
+  final s = separatorPattern(separators);
 
   return r'(?<hour>\d{1,2})?'
           '$s'
