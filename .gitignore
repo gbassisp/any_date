@@ -1,3 +1,10 @@
+# posix hidden dir
+.*/
+
+# reports
+coverage/
+metrics/
+
 # IDE settings
 .idea/
 
