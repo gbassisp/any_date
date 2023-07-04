@@ -3,6 +3,6 @@
 /// More dartdocs go here.
 library any_date;
 
-export 'src/any_date_base.dart';
+export 'src/any_date_base.dart' show AnyDate;
 
 // TODO: Export any libraries intended for clients of this package.
