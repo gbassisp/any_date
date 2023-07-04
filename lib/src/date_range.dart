@@ -1,15 +1,17 @@
 import 'package:any_date/src/extensions.dart';
+import 'package:meta/meta.dart';
 
 /// A range between two DateTime objects.
 /// Inspired by Flutter > Material > DateTimeRange class
+@immutable
 class DateTimeRange {
-
-  /// Creates a range for the given start and end values. [end] must be later than [start]
+  /// Creates a range for the given start and end values. [end] must be later
+  /// than [start]
   DateTimeRange({
     required DateTime start,
     required DateTime end,
   }) {
-    assert(!start.isAfter(end));
+    assert(!start.isAfter(end), 'start ($start) must be before end ($end)');
     // if user passes wrong values in production code, they are corrected here
     if (start.isAfter(end)) {
       this.start = end;
@@ -21,6 +23,7 @@ class DateTimeRange {
       this.end = end;
     }
   }
+
   /// Start DateTime of this DateTimeRange.
   late final DateTime start;
 
@@ -50,7 +53,7 @@ class DateTimeRange {
   }
 
   @override
-  int get hashCode => Object.hashAll([start, end]);
+  int get hashCode => start.hashCode ^ end.hashCode;
 
   @override
   String toString() => '$start - $end';

@@ -1,4 +1,4 @@
-import 'package:any_date/any_date.dart';
+import 'package:any_date/src/any_date_base.dart';
 import 'package:any_date/src/date_range.dart';
 import 'package:intl/intl.dart';
 import 'package:test/test.dart';
@@ -187,7 +187,7 @@ void testRange(
   DateTimeRange? customRange,
   bool dayOnly = true,
 ]) {
-  final Set cache = <String>{};
+  final cache = <String>{};
   final separators = parser.info.allowedSeparators;
   var count = 0;
   for (final date in (customRange ?? range).days) {
