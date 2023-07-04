@@ -8,7 +8,7 @@ extension DateTimeExtension on DateTime {
       int? second,
       int? millisecond,
       int? microsecond,
-      bool allowRollover = false}) {
+      bool allowRollover = false,}) {
     year ??= this.year;
     month ??= this.month;
     day ??= this.day;
@@ -78,7 +78,7 @@ extension DateTimeExtension on DateTime {
   DateTime get nextDay {
     final dateOnly = DateTime(year, month, day);
     final next = dateOnly.add(
-      Duration(hours: 36),
+      const Duration(hours: 36),
     ); // avoid daylight savings, leap seconds, etc... issues
 
     return copyWith(

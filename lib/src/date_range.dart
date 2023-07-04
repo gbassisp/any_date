@@ -3,11 +3,6 @@ import 'package:any_date/src/extensions.dart';
 /// A range between two DateTime objects.
 /// Inspired by Flutter > Material > DateTimeRange class
 class DateTimeRange {
-  /// Start DateTime of this DateTimeRange.
-  late final DateTime start;
-
-  /// End DateTime of this DateTimeRange.
-  late final DateTime end;
 
   /// Creates a range for the given start and end values. [end] must be later than [start]
   DateTimeRange({
@@ -26,6 +21,11 @@ class DateTimeRange {
       this.end = end;
     }
   }
+  /// Start DateTime of this DateTimeRange.
+  late final DateTime start;
+
+  /// End DateTime of this DateTimeRange.
+  late final DateTime end;
 
   /// Returns a [Duration] of the time between [start] and [end].
   ///
@@ -33,7 +33,7 @@ class DateTimeRange {
   Duration get duration => end.difference(start);
 
   Iterable<DateTime> get days sync* {
-    DateTime d = start;
+    var d = start;
     while (!d.isAfter(end)) {
       yield d;
       d = d.nextDay;

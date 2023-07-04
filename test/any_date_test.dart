@@ -111,52 +111,52 @@ const baseDateFormat = {
   'EEEE, y.M.d',
   'EEEE, y.M.d h:m:s.SS a',
   'EEEE, y.M.d h:m:s.SS',
-  "yyyy-MM-ddTHH:mm:ss",
-  "dd/MM/yyyy HH:mm:ss",
-  "MM/dd/yyyy HH:mm:ss",
-  "yyyy.MM.dd HH:mm:ss",
-  "dd-MM-yyyy HH:mm:ss",
-  "yyyy MM dd HH:mm:ss",
-  "dd.MM.yyyy HH:mm:ss",
-  "yyyy-MM-ddTHH:mm",
-  "dd/MM/yyyy HH:mm",
-  "MM/dd/yyyy HH:mm",
-  "yyyy.MM.dd HH:mm",
-  "dd-MM-yyyy HH:mm",
-  "yyyy MM dd HH:mm",
-  "dd.MM.yyyy HH:mm",
-  "yyyy-MM-ddTHH:mm:ss.SSS",
-  "dd/MM/yyyy HH:mm:ss.SSS",
-  "MM/dd/yyyy HH:mm:ss.SSS",
-  "yyyy.MM.dd HH:mm:ss.SSS",
-  "dd-MM-yyyy HH:mm:ss.SSS",
-  "yyyy MM dd HH:mm:ss.SSS",
-  "dd.MM.yyyy HH:mm:ss.SSS",
-  "yyyy-MM-ddTHH:mm:ssZ",
-  "dd/MM/yyyy HH:mm:ss Z",
-  "MM/dd/yyyy HH:mm:ss Z",
-  "yyyy.MM.dd HH:mm:ss Z",
-  "dd-MM-yyyy HH:mm:ss Z",
-  "yyyy MM dd HH:mm:ss Z",
-  "dd.MM.yyyy HH:mm:ss Z",
-  "E, dd MMM yyyy HH:mm:ss",
-  "dd MMM yyyy HH:mm:ss E",
-  "E, dd MMM yyyy HH:mm:ss Z",
-  "dd MMM yyyy HH:mm:ss Z E",
-  "EEE, dd MMM yyyy HH:mm:ss",
-  "dd MMM yyyy HH:mm:ss EEE",
-  "EEE, dd MMM yyyy HH:mm:ss Z",
-  "dd MMM yyyy HH:mm:ss Z EEE",
-  "dd MMM yyyy HH:mm:ss",
-  "dd MMM yyyy HH:mm:ss Z",
-  "dd MMM yyyy HH:mm:ss.SSS",
-  "dd MMM yyyy HH:mm",
-  "dd MMM yyyy HH:mm Z",
+  'yyyy-MM-ddTHH:mm:ss',
+  'dd/MM/yyyy HH:mm:ss',
+  'MM/dd/yyyy HH:mm:ss',
+  'yyyy.MM.dd HH:mm:ss',
+  'dd-MM-yyyy HH:mm:ss',
+  'yyyy MM dd HH:mm:ss',
+  'dd.MM.yyyy HH:mm:ss',
+  'yyyy-MM-ddTHH:mm',
+  'dd/MM/yyyy HH:mm',
+  'MM/dd/yyyy HH:mm',
+  'yyyy.MM.dd HH:mm',
+  'dd-MM-yyyy HH:mm',
+  'yyyy MM dd HH:mm',
+  'dd.MM.yyyy HH:mm',
+  'yyyy-MM-ddTHH:mm:ss.SSS',
+  'dd/MM/yyyy HH:mm:ss.SSS',
+  'MM/dd/yyyy HH:mm:ss.SSS',
+  'yyyy.MM.dd HH:mm:ss.SSS',
+  'dd-MM-yyyy HH:mm:ss.SSS',
+  'yyyy MM dd HH:mm:ss.SSS',
+  'dd.MM.yyyy HH:mm:ss.SSS',
+  'yyyy-MM-ddTHH:mm:ssZ',
+  'dd/MM/yyyy HH:mm:ss Z',
+  'MM/dd/yyyy HH:mm:ss Z',
+  'yyyy.MM.dd HH:mm:ss Z',
+  'dd-MM-yyyy HH:mm:ss Z',
+  'yyyy MM dd HH:mm:ss Z',
+  'dd.MM.yyyy HH:mm:ss Z',
+  'E, dd MMM yyyy HH:mm:ss',
+  'dd MMM yyyy HH:mm:ss E',
+  'E, dd MMM yyyy HH:mm:ss Z',
+  'dd MMM yyyy HH:mm:ss Z E',
+  'EEE, dd MMM yyyy HH:mm:ss',
+  'dd MMM yyyy HH:mm:ss EEE',
+  'EEE, dd MMM yyyy HH:mm:ss Z',
+  'dd MMM yyyy HH:mm:ss Z EEE',
+  'dd MMM yyyy HH:mm:ss',
+  'dd MMM yyyy HH:mm:ss Z',
+  'dd MMM yyyy HH:mm:ss.SSS',
+  'dd MMM yyyy HH:mm',
+  'dd MMM yyyy HH:mm Z',
 };
 
 /// used to run tests on a wide range of dates
 const exhaustiveTests = bool.fromEnvironment('exhaustive', defaultValue: true);
-const hugeRange = bool.fromEnvironment('huge', defaultValue: false);
+const hugeRange = bool.fromEnvironment('huge');
 
 final defaultParser = AnyDate();
 final separators = [
@@ -172,31 +172,30 @@ final separators = [
 final range = DateTimeRange(
   start: DateTime(
     1999, // y
-    1, // m
-    1, // d
     // 1, // h
   ),
   end: DateTime(
     hugeRange ? 2005 : 2000, // y
-    1, // m
-    1, // d
     // 1, // h
   ),
 );
 final singleDate = DateTime(2023, 1, 2, 3, 4, 5, 6, 7);
 
-void testRange(AnyDate parser,
-    String Function(DateTime date, String sep1, String sep2) formatter,
-    [DateTimeRange? customRange, bool dayOnly = true]) {
-  Set cache = <String>{};
+void testRange(
+  AnyDate parser,
+  String Function(DateTime date, String sep1, String sep2) formatter, [
+  DateTimeRange? customRange,
+  bool dayOnly = true,
+]) {
+  final Set cache = <String>{};
   final separators = parser.info.allowedSeparators;
-  int count = 0;
-  for (var date in (customRange ?? range).days) {
-    for (var a in separators) {
-      for (var b in separators) {
-        String f = formatter(date, a, b);
+  var count = 0;
+  for (final date in (customRange ?? range).days) {
+    for (final a in separators) {
+      for (final b in separators) {
+        final f = formatter(date, a, b);
         if (!cache.contains(f)) {
-          DateTime g = parser.parse(f);
+          final g = parser.parse(f);
           // print(f);
           // print(g.toString());
           if (dayOnly) {
@@ -222,7 +221,7 @@ void main() {
       expect(AnyDate().parse(d), DateTime.parse(d));
     });
     test('format exception', () {
-      final d = 'not a date';
+      const d = 'not a date';
 
       expect(() => AnyDate().parse(d), throwsA(isA<FormatException>()));
     });
@@ -239,70 +238,80 @@ void main() {
       test('yyyy M d with / separator', () {
         print('yyyy/M/d format:');
         testRange(
-            parser, (date, sep1, sep2) => DateFormat('yyyy/M/d').format(date));
+          parser,
+          (date, sep1, sep2) => DateFormat('yyyy/M/d').format(date),
+        );
       });
       test('yyyy M d with multiple separators', () {
         print('yyyy.M.d (any separator) format:');
         testRange(
-            parser,
-            (date, sep1, sep2) =>
-                DateFormat('yyyy${sep1}M${sep2}d').format(date));
+          parser,
+          (date, sep1, sep2) => DateFormat('yyyy${sep1}M${sep2}d').format(date),
+        );
       });
       test('yyyy MMM d with multiple separators', () {
         print('yyyy.MMM.d (any separator) format:');
         testRange(
-            parser,
-            (date, sep1, sep2) =>
-                DateFormat('yyyy${sep1}MMM${sep2}d').format(date));
+          parser,
+          (date, sep1, sep2) =>
+              DateFormat('yyyy${sep1}MMM${sep2}d').format(date),
+        );
       });
       test('yyyy MMMM d with multiple separators', () {
         print('yyyy.MMMM.d (any separator) format:');
         testRange(
-            parser,
-            (date, sep1, sep2) =>
-                DateFormat('yyyy${sep1}MMMM${sep2}d').format(date));
+          parser,
+          (date, sep1, sep2) =>
+              DateFormat('yyyy${sep1}MMMM${sep2}d').format(date),
+        );
       });
       test('yyyy d MMM with multiple separators', () {
         print('yyyy.d.MMM (any separator) format:');
         testRange(
-            parser,
-            (date, sep1, sep2) =>
-                DateFormat('yyyy${sep1}d${sep2}MMM').format(date));
+          parser,
+          (date, sep1, sep2) =>
+              DateFormat('yyyy${sep1}d${sep2}MMM').format(date),
+        );
       });
       test('yyyy d MMMM with multiple separators', () {
         print('yyyy.d.MMMM (any separator) format:');
         testRange(
-            parser,
-            (date, sep1, sep2) =>
-                DateFormat('yyyy${sep1}d${sep2}MMMM').format(date));
+          parser,
+          (date, sep1, sep2) =>
+              DateFormat('yyyy${sep1}d${sep2}MMMM').format(date),
+        );
       });
       test('d MMM yyyy with multiple separators', () {
         print('d.MMM.yyyy (any separator) format:');
         testRange(
-            parser,
-            (date, sep1, sep2) =>
-                DateFormat('d${sep1}MMM${sep2}yyyy').format(date));
+          parser,
+          (date, sep1, sep2) =>
+              DateFormat('d${sep1}MMM${sep2}yyyy').format(date),
+        );
       });
       test('d MMMM yyyy with multiple separators', () {
         print('d.MMMM.yyyy (any separator) format:');
         testRange(
-            parser,
-            (date, sep1, sep2) =>
-                DateFormat('d${sep1}MMMM${sep2}yyyy').format(date));
+          parser,
+          (date, sep1, sep2) =>
+              DateFormat('d${sep1}MMMM${sep2}yyyy').format(date),
+        );
       });
       test('MMM d yyyy with multiple separators', () {
         print('MMM.d.yyyy (any separator) format:');
         testRange(
-            parser,
-            (date, sep1, sep2) =>
-                DateFormat('MMM${sep1}d${sep2}yyyy').format(date));
+          parser,
+          (date, sep1, sep2) =>
+              DateFormat('MMM${sep1}d${sep2}yyyy').format(date),
+        );
       });
       test('MMMM d yyyy with multiple separators', () {
         print('MMMM.d.yyyy (any separator) format:');
         testRange(
-            parser,
-            (date, sep1, sep2) =>
-                DateFormat('MMMM${sep1}d${sep2}yyyy').format(date));
+          parser,
+          (date, sep1, sep2) =>
+              DateFormat('MMMM${sep1}d${sep2}yyyy').format(date),
+        );
       });
     },
     skip: !exhaustiveTests,
@@ -319,14 +328,16 @@ void main() {
       test('yyyy d M with / separator', () {
         print('yyyy.d.M (any separator) format:');
         testRange(
-            parser, (date, sep1, sep2) => DateFormat('yyyy/d/M').format(date));
+          parser,
+          (date, sep1, sep2) => DateFormat('yyyy/d/M').format(date),
+        );
       });
       test('yyyy d M with multiple separators', () {
         print('yyyy.d.M (any separator) format:');
         testRange(
-            parser,
-            (date, sep1, sep2) =>
-                DateFormat('yyyy${sep1}d${sep2}M').format(date));
+          parser,
+          (date, sep1, sep2) => DateFormat('yyyy${sep1}d${sep2}M').format(date),
+        );
       });
     },
     skip: !exhaustiveTests,

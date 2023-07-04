@@ -1,6 +1,6 @@
-import 'any_date_base.dart';
-import 'any_date_rules_model.dart';
-import 'extensions.dart';
+import 'package:any_date/src/any_date_base.dart';
+import 'package:any_date/src/any_date_rules_model.dart';
+import 'package:any_date/src/extensions.dart';
 
 /// default parsing rule from dart core
 DateTime? dateTimeTryParse(String formattedString) =>
@@ -8,7 +8,6 @@ DateTime? dateTimeTryParse(String formattedString) =>
 
 /// if no values were found, throws format exception
 DateTime noValidFormatFound(String formattedString) {
-  print('no valid format identified for date $formattedString');
   return DateTime.parse(formattedString);
 }
 
@@ -18,7 +17,7 @@ DateTime? _try(RegExp format, String formattedString) {
     final now = DateTime(DateTime.now().year);
     final match = format.firstMatch(formattedString)!;
     final map = <String, dynamic>{};
-    for (var n in match.groupNames) {
+    for (final n in match.groupNames) {
       map[n] = match.namedGroup(n);
     }
     return now.copyWithJson(map);
@@ -29,12 +28,12 @@ DateTime? _try(RegExp format, String formattedString) {
 
 ///
 DateTime? _tryTextMonth(
-    RegExp format, String formattedString, List<Month> months) {
+    RegExp format, String formattedString, List<Month> months,) {
   try {
     final now = DateTime(DateTime.now().year);
     final match = format.firstMatch(formattedString)!;
     var map = <String, dynamic>{};
-    for (var n in match.groupNames) {
+    for (final n in match.groupNames) {
       map[n] = match.namedGroup(n);
     }
     map = _parseMap(map, formattedString, months);
@@ -45,20 +44,20 @@ DateTime? _tryTextMonth(
 }
 
 Map<String, dynamic> _parseMap(
-    Map<String, dynamic> map, String formattedString, List<Month> months) {
+    Map<String, dynamic> map, String formattedString, List<Month> months,) {
   // print(map);
   map['month'] = months
       .firstWhere((element) => element.name.toLowerCase() == map['month'])
       .number;
 
   if (map.containsKey('hour')) {
-    int hour = int.parse(map['hour']!);
+    var hour = int.parse(map['hour']!.toString());
     hour = _isAmPm(formattedString) ? hour % 12 : hour;
     map['hour'] = _isPm(formattedString) ? hour + 12 : hour;
   }
 
   if (map.containsKey('second')) {
-    double second = double.parse(map['second']!);
+    final second = double.parse(map['second']!.toString());
     // print(second);
     map['second'] = second.toInt();
     map['millisecond'] = (second - second.toInt()) * 1000;
@@ -94,7 +93,7 @@ DateParsingRule ymdhmsTextMonthRegex = SimpleRule((params) {
   final s = separatorPattern(separators);
   final hms = hmsPattern(separators);
   final re = RegExp(
-    r'^'
+    '^'
     r'(?<year>\d+)'
     '$s'
     r'(?<month>\w+)'
@@ -117,7 +116,7 @@ DateParsingRule ymdhmTextMonthRegex = SimpleRule((params) {
   final s = separatorPattern(separators);
   final hm = hmPattern(separators);
   final re = RegExp(
-    r'^'
+    '^'
     r'(?<year>\d+)'
     '$s'
     r'(?<month>\w+)'
@@ -138,7 +137,7 @@ DateParsingRule ymdhmTextMonthRegex = SimpleRule((params) {
 DateParsingRule ymdTextMonthRegex = SimpleRule((params) {
   final s = separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
-    r'^'
+    '^'
     r'(?<year>\d+)'
     '$s'
     r'(?<month>\w+)'
@@ -155,7 +154,7 @@ DateParsingRule ymdTextMonthRegex = SimpleRule((params) {
 final DateParsingRule ymdRegex = SimpleRule((params) {
   final s = separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
-    r'^'
+    '^'
     r'(?<year>\d+)'
     '$s'
     r'(?<month>\d{1,2})'
@@ -172,7 +171,7 @@ final DateParsingRule ymdRegex = SimpleRule((params) {
 final DateParsingRule ydmRegex = SimpleRule((params) {
   final s = separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
-    r'^'
+    '^'
     r'(?<year>\d+)'
     '$s'
     r'(?<day>\d{1,2})'
@@ -189,7 +188,7 @@ final DateParsingRule ydmRegex = SimpleRule((params) {
 DateParsingRule ydmTextMonthRegex = SimpleRule((params) {
   final s = separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
-    r'^'
+    '^'
     r'(?<year>\d+)'
     '$s'
     r'(?<day>\d{1,2})'
@@ -206,7 +205,7 @@ DateParsingRule ydmTextMonthRegex = SimpleRule((params) {
 final DateParsingRule mdyRegex = SimpleRule((params) {
   final s = separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
-    r'^'
+    '^'
     r'(?<month>\d{1,2})'
     '$s'
     r'(?<day>\d{1,2})'
@@ -223,7 +222,7 @@ final DateParsingRule mdyRegex = SimpleRule((params) {
 DateParsingRule mdyTextMonthRegex = SimpleRule((params) {
   final s = separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
-    r'^'
+    '^'
     r'(?<month>\w+)'
     '$s'
     r'(?<day>\d{1,2})'
@@ -240,7 +239,7 @@ DateParsingRule mdyTextMonthRegex = SimpleRule((params) {
 final DateParsingRule dmyRegex = SimpleRule((params) {
   final s = separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
-    r'^'
+    '^'
     r'(?<day>\d{1,2})'
     '$s'
     r'(?<month>\d{1,2})'
@@ -257,7 +256,7 @@ final DateParsingRule dmyRegex = SimpleRule((params) {
 DateParsingRule dmyTextMonthRegex = SimpleRule((params) {
   final s = separatorPattern(params.parserInfo.allowedSeparators);
   final re = RegExp(
-    r'^'
+    '^'
     r'(?<day>\d{1,2})'
     '$s'
     r'(?<month>\w+)'

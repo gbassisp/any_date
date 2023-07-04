@@ -1,26 +1,41 @@
+import 'package:any_date/src/any_date_rules.dart';
+import 'package:any_date/src/any_date_rules_model.dart';
 import 'package:meta/meta.dart';
 
-import 'any_date_rules.dart';
-import 'any_date_rules_model.dart';
-
 class DateParsingParameters {
-  final String formattedString;
-  final DateParserInfo parserInfo;
 
   DateParsingParameters({
     required this.formattedString,
     required this.parserInfo,
   });
+  final String formattedString;
+  final DateParserInfo parserInfo;
 }
 
 class Month {
-  final int number;
-  final String name;
 
   const Month({required this.number, required this.name});
+  final int number;
+  final String name;
 }
 
 class DateParserInfo {
+
+  const DateParserInfo({
+    this.dayFirst = false,
+    this.yearFirst = false,
+    this.allowedSeparators = const [
+      ' ',
+      't',
+      'T',
+      ':',
+      ',',
+      '_',
+      '/',
+      '-', // TODO: avoid messing up regex with special chars
+    ],
+    this.months = _allMonths,
+  });
   /// interpret the first value in an ambiguous case (e.g. 01/01/01)
   /// as day [true] or month [false].
   /// If yearFirst is to [true], this chooses between YDM and YMD.
@@ -40,29 +55,13 @@ class DateParserInfo {
 
   /// keywords to identify months (to support multiple languages)
   final List<Month> months;
-
-  const DateParserInfo({
-    this.dayFirst = false,
-    this.yearFirst = false,
-    this.allowedSeparators = const [
-      ' ',
-      't',
-      'T',
-      ':',
-      ',',
-      '_',
-      '/',
-      '-', // TODO: avoid messing up regex with special chars
-    ],
-    this.months = _allMonths,
-  });
 }
 
 /// main class, containing most [DateTime] utils
 class AnyDate {
+  AnyDate({this.info = const DateParserInfo()});
   /// settings for parsing and resolving ambiguous cases
   final DateParserInfo info;
-  AnyDate({this.info = const DateParserInfo()});
 
   @visibleForTesting
   List<String> get allowedSeparators => info.allowedSeparators;
@@ -74,7 +73,7 @@ class AnyDate {
   DateTime parse(
 
       /// required string representation of a date to be parsed
-      String formattedString) {
+      String formattedString,) {
     return tryParse(formattedString) ?? noValidFormatFound(formattedString);
   }
 
@@ -96,7 +95,7 @@ class AnyDate {
     String formattedString,
   ) sync* {
     final p = DateParsingParameters(
-        formattedString: formattedString, parserInfo: info);
+        formattedString: formattedString, parserInfo: info,);
 
     yield MultipleRules([
       mdy,
