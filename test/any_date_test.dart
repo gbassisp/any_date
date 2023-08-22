@@ -154,6 +154,12 @@ const baseDateFormat = {
   'dd MMM yyyy HH:mm Z',
 };
 
+extension _DateFormatHacks on String {
+  bool get isAlpha => RegExp(r'^[a-zA-Z]+$').hasMatch(this);
+
+  bool get isInvalid => isAlpha || this.isEmpty || this == '_';
+}
+
 /// used to run tests on a wide range of dates
 const exhaustiveTests = bool.fromEnvironment('exhaustive', defaultValue: true);
 const hugeRange = bool.fromEnvironment('huge');
@@ -188,11 +194,13 @@ void testRange(
   bool dayOnly = true,
 ]) {
   final cache = <String>{};
-  final separators = parser.info.allowedSeparators;
+  final seps = parser.info.allowedSeparators.toList()
+    ..removeWhere((e) => e.isInvalid);
+
   var count = 0;
   for (final date in (customRange ?? range).days) {
-    for (final a in separators) {
-      for (final b in separators) {
+    for (final a in seps) {
+      for (final b in seps) {
         final f = formatter(date, a, b);
         if (!cache.contains(f)) {
           final g = parser.parse(f);
