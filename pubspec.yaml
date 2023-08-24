@@ -1,5 +1,5 @@
 name: any_date
-description: A starting point for Dart libraries or applications.
+description: A package for parsing String into DateTime in any format.
 version: 0.1.0
 repository: https://github.com/gbassisp/any_date
 
