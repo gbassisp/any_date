@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 import 'package:any_date/src/any_date_base.dart';
 import 'package:any_date/src/any_date_rules_model.dart';
 import 'package:any_date/src/extensions.dart';
@@ -28,7 +30,10 @@ DateTime? _try(RegExp format, String formattedString) {
 
 ///
 DateTime? _tryTextMonth(
-    RegExp format, String formattedString, List<Month> months,) {
+  RegExp format,
+  String formattedString,
+  List<Month> months,
+) {
   try {
     final now = DateTime(DateTime.now().year);
     final match = format.firstMatch(formattedString)!;
@@ -44,7 +49,10 @@ DateTime? _tryTextMonth(
 }
 
 Map<String, dynamic> _parseMap(
-    Map<String, dynamic> map, String formattedString, List<Month> months,) {
+  Map<String, dynamic> map,
+  String formattedString,
+  List<Month> months,
+) {
   // print(map);
   map['month'] = months
       .firstWhere((element) => element.name.toLowerCase() == map['month'])

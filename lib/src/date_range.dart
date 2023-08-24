@@ -10,8 +10,7 @@ class DateTimeRange {
   DateTimeRange({
     required DateTime start,
     required DateTime end,
-  }) {
-    assert(!start.isAfter(end), 'start ($start) must be before end ($end)');
+  }) : assert(!start.isAfter(end), 'start ($start) must be before end ($end)') {
     // if user passes wrong values in production code, they are corrected here
     if (start.isAfter(end)) {
       this.start = end;
@@ -35,6 +34,7 @@ class DateTimeRange {
   /// See [DateTime.difference] for more details.
   Duration get duration => end.difference(start);
 
+  /// lazy iterable of all days in this range
   Iterable<DateTime> get days sync* {
     var d = start;
     while (!d.isAfter(end)) {

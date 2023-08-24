@@ -2,28 +2,41 @@ import 'package:any_date/src/any_date_rules.dart';
 import 'package:any_date/src/any_date_rules_model.dart';
 import 'package:meta/meta.dart';
 
+/// Parameters passed to the parser
 class DateParsingParameters {
-
-  DateParsingParameters({
+  /// default constructor
+  const DateParsingParameters({
     required this.formattedString,
     required this.parserInfo,
   });
+
+  /// The date string to be parsed
   final String formattedString;
+
+  /// The parser info to be used - see it as a configuration
   final DateParserInfo parserInfo;
 }
 
+/// A month, with its number and name. Used to support multiple languages
+/// without adding another dependency.
 class Month {
-
+  /// default constructor
   const Month({required this.number, required this.name});
+
+  /// month number
   final int number;
+
+  /// month name
   final String name;
 }
 
+/// Configuration for the parser
 class DateParserInfo {
-
+  /// default constructor
   const DateParserInfo({
     this.dayFirst = false,
     this.yearFirst = false,
+    // TODO(gbassip): avoid messing up regex with special chars
     this.allowedSeparators = const [
       ' ',
       't',
@@ -32,13 +45,14 @@ class DateParserInfo {
       ',',
       '_',
       '/',
-      '-', // TODO: avoid messing up regex with special chars
+      '-',
     ],
     this.months = _allMonths,
   });
+
   /// interpret the first value in an ambiguous case (e.g. 01/01/01)
-  /// as day [true] or month [false].
-  /// If yearFirst is to [true], this chooses between YDM and YMD.
+  /// as day true or month false.
+  /// If yearFirst is to true, this chooses between YDM and YMD.
   ///
   /// Defaults to false.
   final bool dayFirst;
@@ -59,10 +73,13 @@ class DateParserInfo {
 
 /// main class, containing most [DateTime] utils
 class AnyDate {
-  AnyDate({this.info = const DateParserInfo()});
+  /// default constructor
+  const AnyDate({this.info = const DateParserInfo()});
+
   /// settings for parsing and resolving ambiguous cases
   final DateParserInfo info;
 
+  /// list of allowed separators
   @visibleForTesting
   List<String> get allowedSeparators => info.allowedSeparators;
 
@@ -71,9 +88,9 @@ class AnyDate {
   /// e.g. 'Jan 2023' becomes DateTime(2023, 1), which is 1 Jan 2023
   /// if year is missing, the closest result to today is chosen.
   DateTime parse(
-
-      /// required string representation of a date to be parsed
-      String formattedString,) {
+    /// required string representation of a date to be parsed
+    String formattedString,
+  ) {
     return tryParse(formattedString) ?? noValidFormatFound(formattedString);
   }
 
@@ -82,9 +99,9 @@ class AnyDate {
   /// e.g. 'Jan 2023' becomes DateTime(2023, 1), which is 1 Jan 2023
   /// if year is missing, the closest result to today is chosen.
   DateTime? tryParse(String formattedString) {
-    formattedString = formattedString.trim().toLowerCase();
+    final caseInsensitive = formattedString.trim().toLowerCase();
 
-    return _applyRules(formattedString).firstWhere(
+    return _applyRules(caseInsensitive).firstWhere(
       (e) => e != null,
       orElse: () => null,
     );
@@ -95,7 +112,9 @@ class AnyDate {
     String formattedString,
   ) sync* {
     final p = DateParsingParameters(
-        formattedString: formattedString, parserInfo: info,);
+      formattedString: formattedString,
+      parserInfo: info,
+    );
 
     yield MultipleRules([
       mdy,

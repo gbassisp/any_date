@@ -1,14 +1,17 @@
+/// a collection of extensions on [DateTime]
 extension DateTimeExtension on DateTime {
-  DateTime copyWith(
-      {int? year,
-      int? month,
-      int? day,
-      int? hour,
-      int? minute,
-      int? second,
-      int? millisecond,
-      int? microsecond,
-      bool allowRollover = false,}) {
+  /// returns a copy of this DateTime with the given values
+  DateTime copyWith({
+    int? year,
+    int? month,
+    int? day,
+    int? hour,
+    int? minute,
+    int? second,
+    int? millisecond,
+    int? microsecond,
+    bool allowRollover = false,
+  }) {
     year ??= this.year;
     month ??= this.month;
     day ??= this.day;
@@ -45,7 +48,8 @@ extension DateTimeExtension on DateTime {
         microsecond >= 0 &&
         microsecond < 1000 &&
 
-        // DateTime constructor accepts any int and rolls over values (e.g. 13 months = 1y1mo)
+        // DateTime constructor accepts any int and rolls over values
+        // (e.g. 13 months = 1y1mo)
         !(copied.year == year &&
             copied.month == month &&
             copied.day == day &&
@@ -60,6 +64,7 @@ extension DateTimeExtension on DateTime {
     return copied;
   }
 
+  /// returns a copy of this DateTime with the given values by passing a json
   DateTime copyWithJson(Map<String, Object?> json) {
     final j = json.map((key, value) => MapEntry(key.toLowerCase(), value));
 
@@ -75,6 +80,7 @@ extension DateTimeExtension on DateTime {
     );
   }
 
+  /// returns the next day
   DateTime get nextDay {
     final dateOnly = DateTime(year, month, day);
     final next = dateOnly.add(
@@ -90,6 +96,8 @@ extension DateTimeExtension on DateTime {
   }
 }
 
+/// a collection of extensions on [String]
 extension StringParsers on String {
+  /// returns the string parsed as an int or null
   int? tryToInt() => int.tryParse(trim());
 }

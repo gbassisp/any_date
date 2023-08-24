@@ -29,12 +29,12 @@ final _range = DateTimeRange(
 );
 void main() {
   group('default AnyDate()', () {
-    final parser = AnyDate();
+    const parser = AnyDate();
 
     test(
       'yyyy.M.d h:m:s',
       () {
-        print('yyyy.M.d h:m:s (any separator) format:');
+        // print('yyyy.M.d h:m:s (any separator) format:');
         testRange(
           parser,
           (date, sep1, sep2) =>
@@ -47,7 +47,7 @@ void main() {
     test(
       'yyyy.M.d h:m:S',
       () {
-        print('yyyy.M.d h:m:SSSSSS (any separator) format:');
+        // print('yyyy.M.d h:m:SSSSSS (any separator) format:');
         testRange(
           parser,
           (date, sep1, sep2) =>
@@ -60,7 +60,7 @@ void main() {
     test(
       'yyyy.M.d h:m:s a',
       () {
-        print('yyyy.M.d h:m:s a (any separator) format:');
+        // print('yyyy.M.d h:m:s a (any separator) format:');
         testRange(
           parser,
           (date, sep1, sep2) =>
@@ -73,7 +73,7 @@ void main() {
     test(
       'yyyy.M.d h:m',
       () {
-        print('yyyy.M.d h:m (any separator) format:');
+        // print('yyyy.M.d h:m (any separator) format:');
         testRange(
           parser,
           (date, sep1, sep2) =>

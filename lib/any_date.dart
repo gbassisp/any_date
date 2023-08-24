@@ -1,8 +1,4 @@
-/// Support for doing something awesome.
-///
-/// More dartdocs go here.
+/// A package to parse date in any format with minimum dependencies.
 library any_date;
 
 export 'src/any_date_base.dart' show AnyDate;
-
-// TODO: Export any libraries intended for clients of this package.
