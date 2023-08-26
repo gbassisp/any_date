@@ -31,6 +31,11 @@ dry-run: kill
 .PHONY: test
 test:
 	@echo "Running tests..."
+	$(DART_CMD) test
+
+.PHONY: coverage
+coverage:
+	@echo "Running tests..."
 	$(DART_CMD) pub global activate coverage
 	$(DART_CMD) run coverage:test_with_coverage
 	$(MAKE) format_lcov
@@ -73,5 +78,4 @@ format_lcov:
 	@for file in $(FILES); do \
 		sed -i'' -e 's|$(CWD)/||g' $$file ; \
 	done
-
 
