@@ -3,6 +3,8 @@ doc/
 
 # posix hidden dir
 .*/
+!.github/
+!.github/*
 
 # reports
 coverage/
