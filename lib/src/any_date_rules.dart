@@ -112,6 +112,8 @@ DateParsingRule maybeDateTimeParse = SimpleRule((params) {
   if (d.startsWith(RegExp(r'\d\d\d\d' + s))) {
     return dateTimeTryParse(d);
   }
+
+  return null;
 });
 
 DateParsingRule ymdhmsTextMonthRegex = SimpleRule((params) {
