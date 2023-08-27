@@ -75,6 +75,7 @@ Map<String, dynamic> _parseMap(
 }
 
 final DateParsingRule ymd = MultipleRules([
+  maybeDateTimeParse,
   ymdhmsTextMonthRegex,
   ymdhmTextMonthRegex,
   ymdTextMonthRegex,
@@ -95,6 +96,23 @@ final DateParsingRule mdy = MultipleRules([
   mdyTextMonthRegex,
   mdyRegex,
 ]);
+
+/// uses DateTime.parse if start with yyyy - temporary solution until
+/// package is complete
+///
+/// This is needed because yy-mm-dd is ambiguous and cannot be passed to
+/// DateTime.parse every time
+DateParsingRule maybeDateTimeParse = SimpleRule((params) {
+  final d = params.formattedString;
+  final separators = params.parserInfo.allowedSeparators;
+  final s = separatorPattern(separators);
+
+  // if starts with 4 digits followed by a separator, then it's probably a date
+
+  if (d.startsWith(RegExp(r'\d\d\d\d' + s))) {
+    return dateTimeTryParse(d);
+  }
+});
 
 DateParsingRule ymdhmsTextMonthRegex = SimpleRule((params) {
   final separators = params.parserInfo.allowedSeparators;
