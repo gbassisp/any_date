@@ -1,4 +1,8 @@
 
+## 0.1.2
+
+- Fix issue where DateTime.parse was not being used
+
 ## 0.1.1
 
 - No added feature, minor clean-up
