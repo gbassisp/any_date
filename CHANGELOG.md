@@ -1,4 +1,8 @@
 
+## 0.1.3
+
+- Lower constraint on dev dependencies
+
 ## 0.1.2
 
 - Fix issue where DateTime.parse was not being used
