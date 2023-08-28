@@ -1,3 +1,5 @@
+import 'package:any_date/any_date.dart';
+
 /// a collection of extensions on [DateTime]
 extension DateTimeExtension on DateTime {
   /// returns a copy of this DateTime with the given values
@@ -96,6 +98,8 @@ extension DateTimeExtension on DateTime {
   }
 }
 
+const _parser = AnyDate();
+
 /// a collection of extensions on [String]
 extension StringParsers on String {
   /// returns the string parsed as an int or null
@@ -112,9 +116,10 @@ extension StringParsers on String {
 
   /// parses the string as a DateTime
   DateTime toDateTime({bool utc = false}) {
+    final res = _parser.parse(this);
     if (utc) {
-      return DateTime.parse(this).toUtc();
+      return res.toUtc();
     }
-    return DateTime.parse(this);
+    return res;
   }
 }
