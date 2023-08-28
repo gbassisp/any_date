@@ -100,4 +100,18 @@ extension DateTimeExtension on DateTime {
 extension StringParsers on String {
   /// returns the string parsed as an int or null
   int? tryToInt() => int.tryParse(trim());
+
+  /// parses the string as a DateTime
+  DateTime? tryToDateTime({bool utc = false}) {
+    final date = DateTime.tryParse(this);
+
+    return date;
+  }
+
+  /// parses the string as a DateTime
+  DateTime toDateTime({bool utc = false}) {
+    final date = DateTime.parse(this);
+
+    return date;
+  }
 }
