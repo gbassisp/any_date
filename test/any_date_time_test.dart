@@ -6,6 +6,11 @@ import 'package:test/test.dart';
 
 import 'any_date_test.dart';
 
+final r = DateTimeRange(
+  start: DateTime(1900, 1, 1, 13, 14, 15, 16),
+  end: DateTime(2100, 12, 31, 15, 16, 17, 18),
+);
+
 final _range = DateTimeRange(
   start: DateTime(
     1999, // y
@@ -90,15 +95,12 @@ void main() {
       const s = '2022-12-15T14:50:30.644+10:00'; // 2022-12-15 04:50:30.644 UTC
       // hour (utc) = 4:
       final d = DateTime.utc(2022, 12, 15, 4, 50, 30, 644);
+      final r = parser.parse(s);
 
-      expect(parser.parse(s), d);
+      expect(r, d);
     });
 
     test('UTC', () {
-      final r = DateTimeRange(
-        start: DateTime(1900, 1, 1, 13, 14, 15, 16),
-        end: DateTime(2100, 12, 31, 15, 16, 17, 18),
-      );
       String s;
       for (final d in r.days) {
         s = d.toString();
