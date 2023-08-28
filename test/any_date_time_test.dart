@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 import 'any_date_test.dart';
 
 final r = DateTimeRange(
-  start: DateTime(1900, 1, 1, 13, 14, 15, 16),
+  start: DateTime(900, 1, 1, 13, 14, 15, 16),
   end: DateTime(2100, 12, 31, 15, 16, 17, 18),
 );
 
@@ -102,7 +102,13 @@ void main() {
 
     test('UTC', () {
       String s;
-      for (final d in r.days) {
+      for (final date in r.days) {
+        final d = date.copyWith(
+          hour: 10,
+          minute: 11,
+          second: 12,
+          millisecond: 13,
+        );
         s = d.toString();
         expect(s.toDateTime(), d);
         s = d.toString();

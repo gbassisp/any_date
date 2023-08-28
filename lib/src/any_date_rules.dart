@@ -109,7 +109,7 @@ DateParsingRule maybeDateTimeParse = SimpleRule((params) {
 
   // if starts with 4 digits followed by a separator, then it's probably a date
 
-  if (d.startsWith(RegExp('\\d\\d\\d\\d$s'))) {
+  if (d.startsWith(RegExp('\\d?\\d?\\d\\d\\d$s'))) {
     return dateTimeTryParse(d);
   }
 
