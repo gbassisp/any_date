@@ -1,4 +1,8 @@
 
+## 0.1.5
+
+- Support a few more formats
+
 ## 0.1.4
 
 - Removed unused dev dependencies
