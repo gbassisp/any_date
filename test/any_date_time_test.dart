@@ -1,5 +1,6 @@
 import 'package:any_date/any_date.dart';
 import 'package:any_date/src/date_range.dart';
+import 'package:any_date/src/extensions.dart';
 import 'package:intl/intl.dart';
 import 'package:test/test.dart';
 
@@ -83,6 +84,36 @@ void main() {
         );
       },
     );
+
+    test('with timezone', () {
+      // hour (local) = 14:
+      const s = '2022-12-15T14:50:30.644+10:00'; // 2022-12-15 04:50:30.644 UTC
+      // hour (utc) = 4:
+      final d = DateTime.utc(2022, 12, 15, 4, 50, 30, 644);
+
+      expect(parser.parse(s), d);
+    });
+
+    test('UTC', () {
+      final r = DateTimeRange(
+        start: DateTime(1900, 1, 1, 13, 14, 15, 16),
+        end: DateTime(2100, 12, 31, 15, 16, 17, 18),
+      );
+      String s;
+      for (final d in r.days) {
+        s = d.toString();
+        expect(s.toDateTime(), d);
+        s = d.toString();
+        expect(s.toDateTime(utc: true), d.toUtc());
+        s = d.toIso8601String();
+        expect(s.toDateTime(), d);
+        s = d.toLocal().toString();
+        expect(s.toDateTime(), d);
+        s = d.toUtc().toString();
+        expect(s.toDateTime().isUtc, true);
+        expect(s.toDateTime(), d.toUtc());
+      }
+    });
   });
 }
 
