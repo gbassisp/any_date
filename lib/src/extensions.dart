@@ -103,15 +103,18 @@ extension StringParsers on String {
 
   /// parses the string as a DateTime
   DateTime? tryToDateTime({bool utc = false}) {
-    final date = DateTime.tryParse(this);
-
-    return date;
+    try {
+      return toDateTime(utc: utc);
+    } catch (_) {
+      return null;
+    }
   }
 
   /// parses the string as a DateTime
   DateTime toDateTime({bool utc = false}) {
-    final date = DateTime.parse(this);
-
-    return date;
+    if (utc) {
+      return DateTime.parse(this).toUtc();
+    }
+    return DateTime.parse(this);
   }
 }
