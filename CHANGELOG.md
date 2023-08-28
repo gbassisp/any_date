@@ -1,4 +1,8 @@
 
+## 0.1.4
+
+- Removed unused dev dependencies
+
 ## 0.1.3
 
 - Lower constraint on dev dependencies
