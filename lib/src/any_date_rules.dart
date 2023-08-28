@@ -103,7 +103,7 @@ final DateParsingRule mdy = MultipleRules([
 /// This is needed because yy-mm-dd is ambiguous and cannot be passed to
 /// DateTime.parse every time
 DateParsingRule maybeDateTimeParse = SimpleRule((params) {
-  final d = params.formattedString;
+  final d = params.formattedString.toUpperCase();
   final separators = params.parserInfo.allowedSeparators;
   final s = separatorPattern(separators);
 
