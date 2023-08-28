@@ -1,4 +1,8 @@
 
+## 0.1.6
+
+- Export DateParserInfo class to allow setting parameters
+
 ## 0.1.5
 
 - Support a few more formats
