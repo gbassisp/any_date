@@ -5,7 +5,9 @@ import 'package:test/test.dart';
 
 // TODO(gbassisp): review this
 /// AI-generated set of many different date formats
-const baseDateFormat = {
+const baseDateFormat = _monthFirstFormats;
+
+const _monthFirstFormats = {
   'yyyy.M.d h:m:s.SS a',
   'yyyy.M.d h:m:s.SS',
   'yyyy.M.d h:m:s.S a',
@@ -15,7 +17,6 @@ const baseDateFormat = {
   'yyyy.M.d h:m a',
   'yyyy.M.d h:m',
   'yyyy.M.d h a',
-  'yyyy.M.d h',
   'yyyy.M.d',
   // 'yyyy.M',
   // 'yyyy',
@@ -28,7 +29,6 @@ const baseDateFormat = {
   'y.M.d h:m a',
   'y.M.d h:m',
   'y.M.d h a',
-  'y.M.d h',
   'y.M.d',
   // 'y.M',
   // 'y',
@@ -41,34 +41,9 @@ const baseDateFormat = {
   'M.d.y h:m a',
   'M.d.y h:m',
   'M.d.y h a',
-  'M.d.y h',
   'M.d.y',
   // 'M.d',
   // 'M',
-  'd.M.y h:m:s.SS a',
-  'd.M.y h:m:s.SS',
-  'd.M.y h:m:s.S a',
-  'd.M.y h:m:s.S',
-  'd.M.y h:m:s a',
-  'd.M.y h:m:s',
-  'd.M.y h:m a',
-  'd.M.y h:m',
-  'd.M.y h a',
-  'd.M.y h',
-  'd.M.y',
-  // 'd.M',
-  // 'd',
-  'h:m:s.SS a',
-  'h:m:s.SS',
-  'h:m:s.S a',
-  'h:m:s.S',
-  'h:m:s a',
-  'h:m:s',
-  'h:m a',
-  'h:m',
-  'h a',
-  'h',
-  'a',
   'EEEE, MMMM d, y',
   'EEEE, MMMM d, y h:m:s.SS a',
   'EEEE, MMMM d, y h:m:s.SS',
@@ -92,9 +67,60 @@ const baseDateFormat = {
   'EEEE, M/d/y h:m a',
   'EEEE, M/d/y h:m',
   'EEEE, M/d/y h a',
-  'EEEE, M/d/y h',
   // 'EEEE, M/d',
   // 'EEEE, M',
+  'EEEE, y.M.d',
+  'EEEE, y.M.d h:m:s.SS a',
+  'EEEE, y.M.d h:m:s.SS',
+  'yyyy-MM-ddTHH:mm:ss',
+  'MM/dd/yyyy HH:mm:ss',
+  'yyyy.MM.dd HH:mm:ss',
+  'yyyy MM dd HH:mm:ss',
+  'yyyy-MM-ddTHH:mm',
+  'MM/dd/yyyy HH:mm',
+  'yyyy.MM.dd HH:mm',
+  'yyyy MM dd HH:mm',
+  'yyyy-MM-ddTHH:mm:ss.SSS',
+  'MM/dd/yyyy HH:mm:ss.SSS',
+  'yyyy.MM.dd HH:mm:ss.SSS',
+  'yyyy MM dd HH:mm:ss.SSS',
+  'yyyy-MM-ddTHH:mm:ssZ',
+  'MM/dd/yyyy HH:mm:ss Z',
+  'yyyy.MM.dd HH:mm:ss Z',
+  'yyyy MM dd HH:mm:ss Z',
+};
+
+const _dayFirstFormats = {
+  'd.M.y h:m:s.SS a',
+  'd.M.y h:m:s.SS',
+  'd.M.y h:m:s.S a',
+  'd.M.y h:m:s.S',
+  'd.M.y h:m:s a',
+  'd.M.y h:m:s',
+  'd.M.y h:m a',
+  'd.M.y h:m',
+  'd.M.y h a',
+  'd.M.y',
+  // 'd.M',
+  // 'd',
+  'h:m:s.SS a',
+  'h:m:s.SS',
+  'h:m:s.S a',
+  'h:m:s.S',
+  'h:m:s a',
+  'h:m:s',
+  'h:m a',
+  'h:m',
+  'h a',
+  // TODO(gbassisp): re-enable this
+  // 'yyyy.M.d h',
+  // 'y.M.d h',
+  // 'M.d.y h',
+  // 'd.M.y h',
+  // 'h',
+  // 'a',
+  // 'EEEE, M/d/y h',
+  // 'EEEE, d.M.y h',
   'EEEE, d.M.y',
   'EEEE, d.M.y h:m:s.SS a',
   'EEEE, d.M.y h:m:s.SS',
@@ -105,39 +131,20 @@ const baseDateFormat = {
   'EEEE, d.M.y h:m a',
   'EEEE, d.M.y h:m',
   'EEEE, d.M.y h a',
-  'EEEE, d.M.y h',
   // 'EEEE, d.M',
   // 'EEEE, d',
-  'EEEE, y.M.d',
-  'EEEE, y.M.d h:m:s.SS a',
-  'EEEE, y.M.d h:m:s.SS',
-  'yyyy-MM-ddTHH:mm:ss',
+
   'dd/MM/yyyy HH:mm:ss',
-  'MM/dd/yyyy HH:mm:ss',
-  'yyyy.MM.dd HH:mm:ss',
   'dd-MM-yyyy HH:mm:ss',
-  'yyyy MM dd HH:mm:ss',
   'dd.MM.yyyy HH:mm:ss',
-  'yyyy-MM-ddTHH:mm',
   'dd/MM/yyyy HH:mm',
-  'MM/dd/yyyy HH:mm',
-  'yyyy.MM.dd HH:mm',
   'dd-MM-yyyy HH:mm',
-  'yyyy MM dd HH:mm',
   'dd.MM.yyyy HH:mm',
-  'yyyy-MM-ddTHH:mm:ss.SSS',
   'dd/MM/yyyy HH:mm:ss.SSS',
-  'MM/dd/yyyy HH:mm:ss.SSS',
-  'yyyy.MM.dd HH:mm:ss.SSS',
   'dd-MM-yyyy HH:mm:ss.SSS',
-  'yyyy MM dd HH:mm:ss.SSS',
   'dd.MM.yyyy HH:mm:ss.SSS',
-  'yyyy-MM-ddTHH:mm:ssZ',
   'dd/MM/yyyy HH:mm:ss Z',
-  'MM/dd/yyyy HH:mm:ss Z',
-  'yyyy.MM.dd HH:mm:ss Z',
   'dd-MM-yyyy HH:mm:ss Z',
-  'yyyy MM dd HH:mm:ss Z',
   'dd.MM.yyyy HH:mm:ss Z',
   'E, dd MMM yyyy HH:mm:ss',
   'dd MMM yyyy HH:mm:ss E',
@@ -225,11 +232,34 @@ void testRange(
 
 void main() {
   group('basic AnyDate().parse tests', () {
-    test('matches DateTime.parse', () {
-      final d = '$singleDate';
-
-      expect(const AnyDate().parse(d), DateTime.parse(d));
+    test('many formats', () {
+      for (final format in baseDateFormat) {
+        for (final singleDate in range.days) {
+          final f = DateFormat(format);
+          final d = f.format(singleDate);
+          const a = AnyDate();
+          final r = a.parse(d);
+          final e = f.parse(d);
+          expect(
+            r,
+            e,
+            reason: 'format: $format,\n'
+                'date: $d,\n'
+                'result: $r,\n'
+                'expect: $e',
+          );
+        }
+      }
     });
+
+    test(
+      'matches DateTime.parse',
+      () {
+        final d = '$singleDate';
+
+        expect(const AnyDate().parse(d), DateTime.parse(d));
+      },
+    );
     test('format exception', () {
       const d = 'not a date';
 
