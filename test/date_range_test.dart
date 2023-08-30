@@ -5,9 +5,19 @@ void main() {
   group('date range', () {
     test('days getter', () {
       expect(
-        DateTimeRange(start: DateTime(2000), end: DateTime(2001)).days.length,
-        isNot(0),
+        DateTimeRange(start: DateTime(2000), end: DateTime(2001)).days,
+        isNotEmpty,
       );
+    });
+
+    test('equality', () {
+      final a = DateTimeRange(start: DateTime(2000), end: DateTime(2001));
+      final b = DateTimeRange(start: DateTime(2000), end: DateTime(2001));
+
+      expect(a, equals(b));
+      expect(a.hashCode, equals(b.hashCode));
+      expect(a.toString(), equals(b.toString()));
+      expect(a, isNot(same(b)));
     });
   });
 }
