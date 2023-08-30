@@ -30,6 +30,29 @@ class Month {
   final String name;
 }
 
+/// these are the separators used by the default DateTime.parse
+const _knownSeparators = {'-', ' ', ':', 't', 'T', 'z', 'Z'};
+String _replaceSeparators(String formattedString, Iterable<String> separators) {
+  var result = formattedString;
+  final unknownSeparators = separators.toSet().difference(_knownSeparators);
+
+  for (final sep in unknownSeparators) {
+    result = result.replaceAll(sep, '-');
+  }
+  return _restoreMillisecons(result);
+}
+
+String _restoreMillisecons(String formattedString) {
+  // regex with 00:00:00-000
+  final r = RegExp(r'(\d{2}:\d{2}:\d{2})-(\d*)');
+
+  // replace with 00:00:00.000
+  return formattedString.replaceAllMapped(
+    r,
+    (m) => '${m.group(1)}.${m.group(2)}',
+  );
+}
+
 /// Configuration for the parser
 class DateParserInfo {
   /// default constructor
@@ -42,6 +65,7 @@ class DateParserInfo {
       't',
       'T',
       ':',
+      '.',
       ',',
       '_',
       '/',
@@ -99,7 +123,10 @@ class AnyDate {
   /// e.g. 'Jan 2023' becomes DateTime(2023, 1), which is 1 Jan 2023
   /// if year is missing, the closest result to today is chosen.
   DateTime? tryParse(String formattedString) {
-    final caseInsensitive = formattedString.trim().toLowerCase();
+    final caseInsensitive = _replaceSeparators(
+      formattedString.trim().toLowerCase(),
+      allowedSeparators,
+    );
 
     return _applyRules(caseInsensitive).firstWhere(
       (e) => e != null,
