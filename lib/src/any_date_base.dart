@@ -44,7 +44,7 @@ String _replaceSeparators(String formattedString, Iterable<String> separators) {
 
 String _restoreMillisecons(String formattedString) {
   // regex with 00:00:00-000
-  final r = RegExp(r'(\d{2}:\d{2}:\d{2})-(\d*)');
+  final r = RegExp(r'(\d{2}:\d{2}:\d{2})-(\d+)');
 
   // replace with 00:00:00.000
   return formattedString.replaceAllMapped(
@@ -143,10 +143,7 @@ class AnyDate {
       parserInfo: info,
     );
 
-    yield MultipleRules([
-      mdy,
-      dmy,
-    ]).apply(p);
+    yield MultipleRules(info.dayFirst ? _yearLastDayFirst : _yearLast).apply(p);
 
     final r = MultipleRules(info.dayFirst ? _dayFirst : _defaultRules);
     yield r.apply(p);
@@ -157,6 +154,13 @@ class AnyDate {
     }
   }
 }
+
+final List<DateParsingRule> _yearLast = [
+  mdy,
+  dmy,
+];
+
+final List<DateParsingRule> _yearLastDayFirst = _yearLast.reversed.toList();
 
 final List<DateParsingRule> _defaultRules = [
   ymd,
