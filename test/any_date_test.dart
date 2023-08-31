@@ -5,7 +5,23 @@ import 'package:test/test.dart';
 
 // TODO(gbassisp): review this
 /// AI-generated set of many different date formats
-const baseDateFormat = _monthFirstFormats;
+const baseDateFormat = [..._anyFormat]; // _monthFirstFormats;
+
+const _anyFormat = {
+  'EEEE, MMMM d, y',
+  'EEEE, MMMM d, y h:m:s.SS a',
+  'EEEE, MMMM d, y h:m:s.SS',
+  'EEEE, MMMM d, y h:m:s.S a',
+  'EEEE, MMMM d, y h:m:s.S',
+  'EEEE, MMMM d, y h:m:s a',
+  'EEEE, MMMM d, y h:m:s',
+  'EEEE, MMMM d, y h:m a',
+  'EEEE, MMMM d, y h:m',
+  'EEEE, MMMM d, y h a',
+  'EEEE, MMMM d, y h',
+  'EEEE, MMMM d',
+  'EEEE, MMMM',
+};
 
 const _monthFirstFormats = {
   'yyyy.M.d h:m:s.SS a',
@@ -44,19 +60,6 @@ const _monthFirstFormats = {
   'M.d.y',
   // 'M.d',
   // 'M',
-  'EEEE, MMMM d, y',
-  'EEEE, MMMM d, y h:m:s.SS a',
-  'EEEE, MMMM d, y h:m:s.SS',
-  'EEEE, MMMM d, y h:m:s.S a',
-  'EEEE, MMMM d, y h:m:s.S',
-  'EEEE, MMMM d, y h:m:s a',
-  'EEEE, MMMM d, y h:m:s',
-  'EEEE, MMMM d, y h:m a',
-  'EEEE, MMMM d, y h:m',
-  'EEEE, MMMM d, y h a',
-  'EEEE, MMMM d, y h',
-  // 'EEEE, MMMM d',
-  // 'EEEE, MMMM',
   'EEEE, M/d/y',
   'EEEE, M/d/y h:m:s.SS a',
   'EEEE, M/d/y h:m:s.SS',
