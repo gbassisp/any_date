@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 
 // TODO(gbassisp): review this
 /// AI-generated set of many different date formats
-const baseDateFormat = [..._anyFormat]; // _monthFirstFormats;
+// const baseDateFormat = [..._monthFirstFormats]; // _monthFirstFormats;
 
 const _anyFormat = {
   'EEEE, MMMM d, y',
@@ -60,21 +60,6 @@ const _monthFirstFormats = {
   'M.d.y',
   // 'M.d',
   // 'M',
-  'EEEE, M/d/y',
-  'EEEE, M/d/y h:m:s.SS a',
-  'EEEE, M/d/y h:m:s.SS',
-  'EEEE, M/d/y h:m:s.S a',
-  'EEEE, M/d/y h:m:s.S',
-  'EEEE, M/d/y h:m:s a',
-  'EEEE, M/d/y h:m:s',
-  'EEEE, M/d/y h:m a',
-  'EEEE, M/d/y h:m',
-  'EEEE, M/d/y h a',
-  // 'EEEE, M/d',
-  // 'EEEE, M',
-  'EEEE, y.M.d',
-  'EEEE, y.M.d h:m:s.SS a',
-  'EEEE, y.M.d h:m:s.SS',
   'yyyy-MM-ddTHH:mm:ss',
   'MM/dd/yyyy HH:mm:ss',
   'yyyy.MM.dd HH:mm:ss',
@@ -91,6 +76,28 @@ const _monthFirstFormats = {
   'MM/dd/yyyy HH:mm:ss Z',
   'yyyy.MM.dd HH:mm:ss Z',
   'yyyy MM dd HH:mm:ss Z',
+  // 'yyyy.M.d h',
+  // 'y.M.d h',
+  // 'M.d.y h',
+};
+
+const _monthFirstWithWeekday = {
+  'EEEE, M/d/y',
+  'EEEE, M/d/y h:m:s.SS a',
+  'EEEE, M/d/y h:m:s.SS',
+  'EEEE, M/d/y h:m:s.S a',
+  'EEEE, M/d/y h:m:s.S',
+  'EEEE, M/d/y h:m:s a',
+  'EEEE, M/d/y h:m:s',
+  'EEEE, M/d/y h:m a',
+  'EEEE, M/d/y h:m',
+  'EEEE, M/d/y h a',
+  // 'EEEE, M/d',
+  // 'EEEE, M',
+  // 'EEEE, M/d/y h',
+  'EEEE, y.M.d',
+  'EEEE, y.M.d h:m:s.SS a',
+  'EEEE, y.M.d h:m:s.SS',
 };
 
 const _dayFirstFormats = {
@@ -104,38 +111,21 @@ const _dayFirstFormats = {
   'd.M.y h:m',
   'd.M.y h a',
   'd.M.y',
+  // TODO(gbassisp): re-enable this
   // 'd.M',
   // 'd',
-  'h:m:s.SS a',
-  'h:m:s.SS',
-  'h:m:s.S a',
-  'h:m:s.S',
-  'h:m:s a',
-  'h:m:s',
-  'h:m a',
-  'h:m',
-  'h a',
-  // TODO(gbassisp): re-enable this
-  // 'yyyy.M.d h',
-  // 'y.M.d h',
-  // 'M.d.y h',
+  // 'h:m:s.SS a',
+  // 'h:m:s.SS',
+  // 'h:m:s.S a',
+  // 'h:m:s.S',
+  // 'h:m:s a',
+  // 'h:m:s',
+  // 'h:m a',
+  // 'h:m',
+  // 'h a',
   // 'd.M.y h',
   // 'h',
   // 'a',
-  // 'EEEE, M/d/y h',
-  // 'EEEE, d.M.y h',
-  'EEEE, d.M.y',
-  'EEEE, d.M.y h:m:s.SS a',
-  'EEEE, d.M.y h:m:s.SS',
-  'EEEE, d.M.y h:m:s.S a',
-  'EEEE, d.M.y h:m:s.S',
-  'EEEE, d.M.y h:m:s a',
-  'EEEE, d.M.y h:m:s',
-  'EEEE, d.M.y h:m a',
-  'EEEE, d.M.y h:m',
-  'EEEE, d.M.y h a',
-  // 'EEEE, d.M',
-  // 'EEEE, d',
 
   'dd/MM/yyyy HH:mm:ss',
   'dd-MM-yyyy HH:mm:ss',
@@ -149,19 +139,35 @@ const _dayFirstFormats = {
   'dd/MM/yyyy HH:mm:ss Z',
   'dd-MM-yyyy HH:mm:ss Z',
   'dd.MM.yyyy HH:mm:ss Z',
-  'E, dd MMM yyyy HH:mm:ss',
   'dd MMM yyyy HH:mm:ss E',
-  'E, dd MMM yyyy HH:mm:ss Z',
   'dd MMM yyyy HH:mm:ss Z E',
-  'EEE, dd MMM yyyy HH:mm:ss',
   'dd MMM yyyy HH:mm:ss EEE',
-  'EEE, dd MMM yyyy HH:mm:ss Z',
+  // 'EEEE, d.M.y h',
   'dd MMM yyyy HH:mm:ss Z EEE',
   'dd MMM yyyy HH:mm:ss',
   'dd MMM yyyy HH:mm:ss Z',
   'dd MMM yyyy HH:mm:ss.SSS',
   'dd MMM yyyy HH:mm',
   'dd MMM yyyy HH:mm Z',
+};
+
+const _dayFirstWithWeekday = {
+  'E, dd MMM yyyy HH:mm:ss',
+  'E, dd MMM yyyy HH:mm:ss Z',
+  'EEE, dd MMM yyyy HH:mm:ss',
+  'EEE, dd MMM yyyy HH:mm:ss Z',
+  'EEEE, d.M.y',
+  'EEEE, d.M.y h:m:s.SS a',
+  'EEEE, d.M.y h:m:s.SS',
+  'EEEE, d.M.y h:m:s.S a',
+  'EEEE, d.M.y h:m:s.S',
+  'EEEE, d.M.y h:m:s a',
+  'EEEE, d.M.y h:m:s',
+  'EEEE, d.M.y h:m a',
+  'EEEE, d.M.y h:m',
+  'EEEE, d.M.y h a',
+  // 'EEEE, d.M',
+  // 'EEEE, d',
 };
 
 extension _DateFormatHacks on String {
@@ -235,23 +241,37 @@ void testRange(
 
 void main() {
   group('basic AnyDate().parse tests', () {
+    void compare(DateFormat format, AnyDate anyDate) {
+      for (final singleDate in range.days) {
+        final f = format;
+        final d = f.format(singleDate);
+        final a = anyDate;
+        final r = a.parse(d);
+        expect(r, isNotNull);
+        final e = f.parse(d);
+        expect(e, isNotNull);
+        expect(
+          r,
+          e,
+          reason: 'format: ${format.pattern},\n'
+              'date: $d,\n'
+              'result: $r,\n'
+              'expect: $e',
+        );
+      }
+    }
+
     test('many formats', () {
-      for (final format in baseDateFormat) {
-        for (final singleDate in range.days) {
-          final f = DateFormat(format);
-          final d = f.format(singleDate);
-          const a = AnyDate();
-          final r = a.parse(d);
-          final e = f.parse(d);
-          expect(
-            r,
-            e,
-            reason: 'format: $format,\n'
-                'date: $d,\n'
-                'result: $r,\n'
-                'expect: $e',
-          );
-        }
+      for (final format in _monthFirstFormats) {
+        final f = DateFormat(format);
+        const a = AnyDate();
+        compare(f, a);
+      }
+
+      for (final format in _dayFirstFormats) {
+        final f = DateFormat(format);
+        const a = AnyDate(info: DateParserInfo(dayFirst: true));
+        compare(f, a);
       }
     });
 
