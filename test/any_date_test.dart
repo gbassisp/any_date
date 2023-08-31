@@ -4,8 +4,14 @@ import 'package:intl/intl.dart';
 import 'package:test/test.dart';
 
 // TODO(gbassisp): review this
-/// AI-generated set of many different date formats
+// AI-generated set of many different date formats
 // const baseDateFormat = [..._monthFirstFormats]; // _monthFirstFormats;
+/// currently unsuported,for future tests
+const futureFormats = {
+  ..._anyFormat,
+  ..._monthFirstWithWeekday,
+  ..._dayFirstWithWeekday,
+};
 
 const _anyFormat = {
   'EEEE, MMMM d, y',
