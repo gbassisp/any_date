@@ -30,6 +30,21 @@ class Month {
   final String name;
 }
 
+/// A weekday with its number and name. Used to support multiple languages
+/// without adding another dependency.
+///
+/// Must match DateTime().weekday
+class Weekday {
+  /// default constructor
+  const Weekday({required this.number, required this.name});
+
+  /// month number
+  final int number;
+
+  /// month name
+  final String name;
+}
+
 /// these are the separators used by the default DateTime.parse
 const _knownSeparators = {'-', ' ', ':', 't', 'T', 'z', 'Z'};
 String _replaceSeparators(String formattedString, Iterable<String> separators) {
@@ -71,7 +86,7 @@ class DateParserInfo {
       '/',
       '-',
     ],
-    this.months = _allMonths,
+    this.months = allMonths,
   });
 
   /// interpret the first value in an ambiguous case (e.g. 01/01/01)
@@ -202,4 +217,30 @@ const _shortMonths = [
   Month(number: 12, name: 'Dec'),
 ];
 
-const _allMonths = [..._months, ..._shortMonths];
+/// all months used for parsing
+@visibleForTesting
+const allMonths = [..._months, ..._shortMonths];
+
+const _weekdays = [
+  Weekday(number: 1, name: 'Monday'),
+  Weekday(number: 2, name: 'Tuesday'),
+  Weekday(number: 3, name: 'Wednesday'),
+  Weekday(number: 4, name: 'Thursday'),
+  Weekday(number: 5, name: 'Friday'),
+  Weekday(number: 6, name: 'Saturday'),
+  Weekday(number: 7, name: 'Sunday'),
+];
+
+const _shortWeekdays = [
+  Weekday(number: 1, name: 'Mon'),
+  Weekday(number: 2, name: 'Tue'),
+  Weekday(number: 3, name: 'Wed'),
+  Weekday(number: 4, name: 'Thu'),
+  Weekday(number: 5, name: 'Fri'),
+  Weekday(number: 6, name: 'Sat'),
+  Weekday(number: 7, name: 'Sun'),
+];
+
+/// all weekdays used for parsing
+@visibleForTesting
+const allWeekdays = [..._weekdays, ..._shortWeekdays];
