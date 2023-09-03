@@ -56,9 +56,10 @@ class Weekday {
   final String name;
 }
 
-/// these are the separators used by the default DateTime.parse
 const _knownSeparators = {'-', ' ', ':', 't', 'T', 'z', 'Z'};
-String _replaceSeparators(String formattedString, Iterable<String> separators) {
+
+/// these are the separators used by the default DateTime.parse
+String replaceSeparators(String formattedString, Iterable<String> separators) {
   var result = formattedString;
   final unknownSeparators = separators.toSet().difference(_knownSeparators);
 
@@ -149,7 +150,7 @@ class AnyDate {
   /// e.g. 'Jan 2023' becomes DateTime(2023, 1), which is 1 Jan 2023
   /// if year is missing, the closest result to today is chosen.
   DateTime? tryParse(String formattedString) {
-    final caseInsensitive = _replaceSeparators(
+    final caseInsensitive = replaceSeparators(
       formattedString.trim().toLowerCase(),
       allowedSeparators,
     );

@@ -81,20 +81,46 @@ Weekday? _expectWeekday(DateParsingParameters parameters) {
 
   return weekday.first;
 }
+// TODO(gbassisp): consolidate all these extra pre-processing functions
 
 String _removeWeekday(DateParsingParameters parameters) {
   var formattedString = parameters.formattedString.toLowerCase();
   for (final w in allWeekdays) {
     formattedString = formattedString.replaceAll(w.name.toLowerCase(), '');
   }
+
+  formattedString = _removeExcessiveSeparators(parameters.copyWith(
+    formattedString: formattedString,
+  ));
   // if (parameters.formattedString != formattedString) {
   //   print('removed weekday: ${parameters.formattedString} '
-  //   '-> $formattedString');
+  //       '-> $formattedString');
   // }
+  return formattedString;
+}
 
-  for (final sep in parameters.parserInfo.allowedSeparators) {
+String _removeExcessiveSeparators(DateParsingParameters parameters) {
+  var formattedString = parameters.formattedString;
+  final separators = parameters.parserInfo.allowedSeparators;
+  formattedString = replaceSeparators(formattedString, separators);
+  for (final sep in separators) {
     // replace multiple separators with a single one
     formattedString = formattedString.replaceAll(RegExp('[$sep]+'), sep);
   }
-  return formattedString;
+
+  return _trimSeparators(formattedString, separators);
+}
+
+String _trimSeparators(String formattedString, Iterable<String> separators) {
+  var result = formattedString;
+  for (final sep in separators) {
+    while (result.startsWith(sep)) {
+      result = result.substring(1).trim();
+    }
+
+    while (result.endsWith(sep)) {
+      result = result.substring(0, result.length - 1).trim();
+    }
+  }
+  return result;
 }
