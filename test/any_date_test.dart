@@ -158,10 +158,6 @@ const _dayFirstFormats = {
 };
 
 const _dayFirstWithWeekday = {
-  'E, dd MMM yyyy HH:mm:ss',
-  'E, dd MMM yyyy HH:mm:ss Z',
-  'EEE, dd MMM yyyy HH:mm:ss',
-  'EEE, dd MMM yyyy HH:mm:ss Z',
   'EEEE, d.M.y',
   'EEEE, d.M.y h:m:s.SS a',
   'EEEE, d.M.y h:m:s.SS',
@@ -172,6 +168,10 @@ const _dayFirstWithWeekday = {
   'EEEE, d.M.y h:m a',
   'EEEE, d.M.y h:m',
   'EEEE, d.M.y h a',
+  'E, dd MMM yyyy HH:mm:ss',
+  'E, dd MMM yyyy HH:mm:ss Z',
+  'EEE, dd MMM yyyy HH:mm:ss',
+  'EEE, dd MMM yyyy HH:mm:ss Z',
   // 'EEEE, d.M',
   // 'EEEE, d',
 };
@@ -245,6 +245,16 @@ void testRange(
   // print('tested $count cases');
 }
 
+extension _TryParse on DateFormat {
+  DateTime? tryParse(String input) {
+    try {
+      return parse(input);
+    } catch (_) {
+      return null;
+    }
+  }
+}
+
 void main() {
   group('basic AnyDate().parse tests', () {
     void compare(DateFormat format, AnyDate anyDate) {
@@ -252,10 +262,11 @@ void main() {
         final f = format;
         final d = f.format(singleDate);
         final a = anyDate;
-        final r = a.parse(d);
-        expect(r, isNotNull);
-        final e = f.parse(d);
-        expect(e, isNotNull);
+        final reason = 'format: ${format.pattern}, date: $d';
+        final e = f.tryParse(d);
+        expect(e, isNotNull, reason: 'DateFormat failed: $reason');
+        final r = a.tryParse(d);
+        expect(r, isNotNull, reason: 'AnyDate failed: $reason');
         expect(
           r,
           e,
@@ -277,6 +288,16 @@ void main() {
       for (final format in _dayFirstFormats) {
         final f = DateFormat(format);
         const a = AnyDate(info: DateParserInfo(dayFirst: true));
+        compare(f, a);
+      }
+      for (final format in _dayFirstWithWeekday) {
+        final f = DateFormat(format);
+        const a = AnyDate(info: DateParserInfo(dayFirst: true));
+        compare(f, a);
+      }
+      for (final format in _monthFirstWithWeekday) {
+        final f = DateFormat(format);
+        const a = AnyDate(info: DateParserInfo());
         compare(f, a);
       }
     });

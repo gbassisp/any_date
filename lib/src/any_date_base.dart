@@ -15,6 +15,17 @@ class DateParsingParameters {
 
   /// The parser info to be used - see it as a configuration
   final DateParserInfo parserInfo;
+
+  /// copy with
+  DateParsingParameters copyWith({
+    String? formattedString,
+    DateParserInfo? parserInfo,
+  }) {
+    return DateParsingParameters(
+      formattedString: formattedString ?? this.formattedString,
+      parserInfo: parserInfo ?? this.parserInfo,
+    );
+  }
 }
 
 /// A month, with its number and name. Used to support multiple languages
@@ -218,7 +229,6 @@ const _shortMonths = [
 ];
 
 /// all months used for parsing
-@visibleForTesting
 const allMonths = [..._months, ..._shortMonths];
 
 const _weekdays = [
@@ -242,5 +252,4 @@ const _shortWeekdays = [
 ];
 
 /// all weekdays used for parsing
-@visibleForTesting
 const allWeekdays = [..._weekdays, ..._shortWeekdays];
