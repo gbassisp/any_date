@@ -1,4 +1,8 @@
 
+## 0.1.7
+
+- Fix some cases where weekday wouldn't be parsed correctly
+
 ## 0.1.6
 
 - Export DateParserInfo class to allow setting parameters
