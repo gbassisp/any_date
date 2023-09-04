@@ -19,5 +19,15 @@ void main() {
       expect(a.toString(), equals(b.toString()));
       expect(a, isNot(same(b)));
     });
+
+    test('iterate every()', () {
+      final a = DateTimeRange(
+        start: DateTime(2000),
+        end: DateTime(2001),
+      );
+      final b = a.every(const Duration(seconds: 1)).toSet();
+      final c = a.duration.inSeconds;
+      expect(b.length, equals(c));
+    });
   });
 }

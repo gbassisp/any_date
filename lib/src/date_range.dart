@@ -43,6 +43,15 @@ class DateTimeRange {
     }
   }
 
+  /// lazy iterable based on a given duration
+  Iterable<DateTime> every(Duration duration) sync* {
+    var d = start;
+    while (d.isBefore(end)) {
+      yield d;
+      d = d.add(duration);
+    }
+  }
+
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
