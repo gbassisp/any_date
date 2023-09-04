@@ -3,15 +3,7 @@ import 'package:any_date/src/date_range.dart';
 import 'package:intl/intl.dart';
 import 'package:test/test.dart';
 
-// TODO(gbassisp): review this
-// AI-generated set of many different date formats
-// const baseDateFormat = [..._monthFirstFormats]; // _monthFirstFormats;
-/// currently unsuported,for future tests
-const futureFormats = {
-  ..._anyFormat,
-  ..._monthFirstWithWeekday,
-  ..._dayFirstWithWeekday,
-};
+// TODO(gbassisp): review this disabled formats
 
 const _anyFormat = {
   'EEEE, MMMM d, y',
@@ -25,8 +17,9 @@ const _anyFormat = {
   'EEEE, MMMM d, y h:m',
   'EEEE, MMMM d, y h a',
   'EEEE, MMMM d, y h',
-  'EEEE, MMMM d',
-  'EEEE, MMMM',
+  // TODO(gbassisp): allow madness (year guessing)
+  // 'EEEE, MMMM d',
+  // 'EEEE, MMMM',
 };
 
 const _monthFirstFormats = {
@@ -296,6 +289,11 @@ void main() {
         compare(f, a);
       }
       for (final format in _monthFirstWithWeekday) {
+        final f = DateFormat(format);
+        const a = AnyDate();
+        compare(f, a);
+      }
+      for (final format in _anyFormat) {
         final f = DateFormat(format);
         const a = AnyDate();
         compare(f, a);
