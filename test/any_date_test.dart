@@ -271,34 +271,28 @@ void main() {
       }
     }
 
-    test('many formats', () {
-      for (final format in _monthFirstFormats) {
+    for (final format in {
+      ..._monthFirstFormats,
+      ..._monthFirstWithWeekday,
+      ..._anyFormat,
+    }) {
+      test('many formats - $format', () {
         final f = DateFormat(format);
         const a = AnyDate();
         compare(f, a);
-      }
+      });
+    }
 
-      for (final format in _dayFirstFormats) {
+    for (final format in {
+      ..._dayFirstFormats,
+      ..._dayFirstWithWeekday,
+    }) {
+      test('many formats - $format', () {
         final f = DateFormat(format);
         const a = AnyDate(info: DateParserInfo(dayFirst: true));
         compare(f, a);
-      }
-      for (final format in _dayFirstWithWeekday) {
-        final f = DateFormat(format);
-        const a = AnyDate(info: DateParserInfo(dayFirst: true));
-        compare(f, a);
-      }
-      for (final format in _monthFirstWithWeekday) {
-        final f = DateFormat(format);
-        const a = AnyDate();
-        compare(f, a);
-      }
-      for (final format in _anyFormat) {
-        final f = DateFormat(format);
-        const a = AnyDate();
-        compare(f, a);
-      }
-    });
+      });
+    }
 
     test(
       'matches DateTime.parse',
