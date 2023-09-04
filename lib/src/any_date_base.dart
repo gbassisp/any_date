@@ -56,7 +56,9 @@ class Weekday {
   final String name;
 }
 
-const _knownSeparators = {'-', ' ', ':', 't', 'T', 'z', 'Z'};
+/// used on iso date spacing; can and will be replaced with space
+const _specialSeparators = {'t', 'T'};
+const _knownSeparators = {'-', ' ', ':', '.', ..._specialSeparators};
 
 /// these are the separators used by the default DateTime.parse
 String replaceSeparators(String formattedString, Iterable<String> separators) {
@@ -70,13 +72,13 @@ String replaceSeparators(String formattedString, Iterable<String> separators) {
 }
 
 String _restoreMillisecons(String formattedString) {
-  // regex with 00:00:00-000
-  final r = RegExp(r'(\d{2}:\d{2}:\d{2})-(\d+)');
+  // regex with T00:00:00-000
+  final r = RegExp(r'[t,T]?(\d{2}:\d{2}:\d{2})-(\d+)');
 
   // replace with 00:00:00.000
   return formattedString.replaceAllMapped(
     r,
-    (m) => '${m.group(1)}.${m.group(2)}',
+    (m) => ' ${m.group(1)}.${m.group(2)}',
   );
 }
 
@@ -86,7 +88,7 @@ class DateParserInfo {
   const DateParserInfo({
     this.dayFirst = false,
     this.yearFirst = false,
-    // TODO(gbassip): avoid messing up regex with special chars
+    // TODO(gbassisp): avoid messing up regex with special chars
     this.allowedSeparators = const [
       ' ',
       't',
@@ -120,6 +122,21 @@ class DateParserInfo {
 
   /// keywords to identify months (to support multiple languages)
   final List<Month> months;
+
+  /// copy with
+  DateParserInfo copyWith({
+    bool? dayFirst,
+    bool? yearFirst,
+    List<String>? allowedSeparators,
+    List<Month>? months,
+  }) {
+    return DateParserInfo(
+      dayFirst: dayFirst ?? this.dayFirst,
+      yearFirst: yearFirst ?? this.yearFirst,
+      allowedSeparators: allowedSeparators ?? this.allowedSeparators,
+      months: months ?? this.months,
+    );
+  }
 }
 
 /// main class, containing most [DateTime] utils
@@ -165,6 +182,10 @@ class AnyDate {
   Iterable<DateTime?> _applyRules(
     String formattedString,
   ) sync* {
+    final info = this.info.copyWith(
+          allowedSeparators:
+              _knownSeparators.difference(_specialSeparators).toList(),
+        );
     final p = DateParsingParameters(
       formattedString: formattedString,
       parserInfo: info,
