@@ -36,4 +36,23 @@ void main() {
       }
     });
   });
+
+  group('learning tests', () {
+    test('iso date parse does not require T separator', () {
+      final d = DateTime.parse('2020-01-01 01:02:03');
+      expect(d, DateTime(2020, 1, 1, 1, 2, 3));
+
+      final date = DateTime(1999, 12, 31, 23, 59, 59, 999);
+      final f1 = date.toIso8601String();
+      final f2 = f1.replaceAll('T', ' ');
+
+      expect(f1, contains('T'));
+      expect(f2, isNot(contains('T')));
+
+      final parsed1 = DateTime.parse(f1);
+      final parsed2 = DateTime.parse(f2);
+      expect(parsed1, equals(date));
+      expect(parsed2, equals(date));
+    });
+  });
 }
