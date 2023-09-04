@@ -89,14 +89,14 @@ String _removeWeekday(DateParsingParameters parameters) {
     formattedString = formattedString.replaceAll(w.name.toLowerCase(), '');
   }
 
-  formattedString = _removeExcessiveSeparators(parameters.copyWith(
+  return _removeExcessiveSeparators(parameters.copyWith(
     formattedString: formattedString,
   ));
   // if (parameters.formattedString != formattedString) {
   //   print('removed weekday: ${parameters.formattedString} '
   //       '-> $formattedString');
   // }
-  return formattedString;
+  // return formattedString;
 }
 
 String _removeExcessiveSeparators(DateParsingParameters parameters) {
