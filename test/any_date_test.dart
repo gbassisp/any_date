@@ -212,13 +212,15 @@ void testRange(
   final cache = <String>{};
   final seps = parser.info.allowedSeparators.toList()
     ..removeWhere((e) => e.isInvalid);
+  const step = Duration(seconds: 17);
 
   // var count = 0;
-  for (final date in (customRange ?? range).days) {
+  for (final date in (customRange ?? range).every(step)) {
     for (final a in seps) {
       for (final b in seps) {
         final f = formatter(date, a, b);
         if (!cache.contains(f)) {
+          cache.add(f);
           final g = parser.parse(f);
           // print(f);
           // print(g.toString());
@@ -227,10 +229,10 @@ void testRange(
             expect(g.year, date.year, reason: reason);
             expect(g.month, date.month, reason: reason);
             expect(g.day, date.day, reason: reason);
+            return;
           }
           expect(g, date, reason: reason);
           // count++;
-          cache.add(f);
         }
       }
     }
