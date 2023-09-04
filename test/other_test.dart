@@ -45,14 +45,21 @@ void main() {
       final date = DateTime(1999, 12, 31, 23, 59, 59, 999);
       final f1 = date.toIso8601String();
       final f2 = f1.replaceAll('T', ' ');
+      final f3 = f1.replaceAll('T', '-');
 
       expect(f1, contains('T'));
       expect(f2, isNot(contains('T')));
+      expect(f3, isNot(contains('T')));
+      expect(f3, isNot(contains(' ')));
 
       final parsed1 = DateTime.parse(f1);
       final parsed2 = DateTime.parse(f2);
+      final parsed3 = DateTime.tryParse(f3);
       expect(parsed1, equals(date));
       expect(parsed2, equals(date));
+
+      // other separators are not allowed
+      expect(parsed3, isNull);
     });
   });
 }
