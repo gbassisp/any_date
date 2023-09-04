@@ -297,7 +297,7 @@ void main() {
       }
       for (final format in _monthFirstWithWeekday) {
         final f = DateFormat(format);
-        const a = AnyDate(info: DateParserInfo());
+        const a = AnyDate();
         compare(f, a);
       }
     });
