@@ -8,7 +8,7 @@ import 'any_date_test.dart';
 
 final r = DateTimeRange(
   start: DateTime(900, 1, 1, 13, 14, 15, 16),
-  end: DateTime(2100, 12, 31, 15, 16, 17, 18),
+  end: DateTime(hugeRange ? 2100 : 902, 12, 31, 15, 16, 17, 18),
 );
 
 final _range = DateTimeRange(
