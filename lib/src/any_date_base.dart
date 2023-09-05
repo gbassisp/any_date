@@ -8,6 +8,9 @@ class DateParsingParameters {
   const DateParsingParameters({
     required this.formattedString,
     required this.parserInfo,
+    this.weekday,
+    this.month,
+    this.simplifiedString,
   });
 
   /// The date string to be parsed
@@ -16,14 +19,29 @@ class DateParsingParameters {
   /// The parser info to be used - see it as a configuration
   final DateParserInfo parserInfo;
 
+  /// expected weekday found on the string
+  final Weekday? weekday;
+
+  /// expected month found on the string
+  final Month? month;
+
+  /// simplified string
+  final String? simplifiedString;
+
   /// copy with
   DateParsingParameters copyWith({
     String? formattedString,
     DateParserInfo? parserInfo,
+    Weekday? weekday,
+    Month? month,
+    String? simplifiedString,
   }) {
     return DateParsingParameters(
       formattedString: formattedString ?? this.formattedString,
       parserInfo: parserInfo ?? this.parserInfo,
+      weekday: weekday ?? this.weekday,
+      month: month ?? this.month,
+      simplifiedString: simplifiedString ?? this.simplifiedString,
     );
   }
 }
@@ -83,6 +101,75 @@ String _restoreMillisecons(String formattedString) {
     r,
     (m) => ' ${m.group(1)}.${m.group(2)}',
   );
+}
+
+Month? _expectMonth(DateParsingParameters parameters) {
+  final timestamp = parameters.formattedString.toLowerCase();
+  final month = allMonths.where(
+    (element) => timestamp.contains(element.name.toLowerCase()),
+  );
+
+  if (month.isEmpty) {
+    return null;
+  }
+
+  return month.first;
+}
+
+Weekday? _expectWeekday(DateParsingParameters parameters) {
+  final timestamp = parameters.formattedString.toLowerCase();
+  final weekday = allWeekdays.where(
+    (element) => timestamp.contains(element.name.toLowerCase()),
+  );
+
+  if (weekday.isEmpty) {
+    return null;
+  }
+
+  return weekday.first;
+}
+// TODO(gbassisp): consolidate all these extra pre-processing functions
+
+String _removeWeekday(DateParsingParameters parameters) {
+  var formattedString = parameters.formattedString.toLowerCase();
+  for (final w in allWeekdays) {
+    formattedString = formattedString.replaceAll(w.name.toLowerCase(), '');
+  }
+
+  return _removeExcessiveSeparators(
+    parameters.copyWith(formattedString: formattedString),
+  );
+  // if (parameters.formattedString != formattedString) {
+  //   print('removed weekday: ${parameters.formattedString} '
+  //       '-> $formattedString');
+  // }
+  // return formattedString;
+}
+
+String _removeExcessiveSeparators(DateParsingParameters parameters) {
+  var formattedString = parameters.formattedString;
+  final separators = parameters.parserInfo.allowedSeparators;
+  formattedString = replaceSeparators(formattedString, separators);
+  for (final sep in separators) {
+    // replace multiple separators with a single one
+    formattedString = formattedString.replaceAll(RegExp('[$sep]+'), sep);
+  }
+
+  return _trimSeparators(formattedString, separators);
+}
+
+String _trimSeparators(String formattedString, Iterable<String> separators) {
+  var result = formattedString;
+  for (final sep in separators) {
+    while (result.startsWith(sep)) {
+      result = result.substring(1).trim();
+    }
+
+    while (result.endsWith(sep)) {
+      result = result.substring(0, result.length - 1).trim();
+    }
+  }
+  return result;
 }
 
 /// Configuration for the parser
@@ -191,11 +278,17 @@ class AnyDate {
     String formattedString,
   ) sync* {
     final info = _info.copyWith(
-          allowedSeparators: usedSeparators.toList(),
-        );
-    final p = DateParsingParameters(
+      allowedSeparators: usedSeparators.toList(),
+    );
+    var p = DateParsingParameters(
       formattedString: formattedString,
       parserInfo: info,
+    );
+
+    p = p.copyWith(
+      weekday: _expectWeekday(p),
+      month: _expectMonth(p),
+      simplifiedString: _removeWeekday(p),
     );
 
     yield MultipleRules(info.dayFirst ? _yearLastDayFirst : _yearLast).apply(p);
