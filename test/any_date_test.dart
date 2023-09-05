@@ -192,11 +192,11 @@ final separators = [
 
 final range = DateTimeRange(
   start: DateTime(
-    1999, // y
+    1959, // y
     // 1, // h
   ),
   end: DateTime(
-    hugeRange ? 2005 : 2000, // y
+    hugeRange ? 2050 : 2005, // y
     // 1, // h
   ),
 );
