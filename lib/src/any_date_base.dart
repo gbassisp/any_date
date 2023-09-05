@@ -58,7 +58,10 @@ class Weekday {
 
 /// used on iso date spacing; can and will be replaced with space
 const _specialSeparators = {'t', 'T'};
-const _knownSeparators = {'-', ' ', ':', '.', ..._specialSeparators};
+
+/// only these separators are known by the parser; others will be replaced
+const usedSeparators = {'-', ' ', ':'};
+const _knownSeparators = {...usedSeparators, ..._specialSeparators};
 
 /// these are the separators used by the default DateTime.parse
 String replaceSeparators(String formattedString, Iterable<String> separators) {
@@ -183,8 +186,7 @@ class AnyDate {
     String formattedString,
   ) sync* {
     final info = this.info.copyWith(
-          allowedSeparators:
-              _knownSeparators.difference(_specialSeparators).toList(),
+          allowedSeparators: usedSeparators.toList(),
         );
     final p = DateParsingParameters(
       formattedString: formattedString,
