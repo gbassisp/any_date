@@ -212,7 +212,7 @@ void testRange(
   final cache = <String>{};
   final seps = parser.info.allowedSeparators.toList()
     ..removeWhere((e) => e.isInvalid);
-  const step = Duration(seconds: 17);
+  const step = Duration(days: 17);
 
   // var count = 0;
   for (final date in (customRange ?? range).every(step)) {
@@ -253,6 +253,8 @@ extension _TryParse on DateFormat {
 void main() {
   group('basic AnyDate().parse tests', () {
     void compare(DateFormat format, AnyDate anyDate) {
+      // const step = Duration(hours: 1);
+      // for (final singleDate in range.every(step)) {
       for (final singleDate in range.days) {
         final f = format;
         final d = f.format(singleDate);

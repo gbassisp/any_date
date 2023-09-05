@@ -9,10 +9,14 @@ const _longYearPattern = r'(?<year>\d{3,5})';
 const _dayPattern = r'(?<day>\d{1,2})';
 const _textMonthPattern = r'(?<month>\w+)';
 const _monthPattern = r'(?<month>\d{1,2})';
-const _hourPattern = r'(?<hour>\d{1,2})?';
-const _minutePattern = r'(?<minute>\d{1,2})?';
+// const _anyMonthPattern = r'(?<month>\d{1,2}|\w+)';
+const _hourPattern = r'(?<hour>\d{1,2})';
+const _minutePattern = r'(?<minute>\d{1,2})';
+const _secondPattern = r'(?<second>\d{1,2}\.?\d*)';
 final _separatorPattern = '[${usedSeparators.reduce((v1, v2) => '$v1,$v2')}]+?';
 final s = _separatorPattern;
+final _hmPattern = '$_hourPattern$s$_minutePattern';
+final _hmsPattern = '$_hmPattern$s$_secondPattern';
 
 /// default parsing rule from dart core
 DateTime? dateTimeTryParse(String formattedString) =>
@@ -127,9 +131,9 @@ DateParsingRule maybeDateTimeParse = SimpleRule((params) {
 });
 
 DateParsingRule ymdhmsTextMonthRegex = SimpleRule((params) {
-  final separators = params.parserInfo.allowedSeparators;
+  // final separators = params.parserInfo.allowedSeparators;
   // final s = separatorPattern(separators);
-  final hms = hmsPattern(separators);
+  final hms = _hmsPattern;
   final re = RegExp(
     '^'
     '$_yearPattern'
@@ -150,9 +154,9 @@ DateParsingRule ymdhmsTextMonthRegex = SimpleRule((params) {
 });
 
 DateParsingRule ymdhmTextMonthRegex = SimpleRule((params) {
-  final separators = params.parserInfo.allowedSeparators;
+  // final separators = params.parserInfo.allowedSeparators;
   // final s = separatorPattern(separators);
-  final hm = hmPattern(separators);
+  final hm = _hmPattern;
   final re = RegExp(
     '^'
     '$_yearPattern'
@@ -311,29 +315,29 @@ DateParsingRule dmyTextMonthRegex = SimpleRule((params) {
 // String separatorPattern(List<String> separators) =>
 //     '[${separators.reduce((v1, v2) => '$v1,$v2')}]+?';
 
-String hmsPattern(List<String> separators) {
-  // final s = separatorPattern(separators);
+// String hmsPattern(List<String> separators) {
+//   // final s = separatorPattern(separators);
 
-  return '$_hourPattern'
-          '$s'
-          '$_minutePattern'
-          '$s'
-          r'(?<second>\d{1,2}\.?\d*)?'
+//   return '$_hourPattern'
+//           '$s'
+//           '$_minutePattern'
+//           '$s'
+//           '$_secondPattern'
 
-      //
-      ;
-}
+//       //
+//       ;
+// }
 
-String hmPattern(List<String> separators) {
-  // final s = separatorPattern(separators);
+// String hmPattern(List<String> separators) {
+//   // final s = separatorPattern(separators);
 
-  return '$_hourPattern'
-          '$s'
-          '$_minutePattern'
+//   return '$_hourPattern'
+//           '$s'
+//           '$_minutePattern'
 
-      //
-      ;
-}
+//       //
+//       ;
+// }
 
 bool _isAmPm(String formattedString) {
   return _isAm(formattedString) || _isPm(formattedString);
