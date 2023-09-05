@@ -210,7 +210,7 @@ void testRange(
   bool dayOnly = true,
 ]) {
   final cache = <String>{};
-  final seps = parser.info.allowedSeparators.toList()
+  final seps = AnyDate.defaultSettings.allowedSeparators.toList()
     ..removeWhere((e) => e.isInvalid);
   const step = Duration(days: 17);
 

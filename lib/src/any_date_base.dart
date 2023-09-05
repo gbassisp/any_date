@@ -145,14 +145,19 @@ class DateParserInfo {
 /// main class, containing most [DateTime] utils
 class AnyDate {
   /// default constructor
-  const AnyDate({this.info = const DateParserInfo()});
+  const AnyDate({this.info});
 
   /// settings for parsing and resolving ambiguous cases
-  final DateParserInfo info;
+  final DateParserInfo? info;
+
+  DateParserInfo get _info => info ?? defaultSettings;
+
+  /// static value for global setting
+  static DateParserInfo defaultSettings = const DateParserInfo();
 
   /// list of allowed separators
   @visibleForTesting
-  List<String> get allowedSeparators => info.allowedSeparators;
+  List<String> get allowedSeparators => _info.allowedSeparators;
 
   /// parses a string in any format into a [DateTime] object.
   /// missing components will be assumed to default value:
@@ -185,7 +190,7 @@ class AnyDate {
   Iterable<DateTime?> _applyRules(
     String formattedString,
   ) sync* {
-    final info = this.info.copyWith(
+    final info = _info.copyWith(
           allowedSeparators: usedSeparators.toList(),
         );
     final p = DateParsingParameters(
