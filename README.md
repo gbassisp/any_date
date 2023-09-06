@@ -15,17 +15,16 @@ Package to improve DateTime manipulation, especially by allowing parsing any for
 
 ## Features
 
-At the moment the package only supports parsing date-only strings. Time component coming soon.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Still experimental and on early stages, but this package is meant to parse any timestamp into a DateTime object. Only depends on `intl` for testing, but the package has minimum constraints to work with pure Dart projects as well.
 
 ## Usage
 
-See the `/example` folder. 
+Usage is simple, use the `AnyDate()` constructor to create a parser with the desired settings, and use it to parse any `String` into `DateTime`, regardless of the format.
+
+Note that, in order to resolve ambiguity, some settings are required either on the `AnyDate()` constructor or on the `AnyDate.defaultSettings` static attribute.
 
 ```dart
-final date = '13 Aug 2023';
+const parser = AnyDate();
+final date = parser.parse('13 Aug 2023');
+// date is parsed as DateTime(2023, 08, 13)
 ```
