@@ -12,13 +12,16 @@ const _monthPattern = r'(?<month>\d{1,2})';
 // const _anyMonthPattern = r'(?<month>\d{1,2}|\w+)';
 const _hourPattern = r'(?<hour>\d{1,2})';
 const _minutePattern = r'(?<minute>\d{1,2})';
-const _secondPattern = r'(?<second>\d{1,2}\.?\d*)';
+const _secondPattern = r'(?<second>\d{1,2})';
+const _microsecondPattern = r'(?<microsecond>\d{1,6})';
 final _separatorPattern = '[${usedSeparators.reduce((v1, v2) => '$v1,$v2')}]+';
 final _s = _separatorPattern;
 final _timeSep = _s; // ':';
 final _hmPattern = '$_hourPattern$_timeSep$_minutePattern';
 final _hmsPattern = '$_hmPattern$_timeSep$_secondPattern';
+final _hmsMsPattern = '$_hmsPattern.$_microsecondPattern';
 final _timePatterns = [
+  _hmsMsPattern,
   _hmsPattern,
   _hmPattern,
   _hourPattern,
@@ -38,10 +41,11 @@ DateTime? _try(RegExp format, String formattedString) {
   try {
     final now = DateTime(DateTime.now().year);
     final match = format.firstMatch(formattedString)!;
-    final map = <String, dynamic>{};
+    var map = <String, dynamic>{};
     for (final n in match.groupNames) {
       map[n] = match.namedGroup(n);
     }
+    map = _parseMap(map, formattedString);
     return now.copyWithJson(map);
   } catch (_) {}
 
@@ -61,35 +65,64 @@ DateTime? _tryTextMonth(
     for (final n in match.groupNames) {
       map[n] = match.namedGroup(n);
     }
-    map = _parseMap(map, formattedString, months);
+    map = _parseMap(map, formattedString, months: months);
     return now.copyWithJson(map);
   } catch (_) {}
 
   return null;
 }
 
+int _amTo24(int hour) {
+  if (hour == 12) {
+    return 0;
+  }
+  return hour;
+}
+
+int _pmTo24(int hour) {
+  if (hour == 12) {
+    return 12;
+  }
+  return hour + 12;
+}
+
+int _amPmTo24(int hour, String formattedString) {
+  if (_isAm(formattedString)) {
+    return _amTo24(hour);
+  }
+  if (_isPm(formattedString)) {
+    return _pmTo24(hour);
+  }
+  return hour;
+}
+
 Map<String, dynamic> _parseMap(
   Map<String, dynamic> map,
-  String formattedString,
-  List<Month> months,
-) {
-  // print(map);
-  map['month'] = months
-      .firstWhere((element) => element.name.toLowerCase() == map['month'])
-      .number;
+  String formattedString, {
+  List<Month> months = const [],
+}) {
+  if (months.isNotEmpty) {
+    map['month'] = months
+        .firstWhere((element) => element.name.toLowerCase() == map['month'])
+        .number;
+  }
 
   if (map.containsKey('hour')) {
-    var hour = int.parse(map['hour']!.toString());
-    hour = _isAmPm(formattedString) ? hour % 12 : hour;
-    map['hour'] = _isPm(formattedString) ? hour + 12 : hour;
+    final hour = int.parse(map['hour']!.toString());
+    map['hour'] = hour;
+    if (_isAmPm(formattedString)) {
+      // print('am/pm');
+      map['hour'] = _amPmTo24(hour, formattedString);
+    }
   }
 
   if (map.containsKey('second')) {
-    final second = double.parse(map['second']!.toString());
-    // print(second);
-    map['second'] = second.toInt();
-    map['millisecond'] = (second - second.toInt()) * 1000;
-    map['microsecond'] = (second - second.toInt()) * 1000000;
+    final second = int.parse(map['second']!.toString());
+    map['second'] = second;
+  }
+  if (map.containsKey('microsecond')) {
+    final ms = int.parse(map['microssecond']!.toString().padRight(6, '0'));
+    map['microsecond'] = ms; // / 1000000;
   }
   return map;
 }
@@ -341,16 +374,14 @@ bool _isAmPm(String formattedString) {
 }
 
 bool _isPm(String formattedString) {
-  if (formattedString.contains('pm')) {
-    // print('is pm');
+  if (formattedString.contains(RegExp(r'\d{1,2}\s?pm'))) {
     return true;
   }
   return false;
 }
 
 bool _isAm(String formattedString) {
-  if (formattedString.contains('am')) {
-    // print('is am');
+  if (formattedString.contains(RegExp(r'\d{1,2}\s?am'))) {
     return true;
   }
   return false;
