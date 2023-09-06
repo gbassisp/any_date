@@ -1,4 +1,8 @@
 
+## 0.1.8
+
+- Fix most of time component parsing
+
 ## 0.1.7
 
 - Fix some cases where weekday wouldn't be parsed correctly
