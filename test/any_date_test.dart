@@ -256,7 +256,12 @@ extension _TryParse on DateFormat {
 void main() {
   group('basic AnyDate().parse tests', () {
     void compare(DateFormat format, AnyDate anyDate) {
-      const step = Duration(hours: 23);
+      const step = Duration(
+        hours: 23,
+        minutes: 13,
+        seconds: 17,
+        microseconds: 123,
+      );
       // for (final singleDate in range.every(step)) {
       for (final r in [range.days, range.every(step)]) {
         for (final singleDate in r) {
