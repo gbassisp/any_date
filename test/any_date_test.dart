@@ -78,39 +78,39 @@ const _monthFirstFormats = {
   'MM/dd/yyyy HH:mm:ss Z',
   'yyyy.MM.dd HH:mm:ss Z',
   'yyyy MM dd HH:mm:ss Z',
-  // 'yyyy.M.d h',
-  // 'y.M.d h',
-  // 'M.d.y h',
+  // 'yyyy.M.d H',
+  // 'y.M.d H',
+  // 'M.d.y H',
 };
 
 const _monthFirstWithWeekday = {
   'EEEE, M/d/y',
   'EEEE, M/d/y h:m:s.SS a',
-  'EEEE, M/d/y h:m:s.SS',
+  'EEEE, M/d/y H:m:s.SS',
   'EEEE, M/d/y h:m:s.S a',
-  'EEEE, M/d/y h:m:s.S',
+  'EEEE, M/d/y H:m:s.S',
   'EEEE, M/d/y h:m:s a',
-  'EEEE, M/d/y h:m:s',
+  'EEEE, M/d/y H:m:s',
   'EEEE, M/d/y h:m a',
-  'EEEE, M/d/y h:m',
+  'EEEE, M/d/y H:m',
   'EEEE, M/d/y h a',
   // 'EEEE, M/d',
   // 'EEEE, M',
-  // 'EEEE, M/d/y h',
+  // 'EEEE, M/d/y H',
   'EEEE, y.M.d',
   'EEEE, y.M.d h:m:s.SS a',
-  'EEEE, y.M.d h:m:s.SS',
+  'EEEE, y.M.d H:m:s.SS',
 };
 
 const _dayFirstFormats = {
   'd.M.y h:m:s.SS a',
-  'd.M.y h:m:s.SS',
+  'd.M.y H:m:s.SS',
   'd.M.y h:m:s.S a',
-  'd.M.y h:m:s.S',
+  'd.M.y H:m:s.S',
   'd.M.y h:m:s a',
-  'd.M.y h:m:s',
+  'd.M.y H:m:s',
   'd.M.y h:m a',
-  'd.M.y h:m',
+  'd.M.y H:m',
   'd.M.y h a',
   'd.M.y',
   // TODO(gbassisp): re-enable this
@@ -125,7 +125,7 @@ const _dayFirstFormats = {
   // 'h:m a',
   // 'h:m',
   // 'h a',
-  // 'd.M.y h',
+  // 'd.M.y H',
   // 'h',
   // 'a',
 
@@ -144,7 +144,7 @@ const _dayFirstFormats = {
   'dd MMM yyyy HH:mm:ss E',
   'dd MMM yyyy HH:mm:ss Z E',
   'dd MMM yyyy HH:mm:ss EEE',
-  // 'EEEE, d.M.y h',
+  // 'EEEE, d.M.y H',
   'dd MMM yyyy HH:mm:ss Z EEE',
   'dd MMM yyyy HH:mm:ss',
   'dd MMM yyyy HH:mm:ss Z',
@@ -156,13 +156,13 @@ const _dayFirstFormats = {
 const _dayFirstWithWeekday = {
   'EEEE, d.M.y',
   'EEEE, d.M.y h:m:s.SS a',
-  'EEEE, d.M.y h:m:s.SS',
+  'EEEE, d.M.y H:m:s.SS',
   'EEEE, d.M.y h:m:s.S a',
-  'EEEE, d.M.y h:m:s.S',
+  'EEEE, d.M.y H:m:s.S',
   'EEEE, d.M.y h:m:s a',
-  'EEEE, d.M.y h:m:s',
+  'EEEE, d.M.y H:m:s',
   'EEEE, d.M.y h:m a',
-  'EEEE, d.M.y h:m',
+  'EEEE, d.M.y H:m',
   'EEEE, d.M.y h a',
   'E, dd MMM yyyy HH:mm:ss',
   'E, dd MMM yyyy HH:mm:ss Z',
@@ -256,25 +256,27 @@ extension _TryParse on DateFormat {
 void main() {
   group('basic AnyDate().parse tests', () {
     void compare(DateFormat format, AnyDate anyDate) {
-      // const step = Duration(hours: 1);
+      const step = Duration(hours: 23);
       // for (final singleDate in range.every(step)) {
-      for (final singleDate in range.days) {
-        final f = format;
-        final d = f.format(singleDate);
-        final a = anyDate;
-        final reason = 'format: ${format.pattern}, date: $d';
-        final e = f.tryParse(d);
-        expect(e, isNotNull, reason: 'DateFormat failed: $reason');
-        final r = a.tryParse(d);
-        expect(r, isNotNull, reason: 'AnyDate failed: $reason');
-        expect(
-          r,
-          e,
-          reason: 'format: ${format.pattern},\n'
-              'date: $d,\n'
-              'result: $r,\n'
-              'expect: $e',
-        );
+      for (final r in [range.days, range.every(step)]) {
+        for (final singleDate in r) {
+          final f = format;
+          final d = f.format(singleDate);
+          final a = anyDate;
+          final reason = 'format: ${format.pattern}, date: $d';
+          final e = f.tryParse(d);
+          expect(e, isNotNull, reason: 'DateFormat failed: $reason');
+          final r = a.tryParse(d);
+          expect(r, isNotNull, reason: 'AnyDate failed: $reason');
+          expect(
+            r,
+            e,
+            reason: 'format: ${format.pattern},\n'
+                'date: $d,\n'
+                'result: $r,\n'
+                'expect: $e',
+          );
+        }
       }
     }
 
