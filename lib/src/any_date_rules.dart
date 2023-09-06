@@ -111,18 +111,17 @@ Map<String, dynamic> _parseMap(
     final hour = int.parse(map['hour']!.toString());
     map['hour'] = hour;
     if (_isAmPm(formattedString)) {
-      // print('am/pm');
       map['hour'] = _amPmTo24(hour, formattedString);
     }
   }
 
   if (map.containsKey('second')) {
-    final second = int.parse(map['second']!.toString());
+    final second = int.tryParse(map['second']!.toString());
     map['second'] = second;
   }
   if (map.containsKey('microsecond')) {
-    final ms = int.parse(map['microssecond']!.toString().padRight(6, '0'));
-    map['microsecond'] = ms; // / 1000000;
+    final ms = int.tryParse((map['microsecond'] as String).padRight(6, '0'));
+    map['microsecond'] = ms;
   }
   return map;
 }
