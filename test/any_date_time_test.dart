@@ -11,28 +11,7 @@ final r = DateTimeRange(
   end: DateTime(hugeRange ? 2100 : 902, 12, 31, 15, 16, 17, 18),
 );
 
-final _range = DateTimeRange(
-  start: DateTime(
-    1999, // y
-    1, // m
-    1, // d
-    2, // h
-    3, // m
-    4, // s
-    // 5, // ms
-    // 6, // us
-  ),
-  end: DateTime(
-    hugeRange ? 2005 : 2000, // y
-    1, // m
-    1, // d
-    2, // h
-    3, // m
-    4, // s
-    // 5, // ms
-    // 6, // us
-  ),
-);
+final _range = range;
 void main() {
   group('default AnyDate()', () {
     const parser = AnyDate();
@@ -40,7 +19,6 @@ void main() {
     test(
       'yyyy.M.d h:m:s',
       () {
-        // print('yyyy.M.d h:m:s (any separator) format:');
         testRange(
           parser,
           (date, sep1, sep2) =>

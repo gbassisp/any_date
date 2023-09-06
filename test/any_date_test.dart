@@ -78,9 +78,6 @@ const _monthFirstFormats = {
   'MM/dd/yyyy HH:mm:ss Z',
   'yyyy.MM.dd HH:mm:ss Z',
   'yyyy MM dd HH:mm:ss Z',
-  // 'yyyy.M.d H',
-  // 'y.M.d H',
-  // 'M.d.y H',
 };
 
 const _monthFirstWithWeekday = {
@@ -96,7 +93,7 @@ const _monthFirstWithWeekday = {
   'EEEE, M/d/y h a',
   // 'EEEE, M/d',
   // 'EEEE, M',
-  // 'EEEE, M/d/y H',
+  'EEEE, M/d/y H',
   'EEEE, y.M.d',
   'EEEE, y.M.d h:m:s.SS a',
   'EEEE, y.M.d H:m:s.SS',
@@ -125,7 +122,7 @@ const _dayFirstFormats = {
   // 'h:m a',
   // 'h:m',
   // 'h a',
-  // 'd.M.y H',
+  'd.M.y H',
   // 'h',
   // 'a',
 
@@ -144,7 +141,7 @@ const _dayFirstFormats = {
   'dd MMM yyyy HH:mm:ss E',
   'dd MMM yyyy HH:mm:ss Z E',
   'dd MMM yyyy HH:mm:ss EEE',
-  // 'EEEE, d.M.y H',
+  'EEEE, d.M.y H',
   'dd MMM yyyy HH:mm:ss Z EEE',
   'dd MMM yyyy HH:mm:ss',
   'dd MMM yyyy HH:mm:ss Z',
@@ -215,7 +212,7 @@ void testRange(
   final cache = <String>{};
   final seps = AnyDate.defaultSettings.allowedSeparators.toList()
     ..removeWhere((e) => e.isInvalid);
-  const step = Duration(days: 17);
+  const step = Duration(hours: 23, minutes: 13);
 
   // var count = 0;
   for (final date in (customRange ?? range).every(step)) {
