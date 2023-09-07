@@ -4,6 +4,8 @@ import 'package:any_date/src/any_date_base.dart';
 import 'package:any_date/src/any_date_rules_model.dart';
 import 'package:any_date/src/extensions.dart';
 
+/// only these separators are known by the parser; others will be replaced
+const usedSeparators = {'-', ' ', ':'};
 const _yearPattern = r'(?<year>\d+)';
 const _longYearPattern = r'(?<year>\d{3,5})';
 const _dayPattern = r'(?<day>\d{1,2})';
@@ -36,7 +38,6 @@ DateTime noValidFormatFound(String formattedString) {
   return DateTime.parse(formattedString.toUpperCase());
 }
 
-///
 DateTime? _try(RegExp format, String formattedString) {
   try {
     final now = DateTime(DateTime.now().year);
@@ -52,7 +53,6 @@ DateTime? _try(RegExp format, String formattedString) {
   return null;
 }
 
-///
 DateTime? _tryTextMonth(
   RegExp format,
   String formattedString,

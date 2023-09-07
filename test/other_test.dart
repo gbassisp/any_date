@@ -6,11 +6,11 @@ import 'package:test/test.dart';
 final _r = DateTimeRange(start: DateTime(2000), end: DateTime(2002));
 
 Weekday _weekdayByName(String name) {
-  return allWeekdays.firstWhere((w) => w.name == name);
+  return AnyDate.defaultSettings.weekdays.firstWhere((w) => w.name == name);
 }
 
 Month _monthByName(String name) {
-  return allMonths.firstWhere((m) => m.name == name);
+  return AnyDate.defaultSettings.months.firstWhere((m) => m.name == name);
 }
 
 void main() {
