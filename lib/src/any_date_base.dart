@@ -1,6 +1,5 @@
 import 'package:any_date/src/any_date_rules.dart';
 import 'package:any_date/src/any_date_rules_model.dart';
-import 'package:meta/meta.dart';
 
 /// Parameters passed to the parser
 class DateParsingParameters {
@@ -203,6 +202,7 @@ class DateParserInfo {
       '-',
     ],
     this.months = allMonths,
+    this.weekdays = allWeekdays,
   });
 
   /// interpret the first value in an ambiguous case (e.g. 01/01/01)
@@ -225,18 +225,23 @@ class DateParserInfo {
   /// keywords to identify months (to support multiple languages)
   final List<Month> months;
 
+  /// keywords to identify weekdays (to support multiple languages)
+  final List<Weekday> weekdays;
+
   /// copy with
   DateParserInfo copyWith({
     bool? dayFirst,
     bool? yearFirst,
     List<String>? allowedSeparators,
     List<Month>? months,
+    List<Weekday>? weekdays,
   }) {
     return DateParserInfo(
       dayFirst: dayFirst ?? this.dayFirst,
       yearFirst: yearFirst ?? this.yearFirst,
       allowedSeparators: allowedSeparators ?? this.allowedSeparators,
       months: months ?? this.months,
+      weekdays: weekdays ?? this.weekdays,
     );
   }
 }
@@ -254,29 +259,39 @@ class AnyDate {
   /// static value for global setting
   static DateParserInfo defaultSettings = const DateParserInfo();
 
-  /// list of allowed separators
-  @visibleForTesting
-  List<String> get allowedSeparators => _info.allowedSeparators;
-
   /// parses a string in any format into a [DateTime] object.
-  /// missing components will be assumed to default value:
-  /// e.g. 'Jan 2023' becomes DateTime(2023, 1), which is 1 Jan 2023
-  /// if year is missing, the closest result to today is chosen.
   DateTime parse(
     /// required string representation of a date to be parsed
     String formattedString,
   ) {
-    return tryParse(formattedString) ?? noValidFormatFound(formattedString);
+    final res = _tryParse(formattedString);
+    if (res == null) {
+      throw FormatException('Invalid date format', formattedString);
+    }
+    return res;
   }
 
-  /// parses a string in any format into a [DateTime] object.
-  /// missing components will be assumed to default value:
-  /// e.g. 'Jan 2023' becomes DateTime(2023, 1), which is 1 Jan 2023
-  /// if year is missing, the closest result to today is chosen.
+  /// Tries to parse a string in any format into a [DateTime] object.
+  ///
+  /// Returns null if the string is not a valid date.
+  ///
+  /// Does not handle other exceptions.
   DateTime? tryParse(String formattedString) {
+    try {
+      return parse(formattedString);
+    } on FormatException {
+      return null;
+    }
+  }
+
+  DateTime? _tryParse(String formattedString) {
+    // TODO(gbassip): allow the following:
+    // missing components will be assumed to default value:
+    // e.g. 'Jan 2023' becomes DateTime(2023, 1), which is 1 Jan 2023
+    // if year is missing, the closest result to today is chosen.
     final caseInsensitive = replaceSeparators(
       formattedString.trim().toLowerCase(),
-      allowedSeparators,
+      _info.allowedSeparators,
     );
 
     return _applyRules(caseInsensitive).firstWhere(

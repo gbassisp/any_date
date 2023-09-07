@@ -23,7 +23,7 @@ final separators = [
   ':',
   '_',
   '/',
-  ...defaultParser.allowedSeparators,
+  ...AnyDate.defaultSettings.allowedSeparators,
 ];
 
 final range = DateTimeRange(
