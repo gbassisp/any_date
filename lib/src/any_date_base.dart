@@ -48,6 +48,10 @@ class DateParsingParameters {
 
 /// A month, with its number and name. Used to support multiple languages
 /// without adding another dependency.
+///
+/// It seems far fetched to have this class here, but it follows a similar
+/// approach to the Python dateutil package. See:
+/// https://dateutil.readthedocs.io/en/stable/_modules/dateutil/parser/_parser.html#parserinfo
 class Month {
   /// default constructor
   const Month({required this.number, required this.name});
@@ -57,12 +61,17 @@ class Month {
 
   /// month name
   final String name;
+
+  @override
+  String toString() => 'Month($number, $name)';
 }
 
 /// A weekday with its number and name. Used to support multiple languages
 /// without adding another dependency.
 ///
 /// Must match DateTime().weekday
+///
+/// Reason for this is the same as for [Month]
 class Weekday {
   /// default constructor
   const Weekday({required this.number, required this.name});
@@ -72,6 +81,9 @@ class Weekday {
 
   /// month name
   final String name;
+
+  @override
+  String toString() => 'Weekday($number, $name)';
 }
 
 /// used on iso date spacing; can and will be replaced with space
