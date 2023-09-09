@@ -1,3 +1,22 @@
+import 'package:any_date/src/date_range.dart';
+
+/// used to run tests on a wide range of dates
+const exhaustiveTests = bool.fromEnvironment('exhaustive', defaultValue: true);
+const hugeRange = bool.fromEnvironment('huge');
+
+final range = DateTimeRange(
+  start: DateTime(
+    1999, // y
+    // 1, // h
+  ),
+  end: DateTime(
+    hugeRange ? 2050 : 2000, // y
+
+    // 1, // h
+  ),
+);
+final singleDate = DateTime(2023, 1, 2, 3, 4, 5, 6, 7);
+
 const otherFormats = {
   'EEEE, MMMM d, y',
   'EEEE, MMMM d, y h:m:s.SS a',
@@ -160,3 +179,89 @@ const dayFirstWithWeekday = {
   // 'EEEE, d.M',
   // 'EEEE, d',
 };
+
+final _years = List.generate(5, (index) => 'y' * (index + 1)).toSet();
+final _months = List.generate(2, (index) => 'M' * (index + 1)).toSet();
+final _days = List.generate(2, (index) => 'd' * (index + 1)).toSet();
+final _hours = List.generate(2, (index) => 'H' * (index + 1)).toSet();
+final _minutes = List.generate(2, (index) => 'm' * (index + 1)).toSet();
+final _seconds = List.generate(2, (index) => 's' * (index + 1)).toSet();
+final _milliseconds = List.generate(6, (index) => 'S' * (index + 1)).toSet();
+
+extension _SwapExtension on String {
+  String swap(String a, String b) {
+    const unusedString = 'x';
+    return replaceAll(a, unusedString)
+        .replaceAll(b, a)
+        .replaceAll(unusedString, b);
+  }
+}
+
+Set<String> get dmyFormats {
+  final set = ymdFormats;
+  final res = <String>{};
+  for (final f in set) {
+    res.add(f.swap('y', 'd'));
+  }
+  return res;
+}
+
+Set<String> get mdyFormats {
+  final set = dmyFormats;
+  final res = <String>{};
+  for (final f in set) {
+    res.add(f.swap('d', 'm'));
+  }
+  return res;
+}
+
+Set<String> get ymdFormats {
+  final set = <String>{};
+  for (final y in _years) {
+    for (final m in _months) {
+      for (final d in _days) {
+        set.add('$y/$m/$d');
+      }
+    }
+  }
+
+  final timeComponents = <String>{};
+  for (final f in set) {
+    timeComponents
+      ..addAll(hm.map((e) => '$f $e'))
+      ..addAll(hms.map((e) => '$f $e'))
+      ..addAll(hmsS.map((e) => '$f $e'));
+  }
+  final hma = <String>{}
+    ..addAll(timeComponents.map((e) => '${e.replaceAll('H', 'h')} a'));
+
+  return set
+    ..addAll(timeComponents)
+    ..addAll(hma);
+}
+
+Set<String> get hm {
+  final set = <String>{};
+  for (final h in _hours) {
+    for (final m in _minutes) {
+      set.add('$h:$m');
+    }
+  }
+  return set;
+}
+
+Set<String> get hms {
+  final set = hm;
+  for (final s in _seconds) {
+    set.addAll(hm.map((e) => '$e:$s'));
+  }
+  return set;
+}
+
+Set<String> get hmsS {
+  final set = hms;
+  for (final ms in _milliseconds) {
+    set.addAll(hms.map((e) => e.endsWith('s') ? '$e.$ms' : e));
+  }
+  return set;
+}

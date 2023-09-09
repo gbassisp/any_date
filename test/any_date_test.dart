@@ -11,10 +11,6 @@ extension _DateFormatHacks on String {
   bool get isInvalid => isAlpha || this.isEmpty || this == '_';
 }
 
-/// used to run tests on a wide range of dates
-const exhaustiveTests = bool.fromEnvironment('exhaustive', defaultValue: true);
-const hugeRange = bool.fromEnvironment('huge');
-
 const defaultParser = AnyDate();
 final separators = [
   ' ',
@@ -25,18 +21,6 @@ final separators = [
   '/',
   ...AnyDate.defaultSettings.allowedSeparators,
 ];
-
-final range = DateTimeRange(
-  start: DateTime(
-    1989, // y
-    // 1, // h
-  ),
-  end: DateTime(
-    hugeRange ? 2050 : 2005, // y
-    // 1, // h
-  ),
-);
-final singleDate = DateTime(2023, 1, 2, 3, 4, 5, 6, 7);
 
 void testRange(
   AnyDate parser,
@@ -83,38 +67,41 @@ extension _TryParse on DateFormat {
   }
 }
 
+void compare(DateFormat format, AnyDate anyDate) {
+  const step = Duration(
+    hours: 23,
+    minutes: 13,
+    seconds: 17,
+    microseconds: 123,
+  );
+  // for (final singleDate in range.every(step)) {
+  for (final r in [range.days, range.every(step)]) {
+    for (final singleDate in r) {
+      final f = format;
+      final d = f.format(singleDate);
+      final a = anyDate;
+      final reason = 'format: ${format.pattern}, date: $d';
+      final e = f.tryParse(d);
+      // expect(e, isNotNull, reason: 'DateFormat failed: $reason');
+      final r = a.tryParse(d);
+      expect(r, isNotNull, reason: 'AnyDate failed: $reason');
+      // result should be formatted the same as the original
+      final reformat = f.format(r!);
+      expect(
+        d,
+        reformat,
+        reason: 'format: ${format.pattern},\n'
+            'formatted: $d,\n'
+            'reformatted: $reformat,\n'
+            'result: $r,\n'
+            'expect: $e',
+      );
+    }
+  }
+}
+
 void main() {
   group('basic AnyDate().parse tests', () {
-    void compare(DateFormat format, AnyDate anyDate) {
-      const step = Duration(
-        hours: 23,
-        minutes: 13,
-        seconds: 17,
-        microseconds: 123,
-      );
-      // for (final singleDate in range.every(step)) {
-      for (final r in [range.days, range.every(step)]) {
-        for (final singleDate in r) {
-          final f = format;
-          final d = f.format(singleDate);
-          final a = anyDate;
-          final reason = 'format: ${format.pattern}, date: $d';
-          final e = f.tryParse(d);
-          expect(e, isNotNull, reason: 'DateFormat failed: $reason');
-          final r = a.tryParse(d);
-          expect(r, isNotNull, reason: 'AnyDate failed: $reason');
-          expect(
-            r,
-            e,
-            reason: 'format: ${format.pattern},\n'
-                'date: $d,\n'
-                'result: $r,\n'
-                'expect: $e',
-          );
-        }
-      }
-    }
-
     for (final format in {
       ...monthFirstFormats,
       ...monthFirstWithWeekday,
