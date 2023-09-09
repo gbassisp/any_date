@@ -81,22 +81,25 @@ void compare(DateFormat format, AnyDate anyDate) {
       final d = f.format(singleDate);
       final a = anyDate;
       final config = a.info;
-      final reason = 'format: ${format.pattern}, date: $d, config: $config';
       final e = f.tryParse(d);
       // expect(e, isNotNull, reason: 'DateFormat failed: $reason');
       final r = a.tryParse(d);
+      final reason = 'format: ${format.pattern}\n '
+          'date: $d\n'
+          'actual DateTime: $singleDate\n'
+          'parsed DateTime: $r\n'
+          'config: $config\n';
       expect(r, isNotNull, reason: 'AnyDate failed: $reason');
       // result should be formatted the same as the original
       final reformat = f.format(r!);
       expect(
-        d,
         reformat,
+        d,
         reason: 'format: ${format.pattern},\n'
             'formatted: $d,\n'
             'reformatted: $reformat,\n'
             'result: $r,\n'
             'expect: $e\n'
-            'config: $config\n'
             'reason: $reason',
       );
     }
