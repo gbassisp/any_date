@@ -82,7 +82,7 @@ void main() {
     test('UTC', () {
       String s;
       for (final date in r.days) {
-        final d = date.copyWith(
+        final d = date.safeCopyWith(
           hour: 10,
           minute: 11,
           second: 12,

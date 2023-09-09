@@ -3,7 +3,7 @@ import 'package:any_date/any_date.dart';
 /// a collection of extensions on [DateTime]
 extension DateTimeExtension on DateTime {
   /// returns a copy of this DateTime with the given values
-  DateTime copyWith({
+  DateTime safeCopyWith({
     int? year,
     int? month,
     int? day,
@@ -34,32 +34,36 @@ extension DateTimeExtension on DateTime {
       microsecond,
     );
 
-    if (!allowRollover &&
-        month > 0 &&
-        month <= 12 &&
-        day > 0 &&
-        day <= 31 &&
-        hour >= 0 &&
-        hour < 24 &&
-        minute >= 0 &&
-        minute < 60 &&
-        second >= 0 &&
-        second < 60 &&
-        millisecond >= 0 &&
-        millisecond < 1000 &&
-        microsecond >= 0 &&
-        microsecond < 1000 &&
+    if (
+        // rollover is not allowed
+        !allowRollover
+            // and any value is out of range
+            &&
+            !(month > 0 &&
+                month <= 12 &&
+                day > 0 &&
+                day <= 31 &&
+                hour >= 0 &&
+                hour < 24 &&
+                minute >= 0 &&
+                minute < 60 &&
+                second >= 0 &&
+                second < 60 &&
+                millisecond >= 0 &&
+                millisecond < 1000 &&
+                microsecond >= 0 &&
+                microsecond < 1000)
 
-        // DateTime constructor accepts any int and rolls over values
-        // (e.g. 13 months = 1y1mo)
-        !(copied.year == year &&
-            copied.month == month &&
-            copied.day == day &&
-            copied.hour == hour &&
-            copied.minute == minute &&
-            copied.second == second &&
-            copied.millisecond == millisecond &&
-            copied.microsecond == microsecond)) {
+            // and the resulting value is different than the original
+            &&
+            !(copied.year == year &&
+                copied.month == month &&
+                copied.day == day &&
+                copied.hour == hour &&
+                copied.minute == minute &&
+                copied.second == second &&
+                copied.millisecond == millisecond &&
+                copied.microsecond == microsecond)) {
       throw FormatException('invalid date time $copied');
     }
 
@@ -70,7 +74,8 @@ extension DateTimeExtension on DateTime {
   DateTime copyWithJson(Map<String, Object?> json) {
     final j = json.map((key, value) => MapEntry(key.toLowerCase(), value));
 
-    return copyWith(
+    return safeCopyWith(
+      allowRollover: false,
       year: '${j['year']}'.tryToInt(),
       month: '${j['month']}'.tryToInt(),
       day: '${j['day']}'.tryToInt(),
@@ -89,7 +94,7 @@ extension DateTimeExtension on DateTime {
       const Duration(hours: 36),
     ); // avoid daylight savings, leap seconds, etc... issues
 
-    return copyWith(
+    return safeCopyWith(
       year: next.year,
       month: next.month,
       day: next.day,

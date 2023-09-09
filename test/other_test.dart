@@ -1,5 +1,6 @@
 import 'package:any_date/src/any_date_base.dart';
 import 'package:any_date/src/date_range.dart';
+import 'package:any_date/src/extensions.dart';
 import 'package:intl/intl.dart';
 import 'package:test/test.dart';
 
@@ -50,6 +51,28 @@ void main() {
       expect(repeated.swap('a', 'b'), 'baccc');
       expect(repeated.swap('a', 'c'), 'cccba');
       expect(repeated.swap('b', 'c'), 'acccb');
+    });
+
+    test('safe copy with', () {
+      final a = DateTime.now();
+      final b = a.safeCopyWith(year: 2000);
+      expect(b.year, 2000);
+      expect(b.month, a.month);
+      expect(b.day, a.day);
+      expect(b.hour, a.hour);
+      expect(b.minute, a.minute);
+      expect(b.second, a.second);
+      expect(b.millisecond, a.millisecond);
+      expect(b.microsecond, a.microsecond);
+
+      expect(
+        () => a.safeCopyWith(month: 13, allowRollover: false),
+        throwsException,
+      );
+      expect(
+        () => a.safeCopyWith(month: 13, allowRollover: true),
+        returnsNormally,
+      );
     });
   });
 
