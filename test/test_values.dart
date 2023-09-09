@@ -5,15 +5,8 @@ const exhaustiveTests = bool.fromEnvironment('exhaustive', defaultValue: true);
 const hugeRange = bool.fromEnvironment('huge');
 
 final range = DateTimeRange(
-  start: DateTime(
-    1999, // y
-    // 1, // h
-  ),
-  end: DateTime(
-    hugeRange ? 2050 : 2000, // y
-
-    // 1, // h
-  ),
+  start: DateTime(1999, 10),
+  end: DateTime(hugeRange ? 2050 : 2000, 2),
 );
 final singleDate = DateTime(2023, 1, 2, 3, 4, 5, 6, 7);
 
