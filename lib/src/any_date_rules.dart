@@ -158,8 +158,15 @@ Map<String, dynamic> _parseMap(
     map['second'] = second;
   }
   if (map.containsKey('microsecond')) {
+    assert(!map.containsKey('millisecond'), 'cannot have both ms and us $map');
     final ms = int.tryParse((map['microsecond'] as String).padRight(6, '0'));
     map['microsecond'] = ms;
+
+    // split micro into milli and micro
+    final milli = ms! ~/ 1000;
+    final micro = ms % 1000;
+    map['millisecond'] = milli;
+    map['microsecond'] = micro;
   }
   return map;
 }
