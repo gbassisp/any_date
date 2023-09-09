@@ -243,17 +243,27 @@ class DateParserInfo {
       weekdays: weekdays ?? this.weekdays,
     );
   }
+
+  @override
+  String toString() {
+    return 'DateParserInfo(dayFirst: $dayFirst, yearFirst: $yearFirst, '
+        'allowedSeparators: $allowedSeparators, months: $months, '
+        'weekdays: $weekdays)';
+  }
 }
 
 /// main class, containing most [DateTime] utils
 class AnyDate {
   /// default constructor
-  const AnyDate({this.info});
+  const AnyDate({DateParserInfo? info}) : _info = info;
 
   /// settings for parsing and resolving ambiguous cases
-  final DateParserInfo? info;
+  // final DateParserInfo? info;
 
-  DateParserInfo get _info => info ?? defaultSettings;
+  final DateParserInfo? _info;
+
+  /// resolved info being used
+  DateParserInfo get info => _info ?? defaultSettings;
 
   /// static value for global setting
   static DateParserInfo defaultSettings = const DateParserInfo();
@@ -290,7 +300,7 @@ class AnyDate {
     // if year is missing, the closest result to today is chosen.
     final caseInsensitive = _replaceSeparators(
       formattedString.trim().toLowerCase(),
-      _info.allowedSeparators,
+      info.allowedSeparators,
     );
 
     return _applyRules(caseInsensitive).firstWhere(
@@ -303,12 +313,12 @@ class AnyDate {
   Iterable<DateTime?> _applyRules(
     String formattedString,
   ) sync* {
-    final info = _info.copyWith(
+    final i = info.copyWith(
       allowedSeparators: _usedSeparators.toList(),
     );
     var p = DateParsingParameters(
       formattedString: formattedString,
-      parserInfo: info,
+      parserInfo: i,
     );
 
     p = p.copyWith(
@@ -317,13 +327,14 @@ class AnyDate {
       simplifiedString: _removeWeekday(p),
     );
 
-    yield MultipleRules(info.dayFirst ? _yearLastDayFirst : _yearLast).apply(p);
+    yield ambiguousCase.apply(p);
+    yield MultipleRules(i.dayFirst ? _yearLastDayFirst : _yearLast).apply(p);
 
-    final r = MultipleRules(info.dayFirst ? _dayFirst : _defaultRules);
+    final r = MultipleRules(i.dayFirst ? _dayFirst : _defaultRules);
     yield r.apply(p);
 
     // default rule from DateTime
-    if (!info.dayFirst) {
+    if (!i.dayFirst) {
       yield dateTimeTryParse(formattedString);
     }
   }

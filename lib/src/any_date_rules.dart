@@ -6,8 +6,9 @@ import 'package:any_date/src/extensions.dart';
 
 /// only these separators are known by the parser; others will be replaced
 const usedSeparators = {'-', ' ', ':'};
-const _yearPattern = r'(?<year>\d+)';
 const _longYearPattern = r'(?<year>\d{3,5})';
+const _yearPattern = r'(?<year>\d+)';
+const _ambiguousYearPattern = r'(?<year>\d{2})';
 const _dayPattern = r'(?<day>\d{1,2})';
 const _textMonthPattern = r'(?<month>\w+)';
 const _monthPattern = r'(?<month>\d{1,2})';
@@ -38,13 +39,50 @@ DateTime noValidFormatFound(String formattedString) {
   return DateTime.parse(formattedString.toUpperCase());
 }
 
-DateTime? _try(RegExp format, String formattedString) {
+int _closest(List<int> list, int value) {
+  var closest = list.first;
+  var diff = (closest - value).abs();
+  for (final item in list) {
+    final newDiff = (item - value).abs();
+    if (newDiff < diff) {
+      closest = item;
+      diff = newDiff;
+    }
+  }
+  return closest;
+}
+
+int _parseYear(String yearString) {
+  final year = int.parse(yearString);
+  if (yearString.length == 2) {
+    // return _parseAmbiguousYear(year);
+    final now = DateTime.now();
+    final currentCentury = now.year ~/ 100;
+    final onCurrentCentury = '$currentCentury$year'.toInt();
+    final onNextCentury = onCurrentCentury + 100;
+    final onPreviousCentury = onCurrentCentury - 100;
+    return _closest(
+      [onCurrentCentury, onNextCentury, onPreviousCentury],
+      now.year,
+    );
+  }
+  return year;
+}
+
+DateTime? _try(
+  RegExp format,
+  String formattedString, {
+  bool shortYear = false,
+}) {
   try {
     final now = DateTime(DateTime.now().year);
     final match = format.firstMatch(formattedString)!;
     var map = <String, dynamic>{};
     for (final n in match.groupNames) {
       map[n] = match.namedGroup(n);
+    }
+    if (shortYear) {
+      map['year'] = _parseYear(map['year']!.toString());
     }
     map = _parseMap(map, formattedString);
     return now.copyWithJson(map);
@@ -125,6 +163,59 @@ Map<String, dynamic> _parseMap(
   }
   return map;
 }
+
+final DateParsingRule ambiguousCase = SimpleRule((params) {
+  final y = params.parserInfo.yearFirst;
+  final d = params.parserInfo.dayFirst;
+
+  final String base;
+  if (y && d) {
+    // non-sense ydm format
+    base = '$_ambiguousYearPattern'
+        '$_s'
+        '$_dayPattern'
+        '$_s'
+        '$_monthPattern';
+  } else if (y) {
+    // ymd
+    base = '$_ambiguousYearPattern'
+        '$_s'
+        '$_monthPattern'
+        '$_s'
+        '$_dayPattern';
+  } else if (d) {
+    // dmy
+    base = '$_dayPattern'
+        '$_s'
+        '$_monthPattern'
+        '$_s'
+        '$_ambiguousYearPattern';
+  } else {
+    // mdy
+    base = '$_monthPattern'
+        '$_s'
+        '$_ambiguousYearPattern'
+        '$_s'
+        '$_dayPattern';
+  }
+
+  // const negativeLookBehind = r'(?<!\d)';
+  const negativeLookBehind = '^';
+  const negativeLookAhead = r'(?!\d)';
+  final b = '$negativeLookBehind$base$negativeLookAhead';
+  DateTime? res;
+  for (final timePattern in _timePatterns) {
+    final re = RegExp(b + _s + timePattern);
+    res = _try(re, params.formattedString);
+    if (res != null) {
+      return res;
+    }
+  }
+  return _try(
+    RegExp(b),
+    params.formattedString,
+  );
+});
 
 final DateParsingRule ymd = MultipleRules([
   maybeDateTimeParse,
