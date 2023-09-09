@@ -75,7 +75,7 @@ extension DateTimeExtension on DateTime {
     final j = json.map((key, value) => MapEntry(key.toLowerCase(), value));
 
     return safeCopyWith(
-      allowRollover: false,
+      // allowRollover: false,
       year: '${j['year']}'.tryToInt(),
       month: '${j['month']}'.tryToInt(),
       day: '${j['day']}'.tryToInt(),

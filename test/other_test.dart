@@ -66,7 +66,10 @@ void main() {
       expect(b.microsecond, a.microsecond);
 
       expect(
-        () => a.safeCopyWith(month: 13, allowRollover: false),
+        () => a.safeCopyWith(
+          month: 13,
+          // allowRollover: false,
+        ),
         throwsException,
       );
       expect(
