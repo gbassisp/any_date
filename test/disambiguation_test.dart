@@ -12,7 +12,8 @@ void main() {
     for (final format in formats) {
       test('$ymd disambiguation - $format', () {
         final f = DateFormat(format);
-        const a = AnyDate();
+        const info = DateParserInfo(yearFirst: true);
+        const a = AnyDate(info: info);
         compare(f, a);
       });
     }
@@ -23,7 +24,8 @@ void main() {
     for (final format in formats) {
       test('$dmy disambiguation - $format', () {
         final f = DateFormat(format);
-        const a = AnyDate();
+        const info = DateParserInfo(dayFirst: true);
+        const a = AnyDate(info: info);
         compare(f, a);
       });
     }
