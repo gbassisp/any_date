@@ -1,4 +1,8 @@
 
+## 0.1.9
+
+- Fix ambiguous parsing of `aa/bb/cc` format (e.g 01/02/03 that can be parsed as 2001-02-03, 2003-01-02, or 2003-02-01)
+
 ## 0.1.8
 
 - Fix most of time component parsing

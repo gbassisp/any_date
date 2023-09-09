@@ -1,6 +1,6 @@
 name: any_date
 description: A package for parsing String into DateTime in any format. Inspired by python's dateutil.parser, while also making it compatible with DateTime.parse.
-version: 0.1.8
+version: 0.1.9
 repository: https://github.com/gbassisp/any_date
 
 environment:
