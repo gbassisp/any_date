@@ -3,6 +3,8 @@ import 'package:any_date/src/date_range.dart';
 import 'package:intl/intl.dart';
 import 'package:test/test.dart';
 
+import 'test_values.dart';
+
 final _r = DateTimeRange(start: DateTime(2000), end: DateTime(2002));
 
 Weekday _weekdayByName(String name) {
@@ -34,6 +36,20 @@ void main() {
         expect(month1.number, month2.number);
         expect(month1.number, d.month);
       }
+    });
+  });
+
+  group('test utils', () {
+    test('String.swap extension', () {
+      const s = 'abc';
+      expect(s.swap('a', 'b'), 'bac');
+      expect(s.swap('a', 'c'), 'cba');
+      expect(s.swap('b', 'c'), 'acb');
+
+      const repeated = 'abccc';
+      expect(repeated.swap('a', 'b'), 'baccc');
+      expect(repeated.swap('a', 'c'), 'cccba');
+      expect(repeated.swap('b', 'c'), 'acccb');
     });
   });
 

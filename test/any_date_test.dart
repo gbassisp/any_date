@@ -80,7 +80,8 @@ void compare(DateFormat format, AnyDate anyDate) {
       final f = format;
       final d = f.format(singleDate);
       final a = anyDate;
-      final reason = 'format: ${format.pattern}, date: $d';
+      final config = a.info;
+      final reason = 'format: ${format.pattern}, date: $d, config: $config';
       final e = f.tryParse(d);
       // expect(e, isNotNull, reason: 'DateFormat failed: $reason');
       final r = a.tryParse(d);
@@ -94,7 +95,9 @@ void compare(DateFormat format, AnyDate anyDate) {
             'formatted: $d,\n'
             'reformatted: $reformat,\n'
             'result: $r,\n'
-            'expect: $e',
+            'expect: $e\n'
+            'config: $config\n'
+            'reason: $reason',
       );
     }
   }

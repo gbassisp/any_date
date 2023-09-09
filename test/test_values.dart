@@ -181,12 +181,23 @@ final _minutes = List.generate(2, (index) => 'm' * (index + 1)).toSet();
 final _seconds = List.generate(2, (index) => 's' * (index + 1)).toSet();
 final _milliseconds = List.generate(6, (index) => 'S' * (index + 1)).toSet();
 
-extension _SwapExtension on String {
+extension SwapExtension on String {
+  /// we assume it's used to replace yyyy with dd or similar;
+  ///
+  /// hence we don't need to worry about complex cases, only simple ones
   String swap(String a, String b) {
     const unusedString = 'x';
-    return replaceAll(a, unusedString)
-        .replaceAll(b, a)
-        .replaceAll(unusedString, b);
+
+    final countA = a.allMatches(this).length;
+    final countB = b.allMatches(this).length;
+    assert(countA > 0, 'no "$a" in "$this"');
+    assert(countB > 0, 'no "$b" in "$this"');
+    final pattern1 = RegExp('$a+');
+    final pattern2 = RegExp('$b+');
+
+    return replaceAll(pattern1, unusedString)
+        .replaceAll(pattern2, a * countA)
+        .replaceAll(unusedString, b * countB);
   }
 }
 
@@ -203,7 +214,7 @@ Set<String> get mdyFormats {
   final set = dmyFormats;
   final res = <String>{};
   for (final f in set) {
-    res.add(f.swap('d', 'm'));
+    res.add(f.swap('d', 'M'));
   }
   return res;
 }
