@@ -105,6 +105,9 @@ extension StringParsers on String {
   /// returns the string parsed as an int or null
   int? tryToInt() => int.tryParse(trim());
 
+  /// returns the string parsed as int
+  int toInt() => int.parse(trim());
+
   /// parses the string as a DateTime
   DateTime? tryToDateTime({bool utc = false}) {
     try {
