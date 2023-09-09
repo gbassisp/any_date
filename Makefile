@@ -31,7 +31,7 @@ dry-run: kill
 .PHONY: test
 test:
 	@echo "Running tests..."
-	$(DART_CMD) test
+	$(DART_CMD) test --test-randomize-ordering-seed=random
 
 .PHONY: coverage
 coverage:
