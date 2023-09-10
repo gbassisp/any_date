@@ -6,6 +6,29 @@ import 'any_date_test.dart';
 import 'test_values.dart';
 
 void main() {
+  const simple = '01/02/03';
+  group('simple disambiguation', () {
+    test('ymd', () {
+      final d = DateTime(2001, 2, 3);
+      const info = DateParserInfo(yearFirst: true);
+      const a = AnyDate(info: info);
+      expect(a.parse(simple), equals(d));
+    });
+
+    test('dmy', () {
+      final d = DateTime(2003, 2);
+      const info = DateParserInfo(dayFirst: true);
+      const a = AnyDate(info: info);
+      expect(a.parse(simple), equals(d));
+    });
+
+    test('mdy', () {
+      final d = DateTime(2003, 1, 2);
+      const a = AnyDate();
+      expect(a.parse(simple), equals(d));
+    });
+  });
+
   const ymd = 'yy/mm/dd';
   group(ymd, () {
     final formats = ymdFormats;

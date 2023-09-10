@@ -54,18 +54,25 @@ int _closest(List<int> list, int value) {
 
 int _parseYear(String yearString) {
   final year = int.parse(yearString);
+  final now = DateTime.now();
+  assert(
+    yearString.length == 2,
+    'expected double digit year, but got $yearString',
+  );
   if (yearString.length == 2) {
-    // return _parseAmbiguousYear(year);
-    final now = DateTime.now();
-    final currentCentury = now.year ~/ 100;
-    final onCurrentCentury = '$currentCentury$year'.toInt();
-    final onNextCentury = onCurrentCentury + 100;
-    final onPreviousCentury = onCurrentCentury - 100;
+    final c = now.year ~/ 100;
+    final currentCentury = '$c$yearString'.toInt();
+    final nextCentury = currentCentury + 100;
+    final previousCentury = currentCentury - 100;
     return _closest(
-      [onCurrentCentury, onNextCentury, onPreviousCentury],
+      [currentCentury, nextCentury, previousCentury],
       now.year,
     );
   }
+  assert(
+    year > 1900,
+    'expected year close to $now, but got $year from $yearString',
+  );
   return year;
 }
 
@@ -213,15 +220,12 @@ final DateParsingRule ambiguousCase = SimpleRule((params) {
   DateTime? res;
   for (final timePattern in _timePatterns) {
     final re = RegExp(b + _s + timePattern);
-    res = _try(re, params.formattedString);
+    res = _try(re, params.formattedString, shortYear: true);
     if (res != null) {
       return res;
     }
   }
-  return _try(
-    RegExp(b),
-    params.formattedString,
-  );
+  return _try(RegExp(b), params.formattedString, shortYear: true);
 });
 
 final DateParsingRule ymd = MultipleRules([
