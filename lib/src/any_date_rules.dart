@@ -201,9 +201,9 @@ final DateParsingRule ambiguousCase = SimpleRule((params) {
     // mdy
     base = '$_monthPattern'
         '$_s'
-        '$_ambiguousYearPattern'
+        '$_dayPattern'
         '$_s'
-        '$_dayPattern';
+        '$_ambiguousYearPattern';
   }
 
   // const negativeLookBehind = r'(?<!\d)';
