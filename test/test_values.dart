@@ -4,9 +4,11 @@ import 'package:any_date/src/date_range.dart';
 const exhaustiveTests = bool.fromEnvironment('exhaustive', defaultValue: true);
 const hugeRange = bool.fromEnvironment('huge');
 
+final now = DateTime(2000); // DateTime.now();
+const span = 1;
 final range = DateTimeRange(
-  start: DateTime(1998, 10),
-  end: DateTime(hugeRange ? 2050 : 2001, 2),
+  start: DateTime(now.year - span),
+  end: DateTime(now.year + span),
 );
 final singleDate = DateTime(2023, 1, 2, 3, 4, 5, 6, 7);
 
