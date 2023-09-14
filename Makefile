@@ -11,7 +11,7 @@ export PATH := $(HOME)/.pub-cache/bin:$(PATH)
 
 
 .PHONY: all
-all: version get test analyze doc dry-run
+all: version get analyze doc dry-run test
 
 .PHONY: kill
 kill: 
@@ -59,7 +59,7 @@ downgrade:
 .PHONY: doc
 doc:
 	@echo "Generating documentation..."
-	$(DART_CMD) doc || echo "Failed to generate documentation - maybe it's dart 2.12?"
+	@$(DART_CMD) doc || echo "Failed to generate documentation - maybe it's dart 2.12?"
 
 .PHONY: analyze
 analyze:
