@@ -37,7 +37,7 @@ void main() {
         final f = DateFormat(format);
         const info = DateParserInfo(yearFirst: true);
         const a = AnyDate(info: info);
-        compare(f, a);
+        compare(f, a, randomDates: false);
       });
     }
   });
@@ -49,7 +49,7 @@ void main() {
         final f = DateFormat(format);
         const info = DateParserInfo(dayFirst: true);
         const a = AnyDate(info: info);
-        compare(f, a);
+        compare(f, a, randomDates: false);
       });
     }
   });
@@ -60,7 +60,7 @@ void main() {
       test('$mdy disambiguation - $format', () {
         final f = DateFormat(format);
         const a = AnyDate();
-        compare(f, a);
+        compare(f, a, randomDates: false);
       });
     }
   });

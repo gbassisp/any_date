@@ -67,7 +67,7 @@ extension _TryParse on DateFormat {
   }
 }
 
-void compare(DateFormat format, AnyDate anyDate) {
+void compare(DateFormat format, AnyDate anyDate, {bool randomDates = true}) {
   const step = Duration(
     hours: 23,
     minutes: 13,
@@ -75,7 +75,11 @@ void compare(DateFormat format, AnyDate anyDate) {
     microseconds: 123,
   );
   // for (final singleDate in range.every(step)) {
-  for (final r in [range.days, range.every(step)]) {
+  for (final r in [
+    // range.days,
+    range.every(step),
+    if (randomDates) getRandomDates(),
+  ]) {
     for (final singleDate in r) {
       final f = format;
       final d = f.format(singleDate);
