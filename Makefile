@@ -45,6 +45,16 @@ get:
 	@echo "Getting dependencies..."
 	$(DART_CMD) pub get 
 
+.PHONY: upgrade
+upgrade:
+	@echo "Upgrading dependencies..."
+	$(DART_CMD) pub upgrade
+
+.PHONY: downgrade
+downgrade:
+	@echo "Downgrading dependencies..."
+	$(DART_CMD) pub downgrade
+
 
 .PHONY: doc
 doc:
