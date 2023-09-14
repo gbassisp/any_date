@@ -7,8 +7,8 @@ const hugeRange = bool.fromEnvironment('huge');
 final now = DateTime(2000); // DateTime.now();
 const span = 1;
 final range = DateTimeRange(
-  start: DateTime(now.year - span),
-  end: DateTime(now.year + span),
+  start: DateTime(now.year - span, 7),
+  end: DateTime(now.year + span - 1, 7),
 );
 final singleDate = DateTime(2023, 1, 2, 3, 4, 5, 6, 7);
 
