@@ -59,7 +59,7 @@ downgrade:
 .PHONY: doc
 doc:
 	@echo "Generating documentation..."
-	$(DART_CMD) doc
+	$(DART_CMD) doc || echo "Failed to generate documentation - maybe it's dart 2.12?"
 
 .PHONY: analyze
 analyze:
