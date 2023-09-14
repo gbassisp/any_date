@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:any_date/src/date_range.dart';
 
 /// used to run tests on a wide range of dates
@@ -5,11 +7,49 @@ const exhaustiveTests = bool.fromEnvironment('exhaustive', defaultValue: true);
 const hugeRange = bool.fromEnvironment('huge');
 
 final now = DateTime(2000); // DateTime.now();
-const span = 1;
+const _span = 1;
 final range = DateTimeRange(
-  start: DateTime(now.year - span, 7),
-  end: DateTime(now.year + span - 1, 7),
+  start: DateTime(now.year - _span, 7),
+  end: DateTime(now.year + _span - 1, 7),
 );
+const _span2 = 100;
+final century = DateTimeRange(
+  start: DateTime(now.year - _span2, 7),
+  end: DateTime(now.year + _span2 - 1, 7),
+);
+const _span3 = 1000;
+final millennium = DateTimeRange(
+  start: DateTime(now.year - _span3, 7),
+  end: DateTime(now.year + _span3 - 1, 7),
+);
+
+const _step = Duration(
+  hours: 1,
+  minutes: 13,
+  seconds: 17,
+  milliseconds: 23,
+  microseconds: 29,
+);
+final manyDates = List<DateTime>.unmodifiable(millennium.every(_step));
+Iterable<DateTime> getRandomDates([int? count]) sync* {
+  const def = exhaustiveTests ? 1000 : 100;
+  final limit = count ?? def;
+  if (limit >= manyDates.length) {
+    yield* manyDates;
+    return;
+  }
+
+  final r = Random();
+  final res = <DateTime>{};
+  while (res.length < limit) {
+    final d = manyDates[r.nextInt(manyDates.length)];
+    final added = res.add(d);
+    if (added) {
+      yield d;
+    }
+  }
+}
+
 final singleDate = DateTime(2023, 1, 2, 3, 4, 5, 6, 7);
 
 const otherFormats = {

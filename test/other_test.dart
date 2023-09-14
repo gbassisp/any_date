@@ -77,6 +77,27 @@ void main() {
         returnsNormally,
       );
     });
+
+    test('random tests return expected amount of dates', () {
+      // confirm it never exceeds
+      final limit = manyDates.length;
+      expect(getRandomDates(limit).length, limit);
+      expect(getRandomDates(limit + 1).length, limit);
+
+      // confirm it returns the expected amount
+      const a = 1;
+      const b = 10;
+      const c = 100;
+      expect(getRandomDates(a).length, a);
+      expect(getRandomDates(b).length, b);
+      expect(getRandomDates(c).length, c);
+
+      // confirm every element is unique
+      expect(getRandomDates(a).toSet().length, a);
+      expect(getRandomDates(b).toSet().length, b);
+      expect(getRandomDates(c).toSet().length, c);
+      expect(getRandomDates(limit).toSet().length, limit);
+    });
   });
 
   group('learning tests', () {
