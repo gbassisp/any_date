@@ -382,6 +382,7 @@ const _shortMonths = [
   Month(number: 7, name: 'Jul'),
   Month(number: 8, name: 'Aug'),
   Month(number: 9, name: 'Sep'),
+  Month(number: 9, name: 'Sept'),
   Month(number: 10, name: 'Oct'),
   Month(number: 11, name: 'Nov'),
   Month(number: 12, name: 'Dec'),
