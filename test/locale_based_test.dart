@@ -1,3 +1,4 @@
+import 'package:any_date/any_date.dart';
 import 'package:any_date/src/extensions.dart';
 import 'package:intl/date_symbol_data_file.dart'
     show availableLocalesForDateFormatting;
@@ -25,8 +26,21 @@ extension _ListExtension<T> on Iterable<T> {
 // TODO(gbassisp): promote this to lib/ once we enable support for locale
 extension _LocaleExtensions on Locale {
   static final _date = DateTime(1234, 5, 6, 7, 8, 9);
+
+  String get _yMd => DateFormat.yMd(toString()).format(_date);
+
+  bool get usesNumericSymbols {
+    try {
+      usesMonthFirst;
+      usesYearFirst;
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   bool get usesMonthFirst {
-    final formatted = DateFormat.yMd(toString()).format(_date);
+    final formatted = _yMd;
     final fields = formatted.split(RegExp(r'\D'))
       ..removeWhere((element) => element.trim().tryToInt() == null);
     final numbers = fields.map((e) => e.toInt());
@@ -47,7 +61,7 @@ extension _LocaleExtensions on Locale {
   }
 
   bool get usesYearFirst {
-    final formatted = DateFormat.yMd(toString()).format(_date);
+    final formatted = _yMd;
     final fields = formatted.split(RegExp(r'\D'))
       ..removeWhere((element) => element.trim().tryToInt() == null);
     final numbers = fields.map((e) => e.toInt());
@@ -66,6 +80,22 @@ extension _LocaleExtensions on Locale {
     );
     return yearIndex! < monthIndex!;
   }
+
+  Iterable<String> get longMonths sync* {
+    final format = DateFormat('MMMM', toString());
+    for (final i in range(12)) {
+      final d = DateTime(1234, i + 1, 10);
+      yield format.format(d);
+    }
+  }
+
+  Iterable<String> get shortMonths sync* {
+    final format = DateFormat('MMM', toString());
+    for (final i in range(12)) {
+      final d = DateTime(1234, i + 1, 10);
+      yield format.format(d);
+    }
+  }
 }
 
 Future<void> main() async {
@@ -74,34 +104,52 @@ Future<void> main() async {
   }
 
   group('locale extensions', () {
-    test('Locale.usesMonthFirst converges', () {
+    test('extensions converges', () {
+      var count = 0;
       for (final locale in _locales) {
         final l = Locale.tryParse(locale);
         // ignore unimplemented locale
-        if (l == null) {
+        if (l == null || !l.usesNumericSymbols) {
           continue;
         }
-        final res = l.usesMonthFirst;
+
+        final month = l.usesMonthFirst;
+        final year = l.usesMonthFirst;
 
         // just expect is doesn't throw
-        expect(res, isNot(isNull));
+        expect(month, isNot(isNull));
+        expect(year, isNot(isNull));
+        count++;
       }
+
+      expect(count, greaterThan(0));
     });
   });
 
   group('locale tests', () {
+    final englishMonths = AnyDate.defaultSettings.months;
     test('english speaking - american format', () {
       final locale = Locale.fromSubtags(languageCode: 'en', countryCode: 'US');
+      final longMonths = englishMonths.sublist(0, 12).map((e) => e.name);
+      final shortMorhts = englishMonths.sublist(12).map((e) => e.name).toList()
+        ..removeWhere((element) => element == 'Sept');
 
       expect(locale.usesMonthFirst, isTrue);
       expect(locale.usesYearFirst, isFalse);
+      expect(locale.longMonths, containsAllInOrder(longMonths));
+      expect(locale.shortMonths, containsAllInOrder(shortMorhts));
     });
 
     test('english speaking - normal format', () {
       final locale = Locale.fromSubtags(languageCode: 'en', countryCode: 'AU');
+      final longMonths = englishMonths.sublist(0, 12).map((e) => e.name);
+      final shortMorhts = englishMonths.sublist(12).map((e) => e.name).toList()
+        ..removeWhere((element) => element == 'Sep');
 
       expect(locale.usesMonthFirst, isFalse);
       expect(locale.usesYearFirst, isFalse);
+      expect(locale.longMonths, containsAllInOrder(longMonths));
+      expect(locale.shortMonths, containsAllInOrder(shortMorhts));
     });
   });
 }
