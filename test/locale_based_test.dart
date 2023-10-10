@@ -96,6 +96,22 @@ extension _LocaleExtensions on Locale {
       yield format.format(d);
     }
   }
+
+  Iterable<String> get longWeekdays sync* {
+    final format = DateFormat('EEEE', toString());
+    for (final i in range(7)) {
+      final d = DateTime(2023, 10, 9 + i);
+      yield format.format(d);
+    }
+  }
+
+  Iterable<String> get shortWeekdays sync* {
+    final format = DateFormat('EEE', toString());
+    for (final i in range(7)) {
+      final d = DateTime(2023, 10, 9 + i);
+      yield format.format(d);
+    }
+  }
 }
 
 Future<void> main() async {
@@ -128,16 +144,22 @@ Future<void> main() async {
 
   group('locale tests', () {
     final englishMonths = AnyDate.defaultSettings.months;
+    final englishWeekdays = AnyDate.defaultSettings.weekdays;
+    final longWeekdays = englishWeekdays.sublist(0, 7).map((e) => e.name);
+    final shortWeekdays = englishWeekdays.sublist(7).map((e) => e.name).toList()
+      ..removeWhere((element) => element == 'Sept');
     test('english speaking - american format', () {
       final locale = Locale.fromSubtags(languageCode: 'en', countryCode: 'US');
       final longMonths = englishMonths.sublist(0, 12).map((e) => e.name);
-      final shortMorhts = englishMonths.sublist(12).map((e) => e.name).toList()
+      final shortMonths = englishMonths.sublist(12).map((e) => e.name).toList()
         ..removeWhere((element) => element == 'Sept');
 
       expect(locale.usesMonthFirst, isTrue);
       expect(locale.usesYearFirst, isFalse);
       expect(locale.longMonths, containsAllInOrder(longMonths));
-      expect(locale.shortMonths, containsAllInOrder(shortMorhts));
+      expect(locale.shortMonths, containsAllInOrder(shortMonths));
+      expect(locale.longWeekdays, containsAllInOrder(longWeekdays));
+      expect(locale.shortWeekdays, containsAllInOrder(shortWeekdays));
     });
 
     test('english speaking - normal format', () {
@@ -150,6 +172,8 @@ Future<void> main() async {
       expect(locale.usesYearFirst, isFalse);
       expect(locale.longMonths, containsAllInOrder(longMonths));
       expect(locale.shortMonths, containsAllInOrder(shortMorhts));
+      expect(locale.longWeekdays, containsAllInOrder(longWeekdays));
+      expect(locale.shortWeekdays, containsAllInOrder(shortWeekdays));
     });
   });
 }
