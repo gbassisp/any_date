@@ -1,5 +1,6 @@
 import 'package:any_date/src/any_date_rules.dart';
 import 'package:any_date/src/any_date_rules_model.dart';
+import 'package:meta/meta.dart';
 
 /// Parameters passed to the parser
 class DateParsingParameters {
@@ -51,6 +52,7 @@ class DateParsingParameters {
 /// It seems far fetched to have this class here, but it follows a similar
 /// approach to the Python dateutil package. See:
 /// https://dateutil.readthedocs.io/en/stable/_modules/dateutil/parser/_parser.html#parserinfo
+@immutable
 class Month {
   /// default constructor
   const Month({required this.number, required this.name});
@@ -63,6 +65,14 @@ class Month {
 
   @override
   String toString() => 'Month($number, $name)';
+
+  @override
+  int get hashCode => number.hashCode ^ name.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return other is Month && number == other.number && name == other.name;
+  }
 }
 
 /// A weekday with its number and name. Used to support multiple languages
@@ -71,6 +81,7 @@ class Month {
 /// Must match DateTime().weekday
 ///
 /// Reason for this is the same as for [Month]
+@immutable
 class Weekday {
   /// default constructor
   const Weekday({required this.number, required this.name});
@@ -83,6 +94,14 @@ class Weekday {
 
   @override
   String toString() => 'Weekday($number, $name)';
+
+  @override
+  int get hashCode => number.hashCode ^ name.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return other is Weekday && number == other.number && name == other.name;
+  }
 }
 
 /// used on iso date spacing; can and will be replaced with space
