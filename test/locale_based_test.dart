@@ -29,6 +29,13 @@ extension _LocaleExtensions on Locale {
 
   String get _yMd => DateFormat.yMd(toString()).format(_date);
 
+  DateParserInfo get parserInfo => DateParserInfo(
+        yearFirst: usesYearFirst,
+        dayFirst: !usesMonthFirst,
+        months: [...longMonths, ...shortMonths],
+        weekdays: [...longWeekdays, ...shortWeekdays],
+      );
+
   bool get usesNumericSymbols {
     try {
       usesMonthFirst;
@@ -81,35 +88,39 @@ extension _LocaleExtensions on Locale {
     return yearIndex! < monthIndex!;
   }
 
-  Iterable<String> get longMonths sync* {
+  Iterable<Month> get longMonths sync* {
     final format = DateFormat('MMMM', toString());
     for (final i in range(12)) {
-      final d = DateTime(1234, i + 1, 10);
-      yield format.format(d);
+      final m = i + 1;
+      final d = DateTime(1234, m, 10);
+      yield Month(number: m, name: format.format(d));
     }
   }
 
-  Iterable<String> get shortMonths sync* {
+  Iterable<Month> get shortMonths sync* {
     final format = DateFormat('MMM', toString());
     for (final i in range(12)) {
-      final d = DateTime(1234, i + 1, 10);
-      yield format.format(d);
+      final m = i + 1;
+      final d = DateTime(1234, m, 10);
+      yield Month(number: m, name: format.format(d));
     }
   }
 
-  Iterable<String> get longWeekdays sync* {
+  Iterable<Weekday> get longWeekdays sync* {
     final format = DateFormat('EEEE', toString());
     for (final i in range(7)) {
-      final d = DateTime(2023, 10, 9 + i);
-      yield format.format(d);
+      final w = i + 1;
+      final d = DateTime(2023, 10, 8 + w);
+      yield Weekday(number: w, name: format.format(d));
     }
   }
 
-  Iterable<String> get shortWeekdays sync* {
+  Iterable<Weekday> get shortWeekdays sync* {
     final format = DateFormat('EEE', toString());
     for (final i in range(7)) {
-      final d = DateTime(2023, 10, 9 + i);
-      yield format.format(d);
+      final w = i + 1;
+      final d = DateTime(2023, 10, 8 + w);
+      yield Weekday(number: w, name: format.format(d));
     }
   }
 }
@@ -145,14 +156,14 @@ Future<void> main() async {
   group('locale tests', () {
     final englishMonths = AnyDate.defaultSettings.months;
     final englishWeekdays = AnyDate.defaultSettings.weekdays;
-    final longWeekdays = englishWeekdays.sublist(0, 7).map((e) => e.name);
-    final shortWeekdays = englishWeekdays.sublist(7).map((e) => e.name).toList()
-      ..removeWhere((element) => element == 'Sept');
+    final longWeekdays = englishWeekdays.sublist(0, 7);
+    final shortWeekdays = englishWeekdays.sublist(7)
+      ..removeWhere((element) => element.name == 'Sept');
     test('english speaking - american format', () {
       final locale = Locale.fromSubtags(languageCode: 'en', countryCode: 'US');
-      final longMonths = englishMonths.sublist(0, 12).map((e) => e.name);
-      final shortMonths = englishMonths.sublist(12).map((e) => e.name).toList()
-        ..removeWhere((element) => element == 'Sept');
+      final longMonths = englishMonths.sublist(0, 12);
+      final shortMonths = englishMonths.sublist(12)
+        ..removeWhere((element) => element.name == 'Sept');
 
       expect(locale.usesMonthFirst, isTrue);
       expect(locale.usesYearFirst, isFalse);
@@ -164,9 +175,9 @@ Future<void> main() async {
 
     test('english speaking - normal format', () {
       final locale = Locale.fromSubtags(languageCode: 'en', countryCode: 'AU');
-      final longMonths = englishMonths.sublist(0, 12).map((e) => e.name);
-      final shortMorhts = englishMonths.sublist(12).map((e) => e.name).toList()
-        ..removeWhere((element) => element == 'Sep');
+      final longMonths = englishMonths.sublist(0, 12);
+      final shortMorhts = englishMonths.sublist(12)
+        ..removeWhere((element) => element.name == 'Sep');
 
       expect(locale.usesMonthFirst, isFalse);
       expect(locale.usesYearFirst, isFalse);
