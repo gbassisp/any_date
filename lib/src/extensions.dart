@@ -218,7 +218,7 @@ extension LocaleExtensions on Locale {
     for (final i in range(12)) {
       final m = i + 1;
       final d = DateTime(1234, m, 10);
-      yield Month(number: m, name: format.format(d));
+      yield Month(number: m, name: format.format(d).replaceAll('.', ''));
     }
   }
 
@@ -228,7 +228,7 @@ extension LocaleExtensions on Locale {
     for (final i in range(12)) {
       final m = i + 1;
       final d = DateTime(1234, m, 10);
-      yield Month(number: m, name: format.format(d));
+      yield Month(number: m, name: format.format(d).replaceAll('.', ''));
     }
 
     yield* _nonNumericMonths;
@@ -240,7 +240,7 @@ extension LocaleExtensions on Locale {
     for (final i in range(12)) {
       final m = i + 1;
       final d = DateTime(1234, m, 10);
-      final name = format.format(d);
+      final name = format.format(d).replaceAll('.', '');
       // month is not represented by a number
       if (name.tryToInt() == null) {
         yield Month(number: m, name: name);
@@ -279,6 +279,8 @@ extension LocaleExtensions on Locale {
   Iterable<DateFormat> get _formats sync* {
     final s = toLanguageTag();
     yield DateFormat.yMEd(s);
+    yield DateFormat.yMMMEd(s);
+    yield DateFormat.yMMMMEEEEd(s);
     yield DateFormat.yMd(s);
     yield DateFormat.yMMMd(s);
     yield DateFormat.yMMMMd(s);
@@ -286,7 +288,9 @@ extension LocaleExtensions on Locale {
 
   /// gets all weekdays on short text form - computationally expensive, but
   /// works for most formats
-  Iterable<String> get separators sync* {
+  Set<String> get separators => _separators.toSet();
+
+  Iterable<String> get _separators sync* {
     yield* _defaultSeparators;
     for (final format in _formats) {
       for (final i in range(12)) {

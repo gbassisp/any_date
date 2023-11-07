@@ -25,9 +25,9 @@ Iterable<DateFormat> formats(String locale) sync* {
   // yield DateFormat.yMMMMEEEEd(locale);
 
   // basic
-  yield DateFormat.yMd(locale);
-  // yield DateFormat.yMMMd(locale);
   // yield DateFormat.yMMMMd(locale);
+  // yield DateFormat.yMMMd(locale);
+  yield DateFormat.yMd(locale);
 }
 
 Future<void> main() async {
