@@ -263,25 +263,37 @@ extension LocaleExtensions on Locale {
     }
   }
 
+  static List<String> get _defaultSeparators =>
+      const DateParserInfo().allowedSeparators;
+
   /// locale-specific separators, such as right-to-left mark
-  static const _extraSeparators = [
-    '\u200F',
-  ];
+  static List<String> get _extraSeparators => [
+        '\u200F',
+        // for (final s in _defaultSeparators) '${s}de$s',
+      ];
+
+  Iterable<DateFormat> get _formats sync* {
+    final s = toLanguageTag();
+    yield DateFormat.yMd(s);
+    yield DateFormat.yMMMd(s);
+    yield DateFormat.yMMMMd(s);
+  }
 
   /// gets all weekdays on short text form
   Iterable<String> get separators sync* {
-    final format = DateFormat.yMd(toLanguageTag());
-    for (final i in range(12)) {
-      final m = i + 1;
-      final d = DateTime(1234, m, 10);
-      final formatted = format.format(d);
-      for (final sep in _extraSeparators) {
-        if (formatted.contains(sep)) {
-          yield sep;
+    yield* _defaultSeparators;
+    for (final format in _formats) {
+      for (final i in range(12)) {
+        final m = i + 1;
+        final d = DateTime(1234, m, 10);
+        final formatted = format.format(d);
+        for (final sep in _extraSeparators) {
+          if (formatted.contains(sep)) {
+            yield sep;
+          }
         }
       }
     }
-    yield* const DateParserInfo().allowedSeparators;
   }
 }
 
