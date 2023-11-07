@@ -148,7 +148,7 @@ extension LocaleExtensions on Locale {
         yearFirst: usesYearFirst,
         dayFirst: !usesMonthFirst,
         months: _allMonths.toList(),
-        weekdays: [...longWeekdays, ...shortWeekdays],
+        weekdays: _allWeekdays.toList(),
         allowedSeparators: separators.toList(),
       );
 
@@ -248,13 +248,18 @@ extension LocaleExtensions on Locale {
     }
   }
 
+  Iterable<Weekday> get _allWeekdays sync* {
+    yield* longWeekdays;
+    yield* shortWeekdays;
+  }
+
   /// gets all weekdays on long text form
   Iterable<Weekday> get longWeekdays sync* {
     final format = DateFormat('EEEE', toString());
     for (final i in range(7)) {
       final w = i + 1;
       final d = DateTime(2023, 10, 8 + w);
-      yield Weekday(number: w, name: format.format(d));
+      yield Weekday(number: w, name: format.format(d).replaceAll('.', ''));
     }
   }
 
@@ -264,7 +269,7 @@ extension LocaleExtensions on Locale {
     for (final i in range(7)) {
       final w = i + 1;
       final d = DateTime(2023, 10, 8 + w);
-      yield Weekday(number: w, name: format.format(d));
+      yield Weekday(number: w, name: format.format(d).replaceAll('.', ''));
     }
   }
 
@@ -273,6 +278,7 @@ extension LocaleExtensions on Locale {
 
   Iterable<DateFormat> get _formats sync* {
     final s = toLanguageTag();
+    yield DateFormat.yMEd(s);
     yield DateFormat.yMd(s);
     yield DateFormat.yMMMd(s);
     yield DateFormat.yMMMMd(s);
@@ -291,6 +297,10 @@ extension LocaleExtensions on Locale {
         var unknownValues = formatted.replaceAll(RegExp(r'\d'), '');
         for (final month in _allMonths) {
           unknownValues = unknownValues.replaceAll(month.name, '');
+        }
+
+        for (final weekday in _allWeekdays) {
+          unknownValues = unknownValues.replaceAll(weekday.name, '');
         }
 
         for (final strs in unknownValues.split('')) {
