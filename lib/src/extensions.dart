@@ -149,6 +149,7 @@ extension LocaleExtensions on Locale {
         dayFirst: !usesMonthFirst,
         months: [...longMonths, ...shortMonths],
         weekdays: [...longWeekdays, ...shortWeekdays],
+        allowedSeparators: separators.toList(),
       );
 
   /// whether this locale uses 0-9 digits to represent numbers
@@ -260,6 +261,27 @@ extension LocaleExtensions on Locale {
       final d = DateTime(2023, 10, 8 + w);
       yield Weekday(number: w, name: format.format(d));
     }
+  }
+
+  /// locale-specific separators, such as right-to-left mark
+  static const _extraSeparators = [
+    '\u200F',
+  ];
+
+  /// gets all weekdays on short text form
+  Iterable<String> get separators sync* {
+    final format = DateFormat.yMd(toLanguageTag());
+    for (final i in range(12)) {
+      final m = i + 1;
+      final d = DateTime(1234, m, 10);
+      final formatted = format.format(d);
+      for (final sep in _extraSeparators) {
+        if (formatted.contains(sep)) {
+          yield sep;
+        }
+      }
+    }
+    yield* const DateParserInfo().allowedSeparators;
   }
 }
 
