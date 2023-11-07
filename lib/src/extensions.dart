@@ -1,4 +1,8 @@
 import 'package:any_date/any_date.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/locale.dart';
+import 'package:lean_extensions/dart_essentials.dart';
+import 'package:meta/meta.dart';
 
 /// a collection of extensions on [DateTime]
 extension DateTimeExtension on DateTime {
@@ -129,5 +133,144 @@ extension StringParsers on String {
       return res.toUtc();
     }
     return res;
+  }
+}
+
+/// allows getting parser info from locale
+@visibleForTesting
+extension LocaleExtensions on Locale {
+  static final _date = DateTime(1234, 5, 6, 7, 8, 9);
+
+  String get _yMd => DateFormat.yMd(toString()).format(_date);
+
+  /// returns the appropriate date parsing params for this locale
+  DateParserInfo get parserInfo => DateParserInfo(
+        yearFirst: usesYearFirst,
+        dayFirst: !usesMonthFirst,
+        months: [...longMonths, ...shortMonths],
+        weekdays: [...longWeekdays, ...shortWeekdays],
+      );
+
+  /// whether this locale uses 0-9 digits to represent numbers
+  bool get usesNumericSymbols {
+    try {
+      usesMonthFirst;
+      usesYearFirst;
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// whether this locale uses month before day (e.g. US)
+  bool get usesMonthFirst {
+    final formatted = _yMd;
+    final fields = formatted.split(RegExp(r'\D'))
+      ..removeWhere((element) => element.trim().tryToInt() == null);
+    final numbers = fields.map((e) => e.toInt());
+
+    assert(
+      numbers.contains(5),
+      'could not find test date in $this: $formatted',
+    );
+
+    final monthIndex = numbers.indexOf(5);
+    final dayIndex = numbers.indexOf(6);
+
+    assert(
+      monthIndex != null && dayIndex != null,
+      'month and day must both be present in $this: $formatted',
+    );
+    return monthIndex! < dayIndex!;
+  }
+
+  /// whether this locale uses year before month and day (e.g. CH)
+  bool get usesYearFirst {
+    final formatted = _yMd;
+    final fields = formatted.split(RegExp(r'\D'))
+      ..removeWhere((element) => element.trim().tryToInt() == null);
+    final numbers = fields.map((e) => e.toInt());
+
+    assert(
+      numbers.contains(1234),
+      'could not find test date in $this: $formatted',
+    );
+
+    final yearIndex = numbers.indexOf(1234);
+    final monthIndex = numbers.indexOf(5);
+
+    assert(
+      yearIndex != null && monthIndex != null,
+      'month and year must both be present in $this: $formatted',
+    );
+    return yearIndex! < monthIndex!;
+  }
+
+  /// gets all months on long text form
+  Iterable<Month> get longMonths sync* {
+    final format = DateFormat('MMMM', toString());
+    for (final i in range(12)) {
+      final m = i + 1;
+      final d = DateTime(1234, m, 10);
+      yield Month(number: m, name: format.format(d));
+    }
+  }
+
+  /// gets all months on short text form
+  Iterable<Month> get shortMonths sync* {
+    final format = DateFormat('MMM', toString());
+    for (final i in range(12)) {
+      final m = i + 1;
+      final d = DateTime(1234, m, 10);
+      yield Month(number: m, name: format.format(d));
+    }
+
+    yield* _nonNumericMonths;
+  }
+
+  /// returns months that would be represented by 0-9 digits in most languages
+  Iterable<Month> get _nonNumericMonths sync* {
+    final format = DateFormat('M', toString());
+    for (final i in range(12)) {
+      final m = i + 1;
+      final d = DateTime(1234, m, 10);
+      final name = format.format(d);
+      // month is not represented by a number
+      if (name.tryToInt() == null) {
+        yield Month(number: m, name: name);
+      }
+    }
+  }
+
+  /// gets all weekdays on long text form
+  Iterable<Weekday> get longWeekdays sync* {
+    final format = DateFormat('EEEE', toString());
+    for (final i in range(7)) {
+      final w = i + 1;
+      final d = DateTime(2023, 10, 8 + w);
+      yield Weekday(number: w, name: format.format(d));
+    }
+  }
+
+  /// gets all weekdays on short text form
+  Iterable<Weekday> get shortWeekdays sync* {
+    final format = DateFormat('EEE', toString());
+    for (final i in range(7)) {
+      final w = i + 1;
+      final d = DateTime(2023, 10, 8 + w);
+      yield Weekday(number: w, name: format.format(d));
+    }
+  }
+}
+
+extension _ListExtension<T> on Iterable<T> {
+  int? indexOf(T element) {
+    for (final i in range(length)) {
+      if (elementAt(i) == element) {
+        return i;
+      }
+    }
+
+    return null;
   }
 }

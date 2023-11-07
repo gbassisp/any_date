@@ -6,123 +6,28 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:intl/intl.dart';
 import 'package:intl/locale.dart';
-import 'package:lean_extensions/dart_essentials.dart';
 import 'package:test/test.dart';
+
+import 'test_values.dart' as values;
 
 final _locales = availableLocalesForDateFormatting;
 
-extension _ListExtension<T> on Iterable<T> {
-  int? indexOf(T element) {
-    for (final i in range(length)) {
-      if (elementAt(i) == element) {
-        return i;
-      }
-    }
+Iterable<DateFormat> formats(String locale) sync* {
+  // unsuported for lack of information (no year)
+  // yield DateFormat.y(locale);
+  // yield DateFormat.yM(locale);
+  // yield DateFormat.yMMMM(locale);
+  // yield DateFormat.yMMM(locale);
 
-    return null;
-  }
-}
+  // in progress
+  // yield DateFormat.yMEd(locale);
+  // yield DateFormat.yMMMEd(locale);
+  // yield DateFormat.yMMMMEEEEd(locale);
 
-// TODO(gbassisp): promote this to lib/ once we enable support for locale
-extension _LocaleExtensions on Locale {
-  static final _date = DateTime(1234, 5, 6, 7, 8, 9);
-
-  String get _yMd => DateFormat.yMd(toString()).format(_date);
-
-  DateParserInfo get parserInfo => DateParserInfo(
-        yearFirst: usesYearFirst,
-        dayFirst: !usesMonthFirst,
-        months: [...longMonths, ...shortMonths],
-        weekdays: [...longWeekdays, ...shortWeekdays],
-      );
-
-  bool get usesNumericSymbols {
-    try {
-      usesMonthFirst;
-      usesYearFirst;
-      return true;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  bool get usesMonthFirst {
-    final formatted = _yMd;
-    final fields = formatted.split(RegExp(r'\D'))
-      ..removeWhere((element) => element.trim().tryToInt() == null);
-    final numbers = fields.map((e) => e.toInt());
-
-    assert(
-      numbers.contains(5),
-      'could not find test date in $this: $formatted',
-    );
-
-    final monthIndex = numbers.indexOf(5);
-    final dayIndex = numbers.indexOf(6);
-
-    assert(
-      monthIndex != null && dayIndex != null,
-      'month and day must both be present in $this: $formatted',
-    );
-    return monthIndex! < dayIndex!;
-  }
-
-  bool get usesYearFirst {
-    final formatted = _yMd;
-    final fields = formatted.split(RegExp(r'\D'))
-      ..removeWhere((element) => element.trim().tryToInt() == null);
-    final numbers = fields.map((e) => e.toInt());
-
-    assert(
-      numbers.contains(1234),
-      'could not find test date in $this: $formatted',
-    );
-
-    final yearIndex = numbers.indexOf(1234);
-    final monthIndex = numbers.indexOf(5);
-
-    assert(
-      yearIndex != null && monthIndex != null,
-      'month and year must both be present in $this: $formatted',
-    );
-    return yearIndex! < monthIndex!;
-  }
-
-  Iterable<Month> get longMonths sync* {
-    final format = DateFormat('MMMM', toString());
-    for (final i in range(12)) {
-      final m = i + 1;
-      final d = DateTime(1234, m, 10);
-      yield Month(number: m, name: format.format(d));
-    }
-  }
-
-  Iterable<Month> get shortMonths sync* {
-    final format = DateFormat('MMM', toString());
-    for (final i in range(12)) {
-      final m = i + 1;
-      final d = DateTime(1234, m, 10);
-      yield Month(number: m, name: format.format(d));
-    }
-  }
-
-  Iterable<Weekday> get longWeekdays sync* {
-    final format = DateFormat('EEEE', toString());
-    for (final i in range(7)) {
-      final w = i + 1;
-      final d = DateTime(2023, 10, 8 + w);
-      yield Weekday(number: w, name: format.format(d));
-    }
-  }
-
-  Iterable<Weekday> get shortWeekdays sync* {
-    final format = DateFormat('EEE', toString());
-    for (final i in range(7)) {
-      final w = i + 1;
-      final d = DateTime(2023, 10, 8 + w);
-      yield Weekday(number: w, name: format.format(d));
-    }
-  }
+  // basic
+  yield DateFormat.yMd(locale);
+  // yield DateFormat.yMMMd(locale);
+  // yield DateFormat.yMMMMd(locale);
 }
 
 Future<void> main() async {
@@ -186,5 +91,31 @@ Future<void> main() async {
       expect(locale.longWeekdays, containsAllInOrder(longWeekdays));
       expect(locale.shortWeekdays, containsAllInOrder(shortWeekdays));
     });
+
+    for (final l in _locales) {
+      final locale = Locale.tryParse(l);
+      if (locale == null || !locale.usesNumericSymbols) {
+        continue;
+      }
+
+      for (final f in formats(l)) {
+        test('$l - $f', () {
+          for (final d in values.range.days) {
+            final anyDate = AnyDate(info: locale.parserInfo);
+            final formatted = f.format(d);
+
+            final parsed = anyDate.tryParse(formatted);
+            final expected = f.parse(formatted);
+
+            expect(
+              parsed,
+              expected,
+              reason: 'expected $expected from $formatted, '
+                  'but got $parsed on $l with ${f.pattern}',
+            );
+          }
+        });
+      }
+    }
   });
 }
