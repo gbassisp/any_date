@@ -147,7 +147,7 @@ extension LocaleExtensions on Locale {
   DateParserInfo get parserInfo => DateParserInfo(
         yearFirst: usesYearFirst,
         dayFirst: !usesMonthFirst,
-        months: [...longMonths, ...shortMonths],
+        months: _allMonths.toList(),
         weekdays: [...longWeekdays, ...shortWeekdays],
         allowedSeparators: separators.toList(),
       );
@@ -205,6 +205,11 @@ extension LocaleExtensions on Locale {
       'month and year must both be present in $this: $formatted',
     );
     return yearIndex! < monthIndex!;
+  }
+
+  Iterable<Month> get _allMonths sync* {
+    yield* longMonths;
+    yield* shortMonths;
   }
 
   /// gets all months on long text form
@@ -266,12 +271,6 @@ extension LocaleExtensions on Locale {
   static List<String> get _defaultSeparators =>
       const DateParserInfo().allowedSeparators;
 
-  /// locale-specific separators, such as right-to-left mark
-  static List<String> get _extraSeparators => [
-        '\u200F',
-        // for (final s in _defaultSeparators) '${s}de$s',
-      ];
-
   Iterable<DateFormat> get _formats sync* {
     final s = toLanguageTag();
     yield DateFormat.yMd(s);
@@ -279,7 +278,8 @@ extension LocaleExtensions on Locale {
     yield DateFormat.yMMMMd(s);
   }
 
-  /// gets all weekdays on short text form
+  /// gets all weekdays on short text form - computationally expensive, but
+  /// works for most formats
   Iterable<String> get separators sync* {
     yield* _defaultSeparators;
     for (final format in _formats) {
@@ -287,10 +287,14 @@ extension LocaleExtensions on Locale {
         final m = i + 1;
         final d = DateTime(1234, m, 10);
         final formatted = format.format(d);
-        for (final sep in _extraSeparators) {
-          if (formatted.contains(sep)) {
-            yield sep;
-          }
+
+        var unknownValues = formatted.replaceAll(RegExp(r'\d'), '');
+        for (final month in _allMonths) {
+          unknownValues = unknownValues.replaceAll(month.name, '');
+        }
+
+        for (final strs in unknownValues.split('')) {
+          yield strs;
         }
       }
     }
