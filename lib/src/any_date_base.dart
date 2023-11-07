@@ -223,14 +223,14 @@ class DateParserInfo {
     this.weekdays = _allWeekdays,
   });
 
-  /// interpret the first value in an ambiguous case (e.g. 01/01/01)
+  /// interpret the first value in an ambiguous case (e.g. 01/02/03)
   /// as day true or month false.
   /// If yearFirst is to true, this chooses between YDM and YMD.
   ///
   /// Defaults to false.
   final bool dayFirst;
 
-  /// interpret the first value in an ambiguous case (e.g. 01/01/01) as year.
+  /// interpret the first value in an ambiguous case (e.g. 01/02/03) as year.
   /// If true, the first ambiguous number is taken to be the year,
   /// otherwise the last ambiguous number is taken.
   ///
