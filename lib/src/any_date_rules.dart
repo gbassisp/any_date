@@ -231,21 +231,25 @@ final DateParsingRule ambiguousCase = SimpleRule((params) {
 final DateParsingRule ymd = MultipleRules([
   maybeDateTimeParse,
   ymdTextMonthRegex,
+  ymdNonLatinTextMonth,
   ymdRegex,
 ]);
 
 final DateParsingRule ydm = MultipleRules([
   ydmTextMonthRegex,
+  ydmNonLatinTextMonth,
   ydmRegex,
 ]);
 
 final DateParsingRule dmy = MultipleRules([
   dmyTextMonthRegex,
+  dmyNonLatinTextMonth,
   dmyRegex,
 ]);
 
 final DateParsingRule mdy = MultipleRules([
   mdyTextMonthRegex,
+  mdyNonLatinTextMonth,
   mdyRegex,
 ]);
 
@@ -266,6 +270,32 @@ DateParsingRule maybeDateTimeParse = SimpleRule((params) {
   }
 
   return null;
+});
+
+DateParsingRule ymdNonLatinTextMonth = SimpleRule((params) {
+  final seps = params.parserInfo.allowedSeparators;
+  // ignore: prefer_interpolation_to_compose_strings
+  final textMonthPattern = '(?<month>' r'[^\d' + seps.join() + ']+)';
+
+  final base = '^'
+      '$_yearPattern'
+      '$_s'
+      '$textMonthPattern'
+      '$_s'
+      '$_dayPattern';
+  DateTime? res;
+  for (final timePattern in _timePatterns) {
+    final re = RegExp(base + _s + timePattern);
+    res = _tryTextMonth(re, params.formattedString, params.parserInfo.months);
+    if (res != null) {
+      return res;
+    }
+  }
+  return _tryTextMonth(
+    RegExp(base),
+    params.formattedString,
+    params.parserInfo.months,
+  );
 });
 
 DateParsingRule ymdTextMonthRegex = SimpleRule((params) {
@@ -332,8 +362,33 @@ final DateParsingRule ydmRegex = SimpleRule((params) {
   );
 });
 
+DateParsingRule ydmNonLatinTextMonth = SimpleRule((params) {
+  final seps = params.parserInfo.allowedSeparators;
+  // ignore: prefer_interpolation_to_compose_strings
+  final textMonthPattern = '(?<month>' r'[^\d' + seps.join() + ']+)';
+
+  final base = '^'
+      '$_yearPattern'
+      '$_s'
+      '$_dayPattern'
+      '$_s'
+      '$textMonthPattern';
+  DateTime? res;
+  for (final timePattern in _timePatterns) {
+    final re = RegExp(base + _s + timePattern);
+    res = _tryTextMonth(re, params.formattedString, params.parserInfo.months);
+    if (res != null) {
+      return res;
+    }
+  }
+  return _tryTextMonth(
+    RegExp(base),
+    params.formattedString,
+    params.parserInfo.months,
+  );
+});
+
 DateParsingRule ydmTextMonthRegex = SimpleRule((params) {
-  // final s = separatorPattern(params.parserInfo.allowedSeparators);
   final base = '^'
       '$_yearPattern'
       '$_s'
@@ -376,8 +431,33 @@ final DateParsingRule mdyRegex = SimpleRule((params) {
   );
 });
 
+DateParsingRule mdyNonLatinTextMonth = SimpleRule((params) {
+  final seps = params.parserInfo.allowedSeparators;
+  // ignore: prefer_interpolation_to_compose_strings
+  final textMonthPattern = '(?<month>' r'[^\d' + seps.join() + ']+)';
+
+  final base = '^'
+      '$textMonthPattern'
+      '$_s'
+      '$_dayPattern'
+      '$_s'
+      '$_yearPattern';
+  DateTime? res;
+  for (final timePattern in _timePatterns) {
+    final re = RegExp(base + _s + timePattern);
+    res = _tryTextMonth(re, params.formattedString, params.parserInfo.months);
+    if (res != null) {
+      return res;
+    }
+  }
+  return _tryTextMonth(
+    RegExp(base),
+    params.formattedString,
+    params.parserInfo.months,
+  );
+});
+
 DateParsingRule mdyTextMonthRegex = SimpleRule((params) {
-  // final s = separatorPattern(params.parserInfo.allowedSeparators);
   final base = '^'
       '$_textMonthPattern'
       '$_s'
@@ -420,8 +500,33 @@ final DateParsingRule dmyRegex = SimpleRule((params) {
   );
 });
 
+DateParsingRule dmyNonLatinTextMonth = SimpleRule((params) {
+  final seps = params.parserInfo.allowedSeparators;
+  // ignore: prefer_interpolation_to_compose_strings
+  final textMonthPattern = '(?<month>' r'[^\d' + seps.join() + ']+)';
+
+  final base = '^'
+      '$_dayPattern'
+      '$_s'
+      '$textMonthPattern'
+      '$_s'
+      '$_yearPattern';
+  DateTime? res;
+  for (final timePattern in _timePatterns) {
+    final re = RegExp(base + _s + timePattern);
+    res = _tryTextMonth(re, params.formattedString, params.parserInfo.months);
+    if (res != null) {
+      return res;
+    }
+  }
+  return _tryTextMonth(
+    RegExp(base),
+    params.formattedString,
+    params.parserInfo.months,
+  );
+});
+
 DateParsingRule dmyTextMonthRegex = SimpleRule((params) {
-  // final s = separatorPattern(params.parserInfo.allowedSeparators);
   final base = '^'
       '$_dayPattern'
       '$_s'

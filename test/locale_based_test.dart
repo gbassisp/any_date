@@ -13,20 +13,16 @@ import 'test_values.dart' as values;
 final _locales = availableLocalesForDateFormatting;
 
 Iterable<DateFormat> formats(String locale) sync* {
-  // unsuported for lack of information (no year)
   // yield DateFormat.y(locale);
   // yield DateFormat.yM(locale);
   // yield DateFormat.yMMMM(locale);
   // yield DateFormat.yMMM(locale);
-
-  // in progress
   // yield DateFormat.yMEd(locale);
   // yield DateFormat.yMMMEd(locale);
   // yield DateFormat.yMMMMEEEEd(locale);
-
-  // basic
   // yield DateFormat.yMMMMd(locale);
   // yield DateFormat.yMMMd(locale);
+
   yield DateFormat.yMd(locale);
 }
 
@@ -117,5 +113,26 @@ Future<void> main() async {
         });
       }
     }
+
+    test('non-latin character month is identified', () {
+      final l = Locale.parse('am');
+      final info = l.parserInfo;
+      final longMonths = info.months;
+
+      bool containsMonth() {
+        for (final m in longMonths) {
+          if (m.name == 'ጁላይ') {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      expect(
+        containsMonth(),
+        isTrue,
+        reason: 'expected "am" locale to include "ጁላይ" on month list',
+      );
+    });
   });
 }
