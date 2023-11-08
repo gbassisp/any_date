@@ -133,5 +133,16 @@ void main() {
       expect(matches, hasLength(1));
       expect(matches.first.group(0), 'ጁላይ');
     });
+    test('long month regex 2', () {
+      // confirm how we can detect MMM and MMMM in non-latin chars
+      const example = '1 ጁላይ 1999';
+      final seps = const DateParserInfo().allowedSeparators;
+      // do it by ignoring numbers and separators
+      // ignore: prefer_interpolation_to_compose_strings
+      final re = RegExp(r'[^\d' + seps.join() + ']+');
+      final matches = re.allMatches(example);
+      expect(matches, hasLength(1));
+      expect(matches.first.group(0), 'ጁላይ');
+    });
   });
 }
