@@ -124,5 +124,14 @@ void main() {
       // other separators are not allowed
       expect(parsed3, isNull);
     });
+
+    test('long month regex', () {
+      // confirm how we can detect MMM and MMMM in non-latin chars
+      const example = '1 ጁላይ 1999';
+      final re = RegExp(r'[^\u0000-\u007F]+');
+      final matches = re.allMatches(example);
+      expect(matches, hasLength(1));
+      expect(matches.first.group(0), 'ጁላይ');
+    });
   });
 }
