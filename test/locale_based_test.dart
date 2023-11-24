@@ -29,12 +29,12 @@ extension _LocaleExtensions on Locale {
 
   String get _yMd => DateFormat.yMd(toString()).format(_date);
 
-  DateParserInfo get parserInfo => DateParserInfo(
-        yearFirst: usesYearFirst,
-        dayFirst: !usesMonthFirst,
-        months: [...longMonths, ...shortMonths],
-        weekdays: [...longWeekdays, ...shortWeekdays],
-      );
+  // DateParserInfo get parserInfo => DateParserInfo(
+  //       yearFirst: usesYearFirst,
+  //       dayFirst: !usesMonthFirst,
+  //       months: [...longMonths, ...shortMonths],
+  //       weekdays: [...longWeekdays, ...shortWeekdays],
+  //     );
 
   bool get usesNumericSymbols {
     try {
