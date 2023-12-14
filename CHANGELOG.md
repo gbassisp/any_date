@@ -1,4 +1,8 @@
 
+## 0.1.11
+
+- Added homepage to `pubspec.yaml`
+
 ## 0.1.10
 
 - Added more test cases and updated documentation
