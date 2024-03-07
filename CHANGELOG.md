@@ -1,4 +1,8 @@
 
+## 0.1.12
+
+- Fix caret syntax on dependencies
+
 ## 0.1.11
 
 - Added homepage to `pubspec.yaml`
