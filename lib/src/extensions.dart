@@ -1,4 +1,5 @@
 import 'package:any_date/any_date.dart';
+import 'package:lean_extensions/lean_extensions.dart';
 
 /// a collection of extensions on [DateTime]
 extension DateTimeExtension on DateTime {
@@ -107,21 +108,6 @@ const _parser = AnyDate();
 
 /// a collection of extensions on [String]
 extension StringParsers on String {
-  /// returns the string parsed as an int or null
-  int? tryToInt() => int.tryParse(trim());
-
-  /// returns the string parsed as int
-  int toInt() => int.parse(trim());
-
-  /// parses the string as a DateTime
-  DateTime? tryToDateTime({bool utc = false}) {
-    try {
-      return toDateTime(utc: utc);
-    } catch (_) {
-      return null;
-    }
-  }
-
   /// parses the string as a DateTime
   DateTime toDateTime({bool utc = false}) {
     final res = _parser.parse(this);
