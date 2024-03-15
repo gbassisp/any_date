@@ -16,25 +16,29 @@ class SimpleRule extends DateParsingRule {
 
   @override
   DateTime? apply(DateParsingParameters parameters) {
-    final simplifiedString = parameters.simplifiedString;
-    final param = parameters.copyWith(formattedString: simplifiedString);
-    final expectedWeekday = parameters.weekday;
-    final expectedMonth = parameters.month;
-    var res = _rule(param);
-    if (res == null && simplifiedString != parameters.formattedString) {
-      res = _rule(parameters);
-    }
-
-    if (validate) {
-      if (expectedWeekday != null && res?.weekday != expectedWeekday.number) {
-        return null;
+    try {
+      final simplifiedString = parameters.simplifiedString;
+      final param = parameters.copyWith(formattedString: simplifiedString);
+      final expectedWeekday = parameters.weekday;
+      final expectedMonth = parameters.month;
+      var res = _rule(param);
+      if (res == null && simplifiedString != parameters.formattedString) {
+        res = _rule(parameters);
       }
-      if (expectedMonth != null && res?.month != expectedMonth.number) {
-        return null;
-      }
-    }
 
-    return res;
+      if (validate) {
+        if (expectedWeekday != null && res?.weekday != expectedWeekday.number) {
+          return null;
+        }
+        if (expectedMonth != null && res?.month != expectedMonth.number) {
+          return null;
+        }
+      }
+
+      return res;
+    } catch (_) {
+      return null;
+    }
   }
 }
 
