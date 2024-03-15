@@ -8,6 +8,7 @@ class DateParsingParameters {
   const DateParsingParameters({
     required this.formattedString,
     required this.parserInfo,
+    required this.originalString,
     this.weekday,
     this.month,
     this.simplifiedString,
@@ -15,6 +16,9 @@ class DateParsingParameters {
 
   /// The date string to be parsed
   final String formattedString;
+
+  /// The date string to be parsed
+  final String originalString;
 
   /// The parser info to be used - see it as a configuration
   final DateParserInfo parserInfo;
@@ -32,6 +36,7 @@ class DateParsingParameters {
   DateParsingParameters copyWith({
     String? formattedString,
     DateParserInfo? parserInfo,
+    String? originalString,
     Weekday? weekday,
     Month? month,
     String? simplifiedString,
@@ -39,6 +44,7 @@ class DateParsingParameters {
     return DateParsingParameters(
       formattedString: formattedString ?? this.formattedString,
       parserInfo: parserInfo ?? this.parserInfo,
+      originalString: originalString ?? this.originalString,
       weekday: weekday ?? this.weekday,
       month: month ?? this.month,
       simplifiedString: simplifiedString ?? this.simplifiedString,
@@ -317,12 +323,8 @@ class AnyDate {
     // missing components will be assumed to default value:
     // e.g. 'Jan 2023' becomes DateTime(2023, 1), which is 1 Jan 2023
     // if year is missing, the closest result to today is chosen.
-    final caseInsensitive = _replaceSeparators(
-      formattedString.trim().toLowerCase(),
-      info.allowedSeparators,
-    );
 
-    return _applyRules(caseInsensitive).firstWhere(
+    return _applyRules(formattedString).firstWhere(
       (e) => e != null,
       orElse: () => null,
     );
@@ -332,12 +334,17 @@ class AnyDate {
   Iterable<DateTime?> _applyRules(
     String formattedString,
   ) sync* {
+    final caseInsensitive = _replaceSeparators(
+      formattedString.trim().toLowerCase(),
+      info.allowedSeparators,
+    );
     final i = info.copyWith(
       allowedSeparators: _usedSeparators.toList(),
     );
     var p = DateParsingParameters(
-      formattedString: formattedString,
+      formattedString: caseInsensitive,
       parserInfo: i,
+      originalString: formattedString,
     );
 
     p = p.copyWith(
