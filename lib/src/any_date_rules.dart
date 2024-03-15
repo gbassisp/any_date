@@ -3,6 +3,7 @@
 import 'package:any_date/src/any_date_base.dart';
 import 'package:any_date/src/any_date_rules_model.dart';
 import 'package:any_date/src/extensions.dart';
+import 'package:lean_extensions/lean_extensions.dart';
 
 /// only these separators are known by the parser; others will be replaced
 const usedSeparators = {'-', ' ', ':'};
@@ -226,6 +227,29 @@ final DateParsingRule ambiguousCase = SimpleRule((params) {
     }
   }
   return _try(RegExp(b), params.formattedString, shortYear: true);
+});
+
+final _thousand = BigInt.from(1000);
+final _msLimit = BigInt.from(8640000000000);
+final _sLimit = _msLimit ~/ _thousand;
+final _usLimit = _msLimit * _thousand;
+// final _nsLimit = _usLimit * _thousand;
+final DateParsingRule unixTime = SimpleRule((params) {
+  final timestamp = params.formattedString.replaceAll(RegExp(r'\s+'), '');
+  final number = timestamp.tryToBigInt();
+  if (number != null) {
+    final abs = number.abs();
+    if (abs <= _sLimit) {
+      return DateTime.fromMillisecondsSinceEpoch((number * _thousand).toInt());
+    } else if (abs <= _msLimit) {
+      return DateTime.fromMillisecondsSinceEpoch(number.toInt());
+    } else if (abs <= _usLimit) {
+      return DateTime.fromMicrosecondsSinceEpoch(number.toInt());
+      // } else if (abs <= _nsLimit) {
+    }
+    return DateTime.fromMicrosecondsSinceEpoch((number ~/ _thousand).toInt());
+  }
+  return null;
 });
 
 final DateParsingRule ymd = MultipleRules([

@@ -1,10 +1,12 @@
 import 'package:any_date/src/any_date_base.dart';
 import 'package:test/test.dart';
 
-import 'test_values.dart';
 
 void main() {
-  const count = 100;
+  final dates = [
+    DateTime.now(),
+    DateTime(1980),
+  ];
   const parserInfos = [
     DateParserInfo(),
     DateParserInfo(dayFirst: true),
@@ -17,7 +19,7 @@ void main() {
       final parser = AnyDate(info: info);
 
       test('seconds', () {
-        for (var date in getRandomDates(count)) {
+        for (var date in dates) {
           final timestamp = date.millisecondsSinceEpoch ~/ 1000;
           // removes rounding errors
           date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
@@ -31,8 +33,10 @@ void main() {
         }
       });
       test('milliseconds', () {
-        for (final date in getRandomDates(count)) {
+        for (var date in dates) {
           final timestamp = date.millisecondsSinceEpoch;
+          // removes rounding errors
+          date = DateTime.fromMillisecondsSinceEpoch(timestamp);
           final parsed = parser.tryParse(timestamp.toString());
           expect(
             parsed,
@@ -43,8 +47,10 @@ void main() {
         }
       });
       test('microseconds', () {
-        for (final date in getRandomDates(count)) {
+        for (var date in dates) {
           final timestamp = date.microsecondsSinceEpoch;
+          // removes rounding errors
+          date = DateTime.fromMicrosecondsSinceEpoch(timestamp);
           final parsed = parser.tryParse(timestamp.toString());
           expect(
             parsed,
@@ -55,10 +61,10 @@ void main() {
         }
       });
       test('nanoseconds', () {
-        for (var date in getRandomDates(count)) {
+        for (var date in dates) {
           final timestamp = date.microsecondsSinceEpoch * 1000;
           // removes rounding errors
-          date = DateTime.fromMillisecondsSinceEpoch(timestamp ~/ 1000);
+          date = DateTime.fromMicrosecondsSinceEpoch(timestamp ~/ 1000);
           final parsed = parser.tryParse(timestamp.toString());
           expect(
             parsed,

@@ -346,6 +346,8 @@ class AnyDate {
       simplifiedString: _removeWeekday(p),
     );
 
+    yield unixTime.apply(p);
+
     yield ambiguousCase.apply(p);
     yield MultipleRules(i.dayFirst ? _yearLastDayFirst : _yearLast).apply(p);
 
