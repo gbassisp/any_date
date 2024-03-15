@@ -1,11 +1,18 @@
 import 'package:any_date/src/any_date_base.dart';
 import 'package:test/test.dart';
 
-
 void main() {
   final dates = [
-    DateTime.now(),
+    DateTime(1901),
+    DateTime(1960),
+    DateTime.fromMicrosecondsSinceEpoch(0),
     DateTime(1980),
+    DateTime.now(),
+    DateTime(2038),
+
+    // out of original limit by 100y
+    DateTime(1801),
+    DateTime(2138),
   ];
   const parserInfos = [
     DateParserInfo(),

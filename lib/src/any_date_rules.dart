@@ -230,12 +230,12 @@ final DateParsingRule ambiguousCase = SimpleRule((params) {
 });
 
 final _thousand = BigInt.from(1000);
-final _msLimit = BigInt.from(8640000000000);
-final _sLimit = _msLimit ~/ _thousand;
+final _sLimit = BigInt.from(8640000000);
+final _msLimit = _sLimit * _thousand;
 final _usLimit = _msLimit * _thousand;
-// final _nsLimit = _usLimit * _thousand;
+final _nsLimit = _usLimit * _thousand;
 final DateParsingRule unixTime = SimpleRule((params) {
-  final timestamp = params.formattedString.replaceAll(RegExp(r'\s+'), '');
+  final timestamp = params.originalString.trim();
   final number = timestamp.tryToBigInt();
   if (number != null) {
     final abs = number.abs();
@@ -245,9 +245,9 @@ final DateParsingRule unixTime = SimpleRule((params) {
       return DateTime.fromMillisecondsSinceEpoch(number.toInt());
     } else if (abs <= _usLimit) {
       return DateTime.fromMicrosecondsSinceEpoch(number.toInt());
-      // } else if (abs <= _nsLimit) {
+    } else if (abs <= _nsLimit) {
+      return DateTime.fromMicrosecondsSinceEpoch((number ~/ _thousand).toInt());
     }
-    return DateTime.fromMicrosecondsSinceEpoch((number ~/ _thousand).toInt());
   }
   return null;
 });
