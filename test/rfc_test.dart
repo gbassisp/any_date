@@ -206,6 +206,31 @@ void main() {
       expect(parse(input), equals(expected));
     });
   });
+
+  group('RFC 1036 Date Time Parsing', () {
+    test('Valid RFC 1036 date time string (UTC)', () {
+      const input = 'Sun, 17 Mar 24 12:30:45 GMT';
+      final expected = DateTime.utc(2024, 3, 17, 12, 30, 45);
+      expect(parse(input), equals(expected));
+    });
+
+    test('Valid RFC 1036 date time string with timezone', () {
+      const input = 'Sun, 17 Mar 24 18:33:45 +1030';
+      final expected = DateTime.utc(2024, 3, 17, 8, 3, 45);
+      expect(parse(input), equals(expected));
+    });
+    test('Valid RFC 1036 date time string (UTC)', () {
+      const input = 'Sun, 17 Mar 24 12:30:45.123 GMT';
+      final expected = DateTime.utc(2024, 3, 17, 12, 30, 45, 123);
+      expect(parse(input), equals(expected));
+    });
+
+    test('Valid RFC 1036 date time string with timezone with milliseconds', () {
+      const input = 'Sun, 17 Mar 24 18:33:45.123 +1030';
+      final expected = DateTime.utc(2024, 3, 17, 8, 3, 45, 123);
+      expect(parse(input), equals(expected));
+    });
+  });
 }
 
 extension _UnixTime on DateTime {

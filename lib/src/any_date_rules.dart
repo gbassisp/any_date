@@ -254,6 +254,7 @@ final DateParsingRule _unixTime = SimpleRule((params) {
 final DateParsingRule rfcRules = MultipleRules([
   maybeDateTimeParse,
   _rfc1123,
+  _rfc1036,
   _unixTime,
 ]);
 
@@ -272,6 +273,38 @@ final DateParsingRule _rfc1123 = SimpleRule((params) {
   final day = int.parse(match.group(2)!);
   final month = _monthToInt(match.group(3)!);
   final year = int.parse(match.group(4)!);
+  final hour = int.parse(match.group(5)!);
+  final minute = int.parse(match.group(6)!);
+  final second = int.parse(match.group(7)!);
+  final fraction = match.group(8); // Fractional seconds, if present
+  final timeZoneOffset = match.group(9)!.trim();
+  // print('$year $month $day $hour $minute $second $timeZoneOffset');
+
+  var dateTime = DateTime(year, month, day, hour, minute, second);
+  // print(dateTime);
+  if (fraction != null) {
+    final milliseconds = int.parse(fraction.padRight(3, '0').substring(0, 3));
+    dateTime = dateTime.add(Duration(milliseconds: milliseconds));
+  }
+
+  return DateTime.parse('$dateTime$timeZoneOffset');
+});
+
+final DateParsingRule _rfc1036 = SimpleRule((params) {
+  final formatted = replaceUtc(params.originalString).replaceAll(',', ' ');
+  final regex = RegExp(
+    r'^(\w{3})\s+(\d{1,2})\s+(\w{3,20})\s+(\d{2})\s+(\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?(.+)$',
+  );
+
+  final match = regex.firstMatch(formatted);
+  // print(match?.group(0));
+  if (match == null) {
+    return null;
+  }
+
+  final day = int.parse(match.group(2)!);
+  final month = _monthToInt(match.group(3)!);
+  final year = _parseYear(match.group(4)!);
   final hour = int.parse(match.group(5)!);
   final minute = int.parse(match.group(6)!);
   final second = int.parse(match.group(7)!);
