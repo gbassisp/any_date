@@ -32,7 +32,7 @@ final _timePatterns = [
 
 /// default parsing rule from dart core
 DateTime? dateTimeTryParse(String formattedString) =>
-    DateTime.tryParse(formattedString.toUpperCase());
+    DateTime.tryParse(formattedString.toUpperCase().trim());
 
 /// if no values were found, throws format exception
 DateTime noValidFormatFound(String formattedString) {
@@ -278,7 +278,7 @@ final DateParsingRule mdy = MultipleRules([
 /// This is needed because yy-mm-dd is ambiguous and cannot be passed to
 /// DateTime.parse every time
 DateParsingRule maybeDateTimeParse = SimpleRule((params) {
-  final d = params.formattedString;
+  final d = params.originalString;
   // final separators = params.parserInfo.allowedSeparators;
   // final s = separatorPattern(separators);
 
