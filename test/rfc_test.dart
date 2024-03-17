@@ -141,6 +141,28 @@ void main() {
       });
     });
   }
+
+  group('RFC 3339 Date Time Parsing', () {
+    // final parse = DateTime.parse;
+    final parse = const AnyDate().parse;
+    test('Valid RFC 3339 date time string', () {
+      const input = '2024-03-17T12:30:45Z';
+      final expected = DateTime.utc(2024, 3, 17, 12, 30, 45);
+      expect(parse(input), equals(expected));
+    });
+
+    test('Valid RFC 3339 date time string with fractional seconds', () {
+      const input = '2024-03-17T12:30:45.123Z';
+      final expected = DateTime.utc(2024, 3, 17, 12, 30, 45, 123);
+      expect(parse(input), equals(expected));
+    });
+
+    test('Valid RFC 3339 date time string with timezone offset', () {
+      const input = '2024-03-17T12:30:45-07:00';
+      final expected = DateTime.utc(2024, 3, 17, 19, 30, 45);
+      expect(parse(input), equals(expected));
+    });
+  });
 }
 
 extension _UnixTime on DateTime {
