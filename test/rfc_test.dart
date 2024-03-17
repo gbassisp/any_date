@@ -163,6 +163,11 @@ void main() {
       final expected = DateTime.utc(2024, 3, 17, 19, 30, 45);
       expect(parse(input), equals(expected));
     });
+    test('Valid RFC 3339 date time string with timezone with milliseconds', () {
+      const input = '2024-03-17T12:30:45.123-07:00';
+      final expected = DateTime.utc(2024, 3, 17, 19, 30, 45, 123);
+      expect(parse(input), equals(expected));
+    });
   });
 
   group('RFC 1123 Date Time Parsing', () {
@@ -180,7 +185,24 @@ void main() {
 
     test('Valid RFC 1123 date time string with timezone offset', () {
       const input = 'Sun, 17 Mar 2024 18:33:45 +1030';
-      final expected = DateTime.utc(2024, 3, 17, 8, 3, 45); // Offset adjusted
+      final expected = DateTime.utc(2024, 3, 17, 8, 3, 45);
+      expect(parse(input), equals(expected));
+    });
+    test('Valid RFC 1123 date time string (GMT) with milliseconds', () {
+      const input = 'Sun, 17 Mar 2024 12:30:45.123 GMT';
+      final expected = DateTime.utc(2024, 3, 17, 12, 30, 45, 123);
+      expect(parse(input), equals(expected));
+    });
+
+    test('Valid RFC 1123 date time string (UTC) with milliseconds', () {
+      const input = 'Sun, 17 Mar 2024 12:30:45.123 UTC';
+      final expected = DateTime.utc(2024, 3, 17, 12, 30, 45, 123);
+      expect(parse(input), equals(expected));
+    });
+
+    test('Valid RFC 1123 date time string with timezone with milliseconds', () {
+      const input = 'Sun, 17 Mar 2024 18:33:45.123 +1030';
+      final expected = DateTime.utc(2024, 3, 17, 8, 3, 45, 123);
       expect(parse(input), equals(expected));
     });
   });
