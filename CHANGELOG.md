@@ -1,4 +1,10 @@
 
+## 0.1.13
+
+- Added test cases to ensure RFC 822, 2822, 1036, 1123, and 3339 are supported
+- Minor fixes to make them supported in edge cases
+- Added support for unix epoch timestamp
+
 ## 0.1.12
 
 - Fix caret syntax on dependencies

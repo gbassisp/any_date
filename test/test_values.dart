@@ -1,6 +1,14 @@
 import 'dart:math';
 
+import 'package:any_date/any_date.dart';
 import 'package:any_date/src/date_range.dart';
+
+const parsers = [
+  AnyDate(),
+  AnyDate(info: DateParserInfo(dayFirst: true)),
+  AnyDate(info: DateParserInfo(yearFirst: true)),
+  AnyDate(info: DateParserInfo(dayFirst: true, yearFirst: true)),
+];
 
 /// used to run tests on a wide range of dates
 const exhaustiveTests = bool.fromEnvironment('exhaustive', defaultValue: true);

@@ -32,7 +32,7 @@ final _timePatterns = [
 
 /// default parsing rule from dart core
 DateTime? dateTimeTryParse(String formattedString) =>
-    DateTime.tryParse(formattedString.toUpperCase());
+    DateTime.tryParse(formattedString.toUpperCase().trim());
 
 /// if no values were found, throws format exception
 DateTime noValidFormatFound(String formattedString) {
@@ -228,8 +228,102 @@ final DateParsingRule ambiguousCase = SimpleRule((params) {
   return _try(RegExp(b), params.formattedString, shortYear: true);
 });
 
-final DateParsingRule ymd = MultipleRules([
+final _thousand = BigInt.from(1000);
+final _sLimit = BigInt.from(8640000000);
+final _msLimit = _sLimit * _thousand;
+final _usLimit = _msLimit * _thousand;
+final _nsLimit = _usLimit * _thousand;
+final DateParsingRule _unixTime = SimpleRule((params) {
+  final timestamp = params.originalString.trim();
+  final number = timestamp.tryToBigInt();
+  if (number != null) {
+    final abs = number.abs();
+    if (abs <= _sLimit) {
+      return DateTime.fromMillisecondsSinceEpoch((number * _thousand).toInt());
+    } else if (abs <= _msLimit) {
+      return DateTime.fromMillisecondsSinceEpoch(number.toInt());
+    } else if (abs <= _usLimit) {
+      return DateTime.fromMicrosecondsSinceEpoch(number.toInt());
+    } else if (abs <= _nsLimit) {
+      return DateTime.fromMicrosecondsSinceEpoch((number ~/ _thousand).toInt());
+    }
+  }
+  return null;
+});
+
+final DateParsingRule rfcRules = MultipleRules([
   maybeDateTimeParse,
+  _rfc1123,
+  _rfc1036,
+  _unixTime,
+]);
+
+final DateParsingRule _rfc1123 = SimpleRule((params) {
+  final formatted = replaceUtc(params.originalString).replaceAll(',', ' ');
+  final regex = RegExp(
+    r'^(\w{3})\s+(\d{1,2})\s+(\w{3,20})\s+(\d{4,5})\s+(\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?(.+)$',
+  );
+
+  final match = regex.firstMatch(formatted);
+  // print(match?.group(0));
+  if (match == null) {
+    return null;
+  }
+
+  final day = int.parse(match.group(2)!);
+  final month = _monthToInt(match.group(3)!);
+  final year = int.parse(match.group(4)!);
+  final hour = int.parse(match.group(5)!);
+  final minute = int.parse(match.group(6)!);
+  final second = int.parse(match.group(7)!);
+  final fraction = match.group(8); // Fractional seconds, if present
+  final timeZoneOffset = match.group(9)!.trim();
+  // print('$year $month $day $hour $minute $second $timeZoneOffset');
+
+  var dateTime = DateTime(year, month, day, hour, minute, second);
+  // print(dateTime);
+  if (fraction != null) {
+    final milliseconds = int.parse(fraction.padRight(3, '0').substring(0, 3));
+    dateTime = dateTime.add(Duration(milliseconds: milliseconds));
+  }
+
+  return DateTime.parse('$dateTime$timeZoneOffset');
+});
+
+final DateParsingRule _rfc1036 = SimpleRule((params) {
+  final formatted = replaceUtc(params.originalString).replaceAll(',', ' ');
+  final regex = RegExp(
+    r'^(\w{3})\s+(\d{1,2})\s+(\w{3,20})\s+(\d{2})\s+(\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?(.+)$',
+  );
+
+  final match = regex.firstMatch(formatted);
+  // print(match?.group(0));
+  if (match == null) {
+    return null;
+  }
+
+  final day = int.parse(match.group(2)!);
+  final month = _monthToInt(match.group(3)!);
+  final year = _parseYear(match.group(4)!);
+  final hour = int.parse(match.group(5)!);
+  final minute = int.parse(match.group(6)!);
+  final second = int.parse(match.group(7)!);
+  final fraction = match.group(8); // Fractional seconds, if present
+  final timeZoneOffset = match.group(9)!.trim();
+  // print('$year $month $day $hour $minute $second $timeZoneOffset');
+
+  var dateTime = DateTime(year, month, day, hour, minute, second);
+  // print(dateTime);
+  if (fraction != null) {
+    final milliseconds = int.parse(fraction.padRight(3, '0').substring(0, 3));
+    dateTime = dateTime.add(Duration(milliseconds: milliseconds));
+  }
+
+  return DateTime.parse('$dateTime$timeZoneOffset');
+});
+
+final DateParsingRule ymd = MultipleRules([
+  // maybeDateTimeParse,
   ymdTextMonthRegex,
   ymdRegex,
 ]);
@@ -255,14 +349,14 @@ final DateParsingRule mdy = MultipleRules([
 /// This is needed because yy-mm-dd is ambiguous and cannot be passed to
 /// DateTime.parse every time
 DateParsingRule maybeDateTimeParse = SimpleRule((params) {
-  final d = params.formattedString;
+  final d = params.originalString;
   // final separators = params.parserInfo.allowedSeparators;
   // final s = separatorPattern(separators);
 
   // if starts with 4 digits followed by a separator, then it's probably a date
 
   if (d.startsWith(RegExp('$_longYearPattern$_s'))) {
-    return dateTimeTryParse(d);
+    return dateTimeTryParse(d) ?? dateTimeTryParse(params.formattedString);
   }
 
   return null;
@@ -486,4 +580,9 @@ bool _isAm(String formattedString) {
     return true;
   }
   return false;
+}
+
+int _monthToInt(String month, [Map<String, int>? months]) {
+  months ??= monthsMap;
+  return months[month]!;
 }

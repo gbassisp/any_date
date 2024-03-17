@@ -107,10 +107,13 @@ const _parser = AnyDate();
 
 /// a collection of extensions on [String]
 extension StringParsers on String {
+  /// return the string parsed as a BigInt or null
+  BigInt? tryToBigInt() => BigInt.tryParse(trim());
+
   /// returns the string parsed as an int or null
   int? tryToInt() => int.tryParse(trim());
 
-  /// returns the string parsed as int
+  /// returns the string parsed as an int or throw
   int toInt() => int.parse(trim());
 
   /// parses the string as a DateTime
