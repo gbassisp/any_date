@@ -167,20 +167,20 @@ void main() {
 
   group('RFC 1123 Date Time Parsing', () {
     test('Valid RFC 1123 date time string (GMT)', () {
-      const input = 'Thu, 17 Mar 2024 12:30:45 GMT';
+      const input = 'Sun, 17 Mar 2024 12:30:45 GMT';
       final expected = DateTime.utc(2024, 3, 17, 12, 30, 45);
       expect(parse(input), equals(expected));
     });
 
     test('Valid RFC 1123 date time string (UTC)', () {
-      const input = 'Thu, 17 Mar 2024 12:30:45 UTC';
+      const input = 'Sun, 17 Mar 2024 12:30:45 UTC';
       final expected = DateTime.utc(2024, 3, 17, 12, 30, 45);
       expect(parse(input), equals(expected));
     });
 
     test('Valid RFC 1123 date time string with timezone offset', () {
-      const input = 'Thu, 17 Mar 2024 12:30:45 +0700';
-      final expected = DateTime.utc(2024, 3, 17, 5, 30, 45); // Offset adjusted
+      const input = 'Sun, 17 Mar 2024 18:33:45 +1030';
+      final expected = DateTime.utc(2024, 3, 17, 8, 3, 45); // Offset adjusted
       expect(parse(input), equals(expected));
     });
   });
