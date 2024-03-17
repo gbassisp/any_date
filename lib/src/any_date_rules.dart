@@ -3,7 +3,6 @@
 import 'package:any_date/src/any_date_base.dart';
 import 'package:any_date/src/any_date_rules_model.dart';
 import 'package:any_date/src/extensions.dart';
-import 'package:lean_extensions/lean_extensions.dart';
 
 /// only these separators are known by the parser; others will be replaced
 const usedSeparators = {'-', ' ', ':'};
