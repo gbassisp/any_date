@@ -3,6 +3,8 @@ import 'package:any_date/src/date_range.dart';
 import 'package:test/test.dart';
 
 void main() {
+  final parse = const AnyDate().parse;
+
   const secondsLimit = 8640000000;
   final dates = [
     DateTime(1901),
@@ -144,7 +146,6 @@ void main() {
 
   group('RFC 3339 Date Time Parsing', () {
     // final parse = DateTime.parse;
-    final parse = const AnyDate().parse;
     test('Valid RFC 3339 date time string', () {
       const input = '2024-03-17T12:30:45Z';
       final expected = DateTime.utc(2024, 3, 17, 12, 30, 45);
@@ -160,6 +161,26 @@ void main() {
     test('Valid RFC 3339 date time string with timezone offset', () {
       const input = '2024-03-17T12:30:45-07:00';
       final expected = DateTime.utc(2024, 3, 17, 19, 30, 45);
+      expect(parse(input), equals(expected));
+    });
+  });
+
+  group('RFC 1123 Date Time Parsing', () {
+    test('Valid RFC 1123 date time string (GMT)', () {
+      const input = 'Thu, 17 Mar 2024 12:30:45 GMT';
+      final expected = DateTime.utc(2024, 3, 17, 12, 30, 45);
+      expect(parse(input), equals(expected));
+    });
+
+    test('Valid RFC 1123 date time string (UTC)', () {
+      const input = 'Thu, 17 Mar 2024 12:30:45 UTC';
+      final expected = DateTime.utc(2024, 3, 17, 12, 30, 45);
+      expect(parse(input), equals(expected));
+    });
+
+    test('Valid RFC 1123 date time string with timezone offset', () {
+      const input = 'Thu, 17 Mar 2024 12:30:45 +0700';
+      final expected = DateTime.utc(2024, 3, 17, 5, 30, 45); // Offset adjusted
       expect(parse(input), equals(expected));
     });
   });
