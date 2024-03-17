@@ -2,9 +2,9 @@ import 'package:any_date/src/any_date_base.dart';
 import 'package:any_date/src/date_range.dart';
 import 'package:test/test.dart';
 
-void main() {
-  final parse = const AnyDate().parse;
+import 'test_values.dart';
 
+void main() {
   const secondsLimit = 8640000000;
   final dates = [
     DateTime(1901),
@@ -143,8 +143,18 @@ void main() {
       });
     });
   }
+  group('main RFC tests', () {
+    for (final parser in parsers) {
+      rfcTests(parser);
+    }
+  });
+}
 
-  group('RFC 3339 Date Time Parsing', () {
+void rfcTests(AnyDate parser) {
+  final parse = parser.parse;
+  final nameSuffix = parser.info.toString();
+
+  group('RFC 3339 Date Time Parsing - $nameSuffix', () {
     // final parse = DateTime.parse;
     test('Valid RFC 3339 date time string', () {
       const input = '2024-03-17T12:30:45Z';
@@ -170,7 +180,7 @@ void main() {
     });
   });
 
-  group('RFC 1123 Date Time Parsing', () {
+  group('RFC 1123 Date Time Parsing - $nameSuffix', () {
     test('Valid RFC 1123 date time string (GMT)', () {
       const input = 'Sun, 17 Mar 2024 12:30:45 GMT';
       final expected = DateTime.utc(2024, 3, 17, 12, 30, 45);
@@ -207,7 +217,7 @@ void main() {
     });
   });
 
-  group('RFC 1036 Date Time Parsing', () {
+  group('RFC 1036 Date Time Parsing - $nameSuffix', () {
     test('Valid RFC 1036 date time string (UTC)', () {
       const input = 'Sun, 17 Mar 24 12:30:45 GMT';
       final expected = DateTime.utc(2024, 3, 17, 12, 30, 45);
@@ -232,7 +242,7 @@ void main() {
     });
   });
 
-  group('RFC 822 and RFC 2822 Date Time Parsing', () {
+  group('RFC 822 and RFC 2822 Date Time Parsing - $nameSuffix', () {
     test('Valid RFC 822 date time string (GMT)', () {
       const input = 'Sun, 17 Mar 24 12:30:45 GMT';
       final expected = DateTime.utc(2024, 3, 17, 12, 30, 45);
