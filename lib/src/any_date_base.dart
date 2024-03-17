@@ -119,12 +119,25 @@ const _knownSeparators = {..._usedSeparators, ..._specialSeparators};
 /// these are the separators used by the default DateTime.parse
 String _replaceSeparators(String formattedString, Iterable<String> separators) {
   var result = formattedString;
+  result = replaceUtc(result);
   final unknownSeparators = separators.toSet().difference(_knownSeparators);
 
   for (final sep in unknownSeparators) {
     result = result.replaceAll(sep, '-');
   }
+
   return _restoreMillisecons(result);
+}
+
+/// replace 'UTC' or 'GMT' to 'Z'
+@internal
+String replaceUtc(String formattedString) {
+  return formattedString
+      .replaceAllMapped(RegExp(r'\s*utc', caseSensitive: false), (match) => 'Z')
+      .replaceAllMapped(
+        RegExp(r'\s*gmt', caseSensitive: false),
+        (match) => 'Z',
+      );
 }
 
 String _restoreMillisecons(String formattedString) {
@@ -353,7 +366,8 @@ class AnyDate {
       simplifiedString: _removeWeekday(p),
     );
 
-    yield unixTime.apply(p);
+    yield rfcRules.apply(p);
+    // return;
 
     yield ambiguousCase.apply(p);
     yield MultipleRules(i.dayFirst ? _yearLastDayFirst : _yearLast).apply(p);
@@ -363,7 +377,7 @@ class AnyDate {
 
     // default rule from DateTime
     if (!i.dayFirst) {
-      yield dateTimeTryParse(formattedString);
+      yield maybeDateTimeParse.apply(p);
     }
   }
 }
@@ -417,6 +431,12 @@ const _shortMonths = [
 ];
 
 const _allMonths = [..._months, ..._shortMonths];
+
+/// map of default months (english)
+@internal
+final monthsMap = {
+  for (final m in _allMonths) m.name: m.number,
+};
 
 const _weekdays = [
   Weekday(number: 1, name: 'Monday'),
