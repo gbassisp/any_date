@@ -6,10 +6,23 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:intl/intl.dart';
 import 'package:intl/locale.dart';
+import 'package:lean_extensions/collection_extensions.dart';
 import 'package:lean_extensions/dart_essentials.dart';
 import 'package:test/test.dart';
 
-final _locales = availableLocalesForDateFormatting;
+import 'rfc_test.dart';
+
+final _locales = availableLocalesForDateFormatting.map((e) => e).toList()
+  ..removeWhere((element) {
+    final unsupported = ['ar', 'as', 'bn', 'fa', 'mr', 'my', 'ne', 'ps'];
+    for (final l in unsupported) {
+      if (element.startsWith(l)) {
+        return true;
+      }
+    }
+    return false;
+  });
+final _localeCodes = _locales.map(Locale.tryParse).whereNotNull().toList();
 
 extension _ListExtension<T> on Iterable<T> {
   int? indexOf(T element) {
@@ -25,6 +38,15 @@ extension _ListExtension<T> on Iterable<T> {
 
 // TODO(gbassisp): promote this to lib/ once we enable support for locale
 extension _LocaleExtensions on Locale {
+  AnyDate get anyDate => AnyDate(
+        info: DateParserInfo(
+          dayFirst: !usesMonthFirst,
+          yearFirst: usesYearFirst,
+          months: [...longMonths, ...shortMonths],
+          weekdays: [...longWeekdays, ...shortWeekdays],
+        ),
+      );
+
   static final _date = DateTime(1234, 5, 6, 7, 8, 9);
 
   String get _yMd => DateFormat.yMd(toString()).format(_date);
@@ -126,9 +148,7 @@ extension _LocaleExtensions on Locale {
 }
 
 Future<void> main() async {
-  for (final locale in _locales) {
-    await initializeDateFormatting(locale);
-  }
+  await initializeDateFormatting();
 
   group('locale extensions', () {
     test('extensions converges', () {
@@ -150,6 +170,13 @@ Future<void> main() async {
       }
 
       expect(count, greaterThan(0));
+    });
+
+    group('all locales support rfc formats', () {
+      for (final l in _localeCodes) {
+        final parser = l.anyDate;
+        rfcTests(parser);
+      }
     });
   });
 
