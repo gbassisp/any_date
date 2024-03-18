@@ -1,4 +1,5 @@
 import 'package:any_date/any_date.dart';
+import 'package:any_date/src/extensions.dart';
 import 'package:intl/date_symbol_data_file.dart'
     show availableLocalesForDateFormatting;
 import 'package:intl/date_symbol_data_local.dart';
@@ -6,7 +7,6 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/locale.dart';
 import 'package:lean_extensions/dart_essentials.dart';
-import 'package:lean_extensions/lean_extensions.dart';
 import 'package:test/test.dart';
 
 final _locales = availableLocalesForDateFormatting;
