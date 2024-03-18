@@ -18,22 +18,30 @@ void rfcTests(AnyDate parser) {
   final nameSuffix = info.toString();
 
   const secondsLimit = 8640000000;
-  final dates = [
+  final dates = {
+    ...DateTimeRange(
+      start: DateTime(1801),
+      end: DateTime(1969),
+    ).everyNowAndThen,
     DateTime(1901),
-    DateTime(1960),
+    DateTime(1969),
     // 1969-09-23 09:30:00.000 (lower limit of ambiguity)
     DateTime.fromMillisecondsSinceEpoch(-secondsLimit - 1),
     DateTime.fromMicrosecondsSinceEpoch(0),
     // 1970-04-11 09:30:00.000 (upper limit of ambiguity)
     DateTime.fromMillisecondsSinceEpoch(secondsLimit + 1),
-    DateTime(1980),
+    DateTime(1971),
     DateTime.now(),
     DateTime(2038),
+    ...DateTimeRange(
+      start: DateTime(1971),
+      end: DateTime(2138),
+    ).everyNowAndThen,
 
     // out of original limit by 100y
     DateTime(1801),
     DateTime(2138),
-  ];
+  };
   group('unix timestamp - $nameSuffix', () {
     test('seconds', () {
       for (var date in dates) {
@@ -101,7 +109,7 @@ void rfcTests(AnyDate parser) {
       for (final d in DateTimeRange(
         start: DateTime(1801),
         end: DateTime(2138),
-      ).hours) {
+      ).everyNowAndThen) {
         final t = d.secondsSinceEpoch;
         final s = parser.tryParse(t.toString());
         final expected = d;
@@ -120,7 +128,7 @@ void rfcTests(AnyDate parser) {
         // mixed up. we start getting milliseconds parsed as seconds
         start: DateTime.fromMillisecondsSinceEpoch(-secondsLimit),
         end: DateTime.fromMillisecondsSinceEpoch(secondsLimit),
-      ).hours) {
+      ).everyNowAndThen) {
         final ms = d.millisecondsSinceEpoch;
         final us = d.microsecondsSinceEpoch;
         final ns = d.nanosecondsSinceEpoch;
@@ -287,8 +295,10 @@ extension _UnixTime on DateTime {
   int get nanosecondsSinceEpoch => microsecondsSinceEpoch * 1000;
 }
 
+const _duration = Duration(days: 2, hours: 19, minutes: 11, seconds: 13);
+
 extension _IterableRange on DateTimeRange {
-  Iterable<DateTime> get hours => every(const Duration(hours: 1));
+  Iterable<DateTime> get everyNowAndThen => every(_duration);
   // Iterable<DateTime> get minutes => every(const Duration(minutes: 1));
   // Iterable<DateTime> get seconds => every(const Duration(seconds: 1));
 }
