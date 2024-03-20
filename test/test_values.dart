@@ -16,7 +16,7 @@ const hugeRange = bool.fromEnvironment('huge');
 
 final now = DateTime(2000); // DateTime.now();
 const _span = 1;
-final range = DateTimeRange(
+final dateRange = DateTimeRange(
   start: DateTime(now.year - _span, 7),
   end: DateTime(now.year + _span - 1, 7),
 );
@@ -59,6 +59,15 @@ Iterable<DateTime> getRandomDates([int? count]) sync* {
 }
 
 final singleDate = DateTime(2023, 1, 2, 3, 4, 5, 6, 7);
+
+final allFormats = {
+  ...otherFormats,
+  ...mdyFormats,
+  ...dmyFormats,
+  ...ymdFormats,
+};
+
+final textMonthFormats = allFormats.where((element) => element.contains('MMM'));
 
 const otherFormats = {
   'EEEE, MMMM d, y',

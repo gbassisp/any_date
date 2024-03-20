@@ -1,5 +1,5 @@
 import 'package:any_date/any_date.dart';
-import 'package:any_date/src/extensions.dart';
+import 'package:any_date/src/locale_based_rules.dart';
 import 'package:intl/date_symbol_data_file.dart'
     show availableLocalesForDateFormatting;
 import 'package:intl/date_symbol_data_local.dart';
@@ -7,14 +7,22 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/locale.dart';
 import 'package:lean_extensions/collection_extensions.dart';
-import 'package:lean_extensions/dart_essentials.dart';
 import 'package:test/test.dart';
 
 import 'rfc_test.dart';
+// import 'test_values.dart' hide range;
+
+Iterable<DateFormat> _formatFactory(String locale) sync* {
+  yield DateFormat.yMMMMd(locale);
+}
 
 final _locales = availableLocalesForDateFormatting.map((e) => e).toList()
   ..removeWhere((element) {
-    final unsupported = ['ar', 'as', 'bn', 'fa', 'mr', 'my', 'ne', 'ps'];
+    final unsupported = ['ar', 'as', 'bn', 'fa', 'mr', 'my', 'ne', 'ps']
+      // maybe unsupported?
+      // ignore: prefer_inlined_adds
+      ..addAll(['am', 'be', 'bg', 'ca'])
+      ..clear();
     for (final l in unsupported) {
       if (element.startsWith(l)) {
         return true;
@@ -23,129 +31,6 @@ final _locales = availableLocalesForDateFormatting.map((e) => e).toList()
     return false;
   });
 final _localeCodes = _locales.map(Locale.tryParse).whereNotNull().toList();
-
-extension _ListExtension<T> on Iterable<T> {
-  int? indexOf(T element) {
-    for (final i in range(length)) {
-      if (elementAt(i) == element) {
-        return i;
-      }
-    }
-
-    return null;
-  }
-}
-
-// TODO(gbassisp): promote this to lib/ once we enable support for locale
-extension _LocaleExtensions on Locale {
-  AnyDate get anyDate => AnyDate(
-        info: DateParserInfo(
-          dayFirst: !usesMonthFirst,
-          yearFirst: usesYearFirst,
-          months: [...longMonths, ...shortMonths],
-          weekdays: [...longWeekdays, ...shortWeekdays],
-        ),
-      );
-
-  static final _date = DateTime(1234, 5, 6, 7, 8, 9);
-
-  String get _yMd => DateFormat.yMd(toString()).format(_date);
-
-  // DateParserInfo get parserInfo => DateParserInfo(
-  //       yearFirst: usesYearFirst,
-  //       dayFirst: !usesMonthFirst,
-  //       months: [...longMonths, ...shortMonths],
-  //       weekdays: [...longWeekdays, ...shortWeekdays],
-  //     );
-
-  bool get usesNumericSymbols {
-    try {
-      usesMonthFirst;
-      usesYearFirst;
-      return true;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  bool get usesMonthFirst {
-    final formatted = _yMd;
-    final fields = formatted.split(RegExp(r'\D'))
-      ..removeWhere((element) => element.trim().tryToInt() == null);
-    final numbers = fields.map((e) => e.toInt());
-
-    assert(
-      numbers.contains(5),
-      'could not find test date in $this: $formatted',
-    );
-
-    final monthIndex = numbers.indexOf(5);
-    final dayIndex = numbers.indexOf(6);
-
-    assert(
-      monthIndex != null && dayIndex != null,
-      'month and day must both be present in $this: $formatted',
-    );
-    return monthIndex! < dayIndex!;
-  }
-
-  bool get usesYearFirst {
-    final formatted = _yMd;
-    final fields = formatted.split(RegExp(r'\D'))
-      ..removeWhere((element) => element.trim().tryToInt() == null);
-    final numbers = fields.map((e) => e.toInt());
-
-    assert(
-      numbers.contains(1234),
-      'could not find test date in $this: $formatted',
-    );
-
-    final yearIndex = numbers.indexOf(1234);
-    final monthIndex = numbers.indexOf(5);
-
-    assert(
-      yearIndex != null && monthIndex != null,
-      'month and year must both be present in $this: $formatted',
-    );
-    return yearIndex! < monthIndex!;
-  }
-
-  Iterable<Month> get longMonths sync* {
-    final format = DateFormat('MMMM', toString());
-    for (final i in range(12)) {
-      final m = i + 1;
-      final d = DateTime(1234, m, 10);
-      yield Month(number: m, name: format.format(d));
-    }
-  }
-
-  Iterable<Month> get shortMonths sync* {
-    final format = DateFormat('MMM', toString());
-    for (final i in range(12)) {
-      final m = i + 1;
-      final d = DateTime(1234, m, 10);
-      yield Month(number: m, name: format.format(d));
-    }
-  }
-
-  Iterable<Weekday> get longWeekdays sync* {
-    final format = DateFormat('EEEE', toString());
-    for (final i in range(7)) {
-      final w = i + 1;
-      final d = DateTime(2023, 10, 8 + w);
-      yield Weekday(number: w, name: format.format(d));
-    }
-  }
-
-  Iterable<Weekday> get shortWeekdays sync* {
-    final format = DateFormat('EEE', toString());
-    for (final i in range(7)) {
-      final w = i + 1;
-      final d = DateTime(2023, 10, 8 + w);
-      yield Weekday(number: w, name: format.format(d));
-    }
-  }
-}
 
 Future<void> main() async {
   await initializeDateFormatting();
@@ -171,13 +56,32 @@ Future<void> main() async {
 
       expect(count, greaterThan(0));
     });
+  });
+  group('all locales support rfc formats', () {
+    for (final l in _localeCodes) {
+      final parser = l.anyDate;
+      rfcTests(parser);
+    }
+  });
 
-    group('all locales support rfc formats', () {
-      for (final l in _localeCodes) {
-        final parser = l.anyDate;
-        rfcTests(parser);
+  group('all locales can parse text month formats', () {
+    final date = DateTime.now();
+    for (final l in _localeCodes) {
+      final parser = AnyDate.fromLocale(l);
+      for (final format in _formatFactory(l.toLanguageTag())) {
+        final formatted = format.format(date);
+        final reason = '$formatted on $l with format ${format.pattern}';
+        test(reason, () {
+          final result = parser.tryParse(formatted);
+          final expected = format.parse(formatted);
+          expect(
+            result,
+            equals(expected),
+            reason: '$reason resulted in $result, but expected $expected',
+          );
+        });
       }
-    });
+    }
   });
 
   group('locale tests', () {

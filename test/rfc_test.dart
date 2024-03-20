@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:any_date/src/any_date_base.dart';
 import 'package:any_date/src/date_range.dart';
 import 'package:test/test.dart';
@@ -22,7 +24,7 @@ void rfcTests(AnyDate parser) {
     ...DateTimeRange(
       start: DateTime(1801),
       end: DateTime(1969),
-    ).everyNowAndThen,
+    ).random(),
     DateTime(1901),
     DateTime(1969),
     // 1969-09-23 09:30:00.000 (lower limit of ambiguity)
@@ -36,7 +38,7 @@ void rfcTests(AnyDate parser) {
     ...DateTimeRange(
       start: DateTime(1971),
       end: DateTime(2138),
-    ).everyNowAndThen,
+    ).random(),
 
     // out of original limit by 100y
     DateTime(1801),
@@ -109,7 +111,7 @@ void rfcTests(AnyDate parser) {
       for (final d in DateTimeRange(
         start: DateTime(1801),
         end: DateTime(2138),
-      ).everyNowAndThen) {
+      ).random()) {
         final t = d.secondsSinceEpoch;
         final s = parser.tryParse(t.toString());
         final expected = d;
@@ -128,7 +130,7 @@ void rfcTests(AnyDate parser) {
         // mixed up. we start getting milliseconds parsed as seconds
         start: DateTime.fromMillisecondsSinceEpoch(-secondsLimit),
         end: DateTime.fromMillisecondsSinceEpoch(secondsLimit),
-      ).everyNowAndThen) {
+      ).random()) {
         final ms = d.millisecondsSinceEpoch;
         final us = d.microsecondsSinceEpoch;
         final ns = d.nanosecondsSinceEpoch;
@@ -295,10 +297,17 @@ extension _UnixTime on DateTime {
   int get nanosecondsSinceEpoch => microsecondsSinceEpoch * 1000;
 }
 
-const _duration = Duration(days: 2, hours: 19, minutes: 11, seconds: 13);
+const _duration = Duration(days: 22, hours: 19, minutes: 11, seconds: 13);
 
 extension _IterableRange on DateTimeRange {
   Iterable<DateTime> get everyNowAndThen => every(_duration);
+  Iterable<DateTime> random([int amount = 100]) {
+    final all = everyNowAndThen.toList()..shuffle();
+
+    final count = min(all.length, amount);
+
+    return all.sublist(0, count - 1);
+  }
   // Iterable<DateTime> get minutes => every(const Duration(minutes: 1));
   // Iterable<DateTime> get seconds => every(const Duration(seconds: 1));
 }

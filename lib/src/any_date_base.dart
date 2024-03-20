@@ -1,5 +1,7 @@
 import 'package:any_date/src/any_date_rules.dart';
 import 'package:any_date/src/any_date_rules_model.dart';
+import 'package:any_date/src/locale_based_rules.dart';
+import 'package:intl/locale.dart';
 import 'package:meta/meta.dart';
 
 /// Parameters passed to the parser
@@ -240,6 +242,7 @@ class DateParserInfo {
     ],
     this.months = _allMonths,
     this.weekdays = _allWeekdays,
+    this.customRules = const [],
   });
 
   /// interpret the first value in an ambiguous case (e.g. 01/01/01)
@@ -265,6 +268,9 @@ class DateParserInfo {
   /// keywords to identify weekdays (to support multiple languages)
   final List<Weekday> weekdays;
 
+  /// allow passing extra rules to parse the timestamp
+  final Iterable<DateParsingRule> customRules;
+
   /// copy with
   DateParserInfo copyWith({
     bool? dayFirst,
@@ -272,6 +278,7 @@ class DateParserInfo {
     List<String>? allowedSeparators,
     List<Month>? months,
     List<Weekday>? weekdays,
+    Iterable<DateParsingRule>? customRules,
   }) {
     return DateParserInfo(
       dayFirst: dayFirst ?? this.dayFirst,
@@ -279,6 +286,7 @@ class DateParserInfo {
       allowedSeparators: allowedSeparators ?? this.allowedSeparators,
       months: months ?? this.months,
       weekdays: weekdays ?? this.weekdays,
+      customRules: customRules ?? this.customRules,
     );
   }
 
@@ -286,7 +294,7 @@ class DateParserInfo {
   String toString() {
     return 'DateParserInfo(dayFirst: $dayFirst, yearFirst: $yearFirst, '
         'allowedSeparators: $allowedSeparators, months: $months, '
-        'weekdays: $weekdays)';
+        'weekdays: $weekdays, customRules: $customRules)';
   }
 }
 
@@ -294,6 +302,11 @@ class DateParserInfo {
 class AnyDate {
   /// default constructor
   const AnyDate({DateParserInfo? info}) : _info = info;
+
+  /// factory constructor to create an [AnyDate] obj based on [locale]
+  factory AnyDate.fromLocale(Locale locale) {
+    return locale.anyDate;
+  }
 
   /// settings for parsing and resolving ambiguous cases
   // final DateParserInfo? info;
@@ -367,7 +380,9 @@ class AnyDate {
     );
 
     yield rfcRules.apply(p);
-    // return;
+    // custom rules are only applied after rfc rules
+    // TODO(gbassisp): maybe custom rules to run before custom rules
+    yield MultipleRules(i.customRules.toList()).apply(p);
 
     yield ambiguousCase.apply(p);
     yield MultipleRules(i.dayFirst ? _yearLastDayFirst : _yearLast).apply(p);
