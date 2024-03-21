@@ -322,9 +322,14 @@ class AnyDate {
   /// parses a string in any format into a [DateTime] object.
   DateTime parse(
     /// required string representation of a date to be parsed
-    String formattedString,
+    Object? formattedString,
   ) {
-    final res = _tryParse(formattedString);
+    DateTime? res;
+    if (formattedString != null) {
+      res = formattedString is DateTime
+          ? formattedString
+          : _tryParse(formattedString.toString());
+    }
     if (res == null) {
       throw FormatException('Invalid date format', formattedString);
     }
@@ -336,7 +341,7 @@ class AnyDate {
   /// Returns null if the string is not a valid date.
   ///
   /// Does not handle other exceptions.
-  DateTime? tryParse(String formattedString) {
+  DateTime? tryParse(Object? formattedString) {
     try {
       return parse(formattedString);
     } on FormatException {
