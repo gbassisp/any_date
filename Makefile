@@ -71,6 +71,7 @@ analyze:
 fix:
 	$(DART_CMD) format .
 	$(DART_CMD) fix --apply
+	$(DART_CMD) format .
 
 .PHONY: version
 version:

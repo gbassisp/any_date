@@ -34,7 +34,7 @@ void testRange(
     ..removeWhere((e) => e.isInvalid);
   const step = Duration(hours: 23, minutes: 13);
 
-  for (final date in (customRange ?? range).every(step)) {
+  for (final date in (customRange ?? dateRange).every(step)) {
     for (final a in seps) {
       for (final b in seps) {
         final f = formatter(date, a, b);
@@ -77,7 +77,7 @@ void compare(DateFormat format, AnyDate anyDate, {bool randomDates = true}) {
   // for (final singleDate in range.every(step)) {
   for (final r in [
     // range.days,
-    range.every(step),
+    dateRange.every(step),
     if (randomDates) getRandomDates(),
   ]) {
     for (final singleDate in r) {
