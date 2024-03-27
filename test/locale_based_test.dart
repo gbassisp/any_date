@@ -15,6 +15,9 @@ Iterable<DateFormat> _formatFactory(String locale) sync* {
   yield DateFormat.yMMMMd(locale);
 }
 
+final _englishLocales = _localeCodes.map((e) => e).toList()
+  ..removeWhere((element) => !element.toLanguageTag().startsWith('en'));
+
 final _locales = availableLocalesForDateFormatting.map((e) => e).toList()
   ..removeWhere((element) {
     final unsupported = ['ar', 'as', 'bn', 'fa', 'mr', 'my', 'ne', 'ps']
@@ -116,5 +119,31 @@ Future<void> main() async {
       expect(locale.longWeekdays, containsAllInOrder(longWeekdays));
       expect(locale.shortWeekdays, containsAllInOrder(shortWeekdays));
     });
+  });
+
+  group('locale specific cases', () {
+    const unambiguousEnglish = {
+      'March 27, 2024',
+      'March 27 2024',
+      '27 March 2024',
+      'Mar 27, 2024',
+      'Mar 27 2024',
+      '27 Mar 2024',
+    };
+    final expected = DateTime(2024, 3, 27);
+
+    for (final l in _englishLocales) {
+      test('simple english date in any english locale $l', () {
+        for (final d in unambiguousEnglish) {
+          final p = AnyDate.fromLocale(l);
+          final res = p.tryParse(d);
+          expect(
+            res,
+            equals(expected),
+            reason: 'expected $expected for $d with locale $l',
+          );
+        }
+      });
+    }
   });
 }
