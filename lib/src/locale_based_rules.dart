@@ -151,14 +151,14 @@ extension LocaleExtensions on Locale {
     }
   }
 
-  Iterable<DateParsingRule> get _parsingRules sync* {
+  Iterable<DateParsingFunction> get _parsingRules sync* {
     for (final f in _dateTime) {
-      yield SimpleRule((params) => f.parseLoose(params.originalString));
-      yield SimpleRule((params) => f.parseLoose(params.formattedString));
+      yield (params) => f.parseLoose(params.originalString);
+      yield (params) => f.parseLoose(params.formattedString);
     }
     for (final f in _dateOnly) {
-      yield SimpleRule((params) => f.parseLoose(params.originalString));
-      yield SimpleRule((params) => f.parseLoose(params.formattedString));
+      yield (params) => f.parseLoose(params.originalString);
+      yield (params) => f.parseLoose(params.formattedString);
     }
   }
 }

@@ -269,7 +269,7 @@ class DateParserInfo {
   final List<Weekday> weekdays;
 
   /// allow passing extra rules to parse the timestamp
-  final Iterable<DateParsingRule> customRules;
+  final Iterable<DateParsingFunction> customRules;
 
   /// copy with
   DateParserInfo copyWith({
@@ -278,7 +278,7 @@ class DateParserInfo {
     List<String>? allowedSeparators,
     List<Month>? months,
     List<Weekday>? weekdays,
-    Iterable<DateParsingRule>? customRules,
+    Iterable<DateParsingFunction>? customRules,
   }) {
     return DateParserInfo(
       dayFirst: dayFirst ?? this.dayFirst,
@@ -387,7 +387,7 @@ class AnyDate {
     yield rfcRules.apply(p);
     // custom rules are only applied after rfc rules
     // TODO(gbassisp): maybe custom rules to run before custom rules
-    yield MultipleRules(i.customRules.toList()).apply(p);
+    yield MultipleRules.fromFunctions(i.customRules).apply(p);
 
     yield ambiguousCase.apply(p);
     yield MultipleRules(i.dayFirst ? _yearLastDayFirst : _yearLast).apply(p);
