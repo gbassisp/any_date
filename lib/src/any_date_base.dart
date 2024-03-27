@@ -304,8 +304,21 @@ class AnyDate {
   const AnyDate({DateParserInfo? info}) : _info = info;
 
   /// factory constructor to create an [AnyDate] obj based on [locale]
-  factory AnyDate.fromLocale(Locale locale) {
-    return locale.anyDate;
+  factory AnyDate.fromLocale(Object? locale) {
+    if (locale is Locale) {
+      return locale.anyDate;
+    }
+
+    final localeString = locale?.toString();
+    if (localeString != null) {
+      final parsedLocale = Locale.tryParse(localeString);
+      if (parsedLocale != null) {
+        return parsedLocale.anyDate;
+      }
+    }
+
+    // TODO(gbassisp): add logging function to warn about invalid Locale
+    return const AnyDate();
   }
 
   /// settings for parsing and resolving ambiguous cases

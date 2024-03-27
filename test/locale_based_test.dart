@@ -64,13 +64,17 @@ Future<void> main() async {
       final parser = l.anyDate;
       rfcTests(parser);
     }
+
+    // invalid locale
+    rfcTests(AnyDate.fromLocale(null));
   });
 
   group('all locales can parse text month formats', () {
     final date = DateTime.now();
-    for (final l in _localeCodes) {
+    for (final l in [..._locales, ..._localeCodes]) {
       final parser = AnyDate.fromLocale(l);
-      for (final format in _formatFactory(l.toLanguageTag())) {
+      for (final format
+          in _formatFactory(l is Locale ? l.toLanguageTag() : l.toString())) {
         final formatted = format.format(date);
         final reason = '$formatted on $l with format ${format.pattern}';
         test(reason, () {
