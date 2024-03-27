@@ -6,7 +6,8 @@ import 'package:test/test.dart';
 
 import 'test_values.dart';
 
-void main() {
+Future<void> main() async {
+  await initializeDateFormatting();
   group('main RFC tests', () {
     for (final parser in parsers) {
       rfcTests(parser);
@@ -15,6 +16,7 @@ void main() {
 }
 
 void rfcTests(AnyDate parser) {
+  ensureDateFormattingInitialized();
   final parse = parser.parse;
   final info = parser.info;
   final nameSuffix = info.toString();

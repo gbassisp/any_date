@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:any_date/any_date.dart';
 import 'package:any_date/src/date_range.dart';
+import 'package:intl/date_symbol_data_local.dart' as intl;
 import 'package:intl/locale.dart';
 
 final parsers = [
@@ -16,6 +17,23 @@ final parsers = [
   AnyDate.fromLocale(Locale.parse('en-NZ')),
   AnyDate.fromLocale(Locale.parse('en-CA')),
 ];
+
+bool _hasInitialized = false;
+Future<void> initializeDateFormatting() async {
+  if (!_hasInitialized) {
+    await intl.initializeDateFormatting();
+    _hasInitialized = true;
+  }
+  ensureDateFormattingInitialized();
+}
+
+void ensureDateFormattingInitialized() {
+  assert(
+    _hasInitialized,
+    'locale aware tests must initalize date formatting '
+    'by calling initializeDateFormatting on main()',
+  );
+}
 
 /// used to run tests on a wide range of dates
 const exhaustiveTests = bool.fromEnvironment('exhaustive', defaultValue: true);
