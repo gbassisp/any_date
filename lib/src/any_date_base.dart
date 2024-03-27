@@ -350,11 +350,12 @@ class AnyDate {
   }
 
   DateTime? _tryParse(String formattedString) {
-    // TODO(gbassip): allow the following:
-    // missing components will be assumed to default value:
-    // e.g. 'Jan 2023' becomes DateTime(2023, 1), which is 1 Jan 2023
-    // if year is missing, the closest result to today is chosen.
-
+    /* 
+      TODO(gbassisp): allow the following:
+        missing components will be assumed to default value:
+        e.g. 'Jan 2023' becomes DateTime(2023, 1), which is 1 Jan 2023
+        if year is missing, the closest result to today is chosen.
+    */
     return _applyRules(formattedString).firstWhere(
       (e) => e != null,
       orElse: () => null,
@@ -386,7 +387,6 @@ class AnyDate {
 
     yield rfcRules.apply(p);
     // custom rules are only applied after rfc rules
-    // TODO(gbassisp): maybe custom rules to run before custom rules
     yield MultipleRules.fromFunctions(i.customRules).apply(p);
 
     yield ambiguousCase.apply(p);
