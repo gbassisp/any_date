@@ -153,12 +153,10 @@ extension LocaleExtensions on Locale {
 
   Iterable<DateParsingFunction> get _parsingRules sync* {
     for (final f in _dateTime) {
-      yield (params) => f.parseLoose(params.originalString);
-      yield (params) => f.parseLoose(params.formattedString);
+      yield f.parseLoose;
     }
     for (final f in _dateOnly) {
-      yield (params) => f.parseLoose(params.originalString);
-      yield (params) => f.parseLoose(params.formattedString);
+      yield f.parseLoose;
     }
   }
 }
