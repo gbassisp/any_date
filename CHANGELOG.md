@@ -1,4 +1,19 @@
 
+## 1.0.0
+
+Stable version release
+
+### Features
+
+- Supports any type of `Object` for parsing, such as `int` for unix epoch
+- Allows passing custom parsing rules to `AnyDate(customRules: ...)`
+- Added `AnyDate.fromLocale()` factory to support other languages. Essentially, any language can be used
+
+### Breaking changes
+
+- Requires `intl` dependency to support languages other than English
+
+
 ## 0.1.13
 
 - Added test cases to ensure RFC 822, 2822, 1036, 1123, and 3339 are supported
