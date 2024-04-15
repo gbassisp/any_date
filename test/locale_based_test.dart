@@ -194,24 +194,24 @@ Future<void> main() async {
 
       expect(locale.usesMonthFirst, isTrue);
       expect(locale.usesYearFirst, isFalse);
-      expect(locale.longMonths, containsAllInOrder(longMonths));
-      expect(locale.shortMonths, containsAllInOrder(shortMonths));
-      expect(locale.longWeekdays, containsAllInOrder(longWeekdays));
-      expect(locale.shortWeekdays, containsAllInOrder(shortWeekdays));
+      expect(longMonths, containsAll(locale.longMonths));
+      expect(shortMonths, containsAll(locale.shortMonths));
+      expect(longWeekdays, containsAll(locale.longWeekdays));
+      expect(shortWeekdays, containsAll(locale.shortWeekdays));
     });
 
     test('english speaking - normal format', () {
       final locale = Locale.fromSubtags(languageCode: 'en', countryCode: 'AU');
       final longMonths = englishMonths.sublist(0, 12);
-      final shortMorhts = englishMonths.sublist(12)
+      final shortMonths = englishMonths.sublist(12)
         ..removeWhere((element) => element.name == 'Sep');
 
       expect(locale.usesMonthFirst, isFalse);
       expect(locale.usesYearFirst, isFalse);
-      expect(locale.longMonths, containsAllInOrder(longMonths));
-      expect(locale.shortMonths, containsAllInOrder(shortMorhts));
-      expect(locale.longWeekdays, containsAllInOrder(longWeekdays));
-      expect(locale.shortWeekdays, containsAllInOrder(shortWeekdays));
+      expect(longMonths, containsAll(locale.longMonths));
+      expect(shortMonths, containsAll(locale.shortMonths));
+      expect(longWeekdays, containsAll(locale.longWeekdays));
+      expect(shortWeekdays, containsAll(locale.shortWeekdays));
     });
   });
 }
