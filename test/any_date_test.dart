@@ -58,7 +58,7 @@ void testRange(
 }
 
 extension _TryParse on DateFormat {
-  DateTime? tryParse(String input) {
+  DateTime? _tryParse(String input) {
     try {
       return parse(input);
     } catch (_) {
@@ -85,7 +85,7 @@ void compare(DateFormat format, AnyDate anyDate, {bool randomDates = true}) {
       final d = f.format(singleDate);
       final a = anyDate;
       final config = a.info;
-      final e = f.tryParse(d);
+      final e = f._tryParse(d);
       // expect(e, isNotNull, reason: 'DateFormat failed: $reason');
       final r = a.tryParse(d);
       final reason = 'format: ${format.pattern}\n '
