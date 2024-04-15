@@ -1,4 +1,8 @@
 
+## 1.0.1
+
+- Added support for `intl` 0.19
+
 ## 1.0.0
 
 Stable version release
