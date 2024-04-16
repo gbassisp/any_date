@@ -1,4 +1,8 @@
 
+## 1.0.2
+
+- Minor change to package description
+
 ## 1.0.1
 
 - Added support for `intl` 0.19
