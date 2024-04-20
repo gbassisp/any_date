@@ -1,4 +1,9 @@
 
+## 1.0.3
+
+- Merged in `0.1.14`:  
+  Added support for non-sense formats; at the moment only `yyyyMMdd'T'hhmmss` with no separator, including time variants
+
 ## 1.0.2
 
 - Minor change to package description
