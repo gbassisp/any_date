@@ -1,4 +1,8 @@
 
+## 0.1.14
+
+- Added support for non-sense formats; at the moment only `yyyyMMdd'T'hhmmss` with no separator, including time variants
+
 ## 0.1.13
 
 - Added test cases to ensure RFC 822, 2822, 1036, 1123, and 3339 are supported
