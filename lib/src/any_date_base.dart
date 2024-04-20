@@ -1,5 +1,6 @@
 import 'package:any_date/src/any_date_rules.dart';
 import 'package:any_date/src/any_date_rules_model.dart';
+import 'package:any_date/src/nonsense_formats.dart';
 import 'package:meta/meta.dart';
 
 /// Parameters passed to the parser
@@ -373,6 +374,7 @@ class AnyDate {
 
     yield rfcRules.apply(p);
     // return;
+    yield nonsenseRules.apply(p);
 
     yield ambiguousCase.apply(p);
     yield MultipleRules(i.dayFirst ? _yearLastDayFirst : _yearLast).apply(p);
