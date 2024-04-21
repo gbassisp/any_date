@@ -41,4 +41,33 @@ void main() {
       expect(parser.tryParse(formatted), equals(expected));
     });
   });
+
+  group('nasa formats from stack overflow', () {
+    const parser = AnyDate();
+    test('format 1 complete', () {
+      const formatted = 'Thu, 01 Jan 1970 00:00:00 +0000';
+      final expected = DateTime.utc(1970);
+
+      expect(parser.tryParse(formatted), equals(expected));
+    });
+    test('format 2 complete', () {
+      const formatted = 'Thu, 01 Jan 1970 00:00:00 GMT';
+      final expected = DateTime.utc(1970);
+
+      expect(parser.tryParse(formatted), equals(expected));
+    });
+    // TODO(gbassisp): enable tests for time variants
+    // test('format 1 without seconds', () {
+    //   const formatted = 'Thu, 01 Jan 1970 00:00 +0000';
+    //   final expected = DateTime.utc(1970);
+
+    //   expect(parser.tryParse(formatted), equals(expected));
+    // });
+    // test('format 2 without seconds', () {
+    //   const formatted = 'Thu, 01 Jan 1970 00:00 GMT';
+    //   final expected = DateTime.utc(1970);
+
+    //   expect(parser.tryParse(formatted), equals(expected));
+    // });
+  });
 }
