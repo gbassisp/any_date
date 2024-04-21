@@ -133,11 +133,16 @@ String _replaceSeparators(String formattedString, Iterable<String> separators) {
 /// replace 'UTC' or 'GMT' to 'Z'
 @internal
 String replaceUtc(String formattedString) {
+  const suffix = 'Z';
+
   return formattedString
-      .replaceAllMapped(RegExp(r'\s*utc', caseSensitive: false), (match) => 'Z')
+      .replaceAllMapped(
+        RegExp(r'\s*utc', caseSensitive: false),
+        (match) => suffix,
+      )
       .replaceAllMapped(
         RegExp(r'\s*gmt', caseSensitive: false),
-        (match) => 'Z',
+        (match) => suffix,
       );
 }
 
