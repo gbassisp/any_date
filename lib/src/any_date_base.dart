@@ -1,6 +1,7 @@
 import 'package:any_date/src/any_date_rules.dart';
 import 'package:any_date/src/any_date_rules_model.dart';
 import 'package:any_date/src/nonsense_formats.dart';
+import 'package:any_date/src/time_zone_logic.dart';
 import 'package:meta/meta.dart';
 
 /// Parameters passed to the parser
@@ -128,22 +129,6 @@ String _replaceSeparators(String formattedString, Iterable<String> separators) {
   }
 
   return _restoreMillisecons(result);
-}
-
-/// replace 'UTC' or 'GMT' to 'Z'
-@internal
-String replaceUtc(String formattedString) {
-  const suffix = 'Z';
-
-  return formattedString
-      .replaceAllMapped(
-        RegExp(r'\s*utc', caseSensitive: false),
-        (match) => suffix,
-      )
-      .replaceAllMapped(
-        RegExp(r'\s*gmt', caseSensitive: false),
-        (match) => suffix,
-      );
 }
 
 String _restoreMillisecons(String formattedString) {
