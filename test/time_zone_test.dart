@@ -41,6 +41,9 @@ void main() {
     test('basic utc now - GMT+0000', () {
       expectUtc('GMT+0000');
     });
+    test('basic utc now - GMT-0000', () {
+      expectUtc('GMT-0000');
+    });
     test('basic utc now - +0000', () {
       expectUtc('+0000');
     });
