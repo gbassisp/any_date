@@ -2,6 +2,7 @@ import 'package:any_date/src/any_date_rules.dart';
 import 'package:any_date/src/any_date_rules_model.dart';
 import 'package:any_date/src/locale_based_rules.dart';
 import 'package:any_date/src/nonsense_formats.dart';
+import 'package:any_date/src/time_zone_logic.dart';
 import 'package:intl/locale.dart';
 import 'package:meta/meta.dart';
 
@@ -126,17 +127,6 @@ String _replaceSeparators(String formattedString, Iterable<String> separators) {
   }
 
   return _restoreMillisecons(result);
-}
-
-/// replace 'UTC' or 'GMT' to 'Z'
-@internal
-String replaceUtc(String formattedString) {
-  return formattedString
-      .replaceAllMapped(RegExp(r'\s*utc', caseSensitive: false), (match) => 'Z')
-      .replaceAllMapped(
-        RegExp(r'\s*gmt', caseSensitive: false),
-        (match) => 'Z',
-      );
 }
 
 String _restoreMillisecons(String formattedString) {
@@ -382,22 +372,23 @@ class AnyDate {
       simplifiedString: _removeWeekday(p),
     );
 
-    yield rfcRules.apply(p);
+    yield _entryPoint(i).apply(p);
+  }
+}
+
+DateParsingRule _entryPoint(DateParserInfo i) {
+  return MultipleRules([
+    rfcRules,
     // custom rules are only applied after rfc rules
-    yield MultipleRules.fromFunctions(i.customRules).apply(p);
-    yield nonsenseRules.apply(p);
-
-    yield ambiguousCase.apply(p);
-    yield MultipleRules(i.dayFirst ? _yearLastDayFirst : _yearLast).apply(p);
-
-    final r = MultipleRules(i.dayFirst ? _dayFirst : _defaultRules);
-    yield r.apply(p);
+    MultipleRules.fromFunctions(i.customRules),
+    nonsenseRules,
+    ambiguousCase,
+    MultipleRules(i.dayFirst ? _yearLastDayFirst : _yearLast),
+    MultipleRules(i.dayFirst ? _dayFirst : _defaultRules),
 
     // default rule from DateTime
-    if (!i.dayFirst) {
-      yield maybeDateTimeParse.apply(p);
-    }
-  }
+    if (!i.dayFirst) maybeDateTimeParse,
+  ]);
 }
 
 final List<DateParsingRule> _yearLast = [
