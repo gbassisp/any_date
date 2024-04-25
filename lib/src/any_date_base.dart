@@ -362,21 +362,21 @@ class AnyDate {
       simplifiedString: _removeWeekday(p),
     );
 
-    yield rfcRules.apply(p);
-    // return;
-    yield nonsenseRules.apply(p);
+    yield _entryPoint(i).apply(p);
+  }
+}
 
-    yield ambiguousCase.apply(p);
-    yield MultipleRules(i.dayFirst ? _yearLastDayFirst : _yearLast).apply(p);
-
-    final r = MultipleRules(i.dayFirst ? _dayFirst : _defaultRules);
-    yield r.apply(p);
+DateParsingRule _entryPoint(DateParserInfo i) {
+  return MultipleRules([
+    rfcRules,
+    nonsenseRules,
+    ambiguousCase,
+    MultipleRules(i.dayFirst ? _yearLastDayFirst : _yearLast),
+    MultipleRules(i.dayFirst ? _dayFirst : _defaultRules),
 
     // default rule from DateTime
-    if (!i.dayFirst) {
-      yield maybeDateTimeParse.apply(p);
-    }
-  }
+    if (!i.dayFirst) maybeDateTimeParse,
+  ]);
 }
 
 final List<DateParsingRule> _yearLast = [
