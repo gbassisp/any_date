@@ -12,7 +12,7 @@ final r = DateTimeRange(
   end: DateTime(hugeRange ? 2100 : 902, 12, 31, 15, 16, 17, 18),
 );
 
-final _range = range;
+final _range = dateRange;
 void main() {
   group('default AnyDate()', () {
     const parser = AnyDate();
@@ -63,7 +63,7 @@ void main() {
           parser,
           (date, sep1, sep2) =>
               DateFormat('yyyy${sep1}MMMM${sep2}d H-m').format(date),
-          range,
+          dateRange,
           false,
         );
       },

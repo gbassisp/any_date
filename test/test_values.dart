@@ -16,7 +16,7 @@ const hugeRange = bool.fromEnvironment('huge');
 
 final now = DateTime(2000); // DateTime.now();
 const _span = 1;
-final range = DateTimeRange(
+final dateRange = DateTimeRange(
   start: DateTime(now.year - _span, 7),
   end: DateTime(now.year + _span - 1, 7),
 );
