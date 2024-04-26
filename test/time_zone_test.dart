@@ -56,5 +56,45 @@ void main() {
     test('basic utc now - -00', () {
       expectUtc('-00');
     });
+    test(
+      'timezone offset ahead with iso sanity check',
+      () {
+        const offset1 = '2024-04-27T13:22:15+05:00';
+        const offset2 = '2024-04-27T13:22:15+0500';
+        const offset3 = '2024-04-27T13:22:15+05';
+        final date = DateTime.parse(offset1);
+        expect(date.isUtc, isTrue);
+        expect(DateTime.parse(offset2), equals(date));
+        expect(DateTime.parse(offset3), equals(date));
+
+        const offset1n = '2024-04-27T13:22:15-05:00';
+        const offset2n = '2024-04-27T13:22:15-0500';
+        const offset3n = '2024-04-27T13:22:15-05';
+        final date2 = DateTime.parse(offset1n);
+        expect(date2.isUtc, isTrue);
+        expect(DateTime.parse(offset2n), equals(date2));
+        expect(DateTime.parse(offset3n), equals(date2));
+      },
+    );
+    test('timezone offset ahead with iso format', () {
+      const offset1 = '2024-04-27T13:22:15+05:00';
+      const offset2 = '2024-04-27T13:22:15+0500';
+      const offset3 = '2024-04-27T13:22:15+05';
+      final date = DateTime.parse(offset1);
+
+      expect(parser.parse(offset1), equals(date));
+      expect(parser.parse(offset2), equals(date));
+      expect(parser.parse(offset3), equals(date));
+    });
+    test('timezone offset behind with iso format', () {
+      const offset1 = '2024-04-27T13:22:15-05:00';
+      const offset2 = '2024-04-27T13:22:15-0500';
+      const offset3 = '2024-04-27T13:22:15-05';
+      final date = DateTime.parse(offset1);
+
+      expect(parser.parse(offset1), equals(date));
+      expect(parser.parse(offset2), equals(date));
+      expect(parser.parse(offset3), equals(date));
+    });
   });
 }
