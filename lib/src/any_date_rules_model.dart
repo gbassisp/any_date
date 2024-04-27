@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs
 
 import 'package:any_date/src/any_date_base.dart';
+import 'package:any_date/src/extensions.dart';
+import 'package:any_date/src/time_zone_logic.dart';
 
 abstract class DateParsingRule {
   DateParsingRule(this.rules);
@@ -33,6 +35,15 @@ class SimpleRule extends DateParsingRule {
         if (expectedMonth != null && res?.month != expectedMonth.number) {
           return null;
         }
+      }
+
+      // try timezone
+      final tz = getTimezoneOffset(parameters.originalString.trim());
+      if (tz != null &&
+          res != null &&
+          !res.isUtc &&
+          hasTimezoneOffset(parameters.originalString)) {
+        return res.copyWithOffset(tz);
       }
 
       return res;
