@@ -55,7 +55,7 @@ final _expressions = {
   // RegExp(r'\s*[\+]\d{2,4}', caseSensitive: false),
   RegExp(r'\s*utc', caseSensitive: false),
   RegExp(r'\s*gmt', caseSensitive: false),
-  RegExp('Z', caseSensitive: false),
+  RegExp(r'\WZ\s*$', caseSensitive: false),
   // RegExp(r'\s*[\+-]\d{2}\:?\d{0,2}\s*$', caseSensitive: false),
   RegExp(r'\s+[\+-]\d+', caseSensitive: false),
 };
