@@ -2,6 +2,15 @@ import 'package:any_date/any_date.dart';
 
 /// a collection of extensions on [DateTime]
 extension DateTimeExtension on DateTime {
+  /// returns a [DateTime] as UTC after applying the offset
+  DateTime copyWithOffset(String offset) {
+    // TODO(gbassisp): assert valid offset (+xxxx)
+    final o = offset.replaceAll(':', '').trim().padRight(5, '0');
+    final timestamp = toIso8601String().replaceAll('Z', '') + o;
+
+    return DateTime.parse(timestamp);
+  }
+
   /// returns a copy of this DateTime with the given values
   DateTime safeCopyWith({
     int? year,
