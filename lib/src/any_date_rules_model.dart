@@ -19,11 +19,14 @@ class SimpleRule extends DateParsingRule {
   @override
   DateTime? apply(DateParsingParameters parameters) {
     try {
+      final expectTz = hasTimezoneOffset(parameters.originalString);
+      final tz = getTimezoneOffset(parameters.originalString);
       final simplifiedString = parameters.simplifiedString;
       final param = parameters.copyWith(formattedString: simplifiedString);
       final expectedWeekday = parameters.weekday;
       final expectedMonth = parameters.month;
       var res = _rule(param);
+
       if (res == null && simplifiedString != parameters.formattedString) {
         res = _rule(parameters);
       }
@@ -38,11 +41,7 @@ class SimpleRule extends DateParsingRule {
       }
 
       // try timezone
-      final tz = getTimezoneOffset(parameters.originalString.trim());
-      if (tz != null &&
-          res != null &&
-          !res.isUtc &&
-          hasTimezoneOffset(parameters.originalString)) {
+      if (tz != null && res != null && !res.isUtc && expectTz) {
         return res.copyWithOffset(tz);
       }
 
