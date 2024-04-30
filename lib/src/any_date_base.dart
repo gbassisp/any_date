@@ -52,6 +52,19 @@ class DateParsingParameters {
       simplifiedString: simplifiedString ?? this.simplifiedString,
     );
   }
+
+  @override
+  String toString() {
+    return '''
+DateParsingParameters(
+ formattedString: $formattedString,
+ parserInfo: $parserInfo,
+ originalString: $originalString,
+ weekday: $weekday,
+ month: $month,
+ simplifiedString: $simplifiedString,
+    )''';
+  }
 }
 
 /// A month, with its number and name. Used to support multiple languages
