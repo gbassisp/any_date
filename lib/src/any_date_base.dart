@@ -124,16 +124,21 @@ String _replaceSeparators(String formattedString, Iterable<String> separators) {
   result = replaceUtc(result);
   final unknownSeparators = separators.toSet().difference(_knownSeparators);
 
+  // this needs to be an unused separator
+  const separator = 'a very hacky but working separator';
   for (final sep in unknownSeparators) {
-    result = result.replaceAll(sep, '-');
+    result = result.replaceAll(sep, separator);
   }
 
-  return _restoreMillisecons(result);
+  return _restoreMillisecons(result, separator).replaceAll(separator, '-');
 }
 
-String _restoreMillisecons(String formattedString) {
+String _restoreMillisecons(String formattedString, String separator) {
   // regex with T00:00:00-000
-  final r = RegExp(r'[t,T]?(\d{2}:\d{2}:\d{2})-(\d+)');
+  final r = RegExp(
+    r't?(\d{1,2}:\d{1,2}:\d{1,2})' + separator + r'(\d+)',
+    caseSensitive: false,
+  );
 
   // replace with 00:00:00.000
   return formattedString.replaceAllMapped(
