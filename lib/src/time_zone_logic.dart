@@ -32,11 +32,11 @@ String? getTimezoneOffset(String timestamp) {
 /// replace 'UTC' or 'GMT' to 'Z'
 @internal
 String replaceUtc(String formattedString) {
-  if (_hasTz(formattedString)) {
-    final tz = _tzExp.stringMatch(formattedString) ?? ' +0000';
+  if (_isUtc(formattedString)) {
+    final tz = _tzExp.stringMatch(formattedString) ?? '+0000';
     final noTz = _removeTz(formattedString);
 
-    return noTz + tz;
+    return '$noTz $tz';
   }
 
   return formattedString;
@@ -51,7 +51,7 @@ String _removeTz(String timestamp) {
   return res;
 }
 
-bool _hasTz(String timestamp) {
+bool _isUtc(String timestamp) {
   for (final exp in _expressions) {
     if (exp.hasMatch(timestamp)) {
       return true;
@@ -76,7 +76,7 @@ final _expressions = {
   // RegExp(r'\s*[\+-]\d{2}\:?\d{0,2}\s*$', caseSensitive: false),
   // RegExp(r'\s+[\+-]\d{2,4}'),
   // RegExp(r'[\+\-]\d{2}[\:\d{2}]?\s*$'),
-  // _tzExp,
+  _tzExp,
 
   // // RegExp(r'\s+[\+-]\d+', caseSensitive: false),
   // RegExp(r'\s*[\+\-]\d{2}\:?\d{0,2}\s*$', caseSensitive: false),
