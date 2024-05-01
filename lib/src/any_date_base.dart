@@ -1,6 +1,7 @@
 import 'package:any_date/src/any_date_rules.dart';
 import 'package:any_date/src/any_date_rules_model.dart';
 import 'package:any_date/src/nonsense_formats.dart';
+import 'package:any_date/src/param_cleanup_rules.dart';
 import 'package:any_date/src/time_zone_logic.dart';
 import 'package:meta/meta.dart';
 
@@ -389,6 +390,7 @@ class AnyDate {
 
 DateParsingRule _entryPoint(DateParserInfo i) {
   return MultipleRules([
+    cleanupRules,
     rfcRules,
     nonsenseRules,
     ambiguousCase,
