@@ -132,7 +132,7 @@ class Weekday {
 
 /// used on iso date spacing; can and will be replaced with space
 const _specialSeparators = {'t', 'T'};
-
+const _forbiddenSeparators = {'^', r'$', '#'};
 const _usedSeparators = usedSeparators;
 const _knownSeparators = {..._usedSeparators, ..._specialSeparators};
 
@@ -143,7 +143,7 @@ String _replaceSeparators(String formattedString, Iterable<String> separators) {
   final unknownSeparators = separators.toSet().difference(_knownSeparators);
 
   // this needs to be an unused separator
-  const separator = 'a very hacky but working separator';
+  final separator = _forbiddenSeparators.last;
   for (final sep in unknownSeparators) {
     result = result.replaceAll(sep, separator);
   }
