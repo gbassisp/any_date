@@ -5,9 +5,13 @@ import 'package:any_date/src/time_zone_logic.dart';
 import 'package:meta/meta.dart';
 
 /// Parameters passed to the parser
+///
+/// This class is mutable in order to easily update it from one rule to another
+/// adding and polishing information
+@internal
 class DateParsingParameters {
   /// default constructor
-  const DateParsingParameters({
+  DateParsingParameters({
     required this.formattedString,
     required this.parserInfo,
     required this.originalString,
@@ -17,22 +21,22 @@ class DateParsingParameters {
   });
 
   /// The date string to be parsed
-  final String formattedString;
+  String formattedString;
 
   /// The date string to be parsed
-  final String originalString;
+  String originalString;
 
   /// The parser info to be used - see it as a configuration
-  final DateParserInfo parserInfo;
+  DateParserInfo parserInfo;
 
   /// expected weekday found on the string
-  final Weekday? weekday;
+  Weekday? weekday;
 
   /// expected month found on the string
-  final Month? month;
+  Month? month;
 
   /// simplified string
-  final String? simplifiedString;
+  String? simplifiedString;
 
   /// copy with
   DateParsingParameters copyWith({
@@ -368,17 +372,16 @@ class AnyDate {
     final i = info.copyWith(
       allowedSeparators: _usedSeparators.toList(),
     );
-    var p = DateParsingParameters(
+    final p = DateParsingParameters(
       formattedString: caseInsensitive,
       parserInfo: i,
       originalString: formattedString,
     );
 
-    p = p.copyWith(
-      weekday: _expectWeekday(p),
-      month: _expectMonth(p),
-      simplifiedString: _removeWeekday(p),
-    );
+    p
+      ..weekday = _expectWeekday(p)
+      ..month = _expectMonth(p)
+      ..simplifiedString = _removeWeekday(p);
 
     yield _entryPoint(i).apply(p);
   }
