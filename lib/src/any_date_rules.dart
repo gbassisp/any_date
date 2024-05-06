@@ -4,6 +4,7 @@ import 'package:any_date/src/any_date_base.dart';
 import 'package:any_date/src/any_date_rules_model.dart';
 import 'package:any_date/src/extensions.dart';
 import 'package:any_date/src/time_zone_logic.dart';
+import 'package:meta/meta.dart';
 
 /// only these separators are known by the parser; others will be replaced
 const usedSeparators = {'-', ' ', ':'};
@@ -343,6 +344,16 @@ final DateParsingRule mdy = MultipleRules([
   mdyTextMonthRegex,
   mdyRegex,
 ]);
+
+/// ensure quick parsing of ISO-8601 in case it is a 100% match
+@internal
+final isoRule = SimpleRule((params) {
+  final parsed = DateTime.parse(params.originalString);
+  if (parsed.toIso8601String() == params.originalString) {
+    return parsed;
+  }
+  return null;
+});
 
 /// uses DateTime.parse if start with yyyy - temporary solution until
 /// package is complete

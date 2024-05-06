@@ -273,6 +273,7 @@ class AnyDate {
 
 DateParsingRule _entryPoint(DateParserInfo i) {
   return MultipleRules([
+    isoRule,
     cleanupRules,
     rfcRules,
     nonsenseRules,
