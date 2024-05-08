@@ -22,10 +22,11 @@ class SimpleRule extends DateParsingRule {
       final expectTz = hasTimezoneOffset(parameters.originalString);
       final tz = getTimezoneOffset(parameters.originalString);
       final simplifiedString = parameters.simplifiedString;
-      final param = parameters.copyWith(formattedString: simplifiedString);
+      // final param = parameters.copyWith(formattedString: simplifiedString);
       final expectedWeekday = parameters.weekday;
       final expectedMonth = parameters.month;
-      var res = _rule(param);
+      // var res = _rule(param);
+      var res = _rule(parameters);
 
       if (res == null && simplifiedString != parameters.formattedString) {
         res = _rule(parameters);
@@ -69,5 +70,44 @@ class MultipleRules extends DateParsingRule {
         yield r.apply(parameters);
       } catch (_) {}
     }
+  }
+}
+
+class CleanupRule extends SimpleRule {
+  CleanupRule(DateTime? Function(DateParsingParameters params) rule)
+      : super(rule);
+
+  void _cleanup(DateParsingParameters parameters) {
+    final newValue = _trimSeparators(
+      _removeSpacing(parameters.formattedString),
+      parameters.parserInfo.allowedSeparators,
+    ).trim();
+
+    parameters
+      ..formattedString = newValue
+      ..simplifiedString = newValue;
+  }
+
+  static final _re = RegExp(r'\s+');
+  String _removeSpacing(String timestamp) {
+    return timestamp.replaceAllMapped(_re, (match) => ' ').trim().toLowerCase();
+  }
+
+  String _trimSeparators(String timestamp, Iterable<String> separators) {
+    var updated = timestamp;
+    final seps = '(\\${separators.join(r'|\')})';
+    final right = RegExp('$seps+\$');
+    updated = updated.replaceAllMapped(right, (match) => '');
+
+    final left = RegExp('^$seps+(?!$seps)');
+    return updated.replaceAllMapped(left, (match) => '');
+  }
+
+  @override
+  DateTime? apply(DateParsingParameters parameters) {
+    final res = super._rule(parameters);
+    _cleanup(parameters);
+
+    return res;
   }
 }

@@ -1,6 +1,7 @@
 import 'package:any_date/src/any_date_base.dart';
 import 'package:any_date/src/any_date_rules.dart';
 import 'package:any_date/src/any_date_rules_model.dart';
+import 'package:any_date/src/extensions.dart';
 import 'package:any_date/src/time_zone_logic.dart';
 import 'package:meta/meta.dart';
 
@@ -8,71 +9,99 @@ import 'package:meta/meta.dart';
 @internal
 final cleanupRules = MultipleRules([
   _setBasicParam,
-  // ..weekday = _expectWeekday(p)
-  // ..month = _expectMonth(p);
+  _initialCleanup,
+  _expectWeekdayAndMonth,
   _simplifyWeekday,
+  _betterTimeComponent,
 ]);
 
-final _setBasicParam = SimpleRule((params) {
-  final formattedString = params.originalString;
+final _setBasicParam = CleanupRule((params) {
+  params
+    ..formattedString = params.originalString.toLowerCase().trim()
+    ..simplifiedString = params.originalString.toLowerCase().trim();
+
+  return null;
+});
+
+final _initialCleanup = CleanupRule((params) {
+  final formattedString = params.formattedString;
   final info = params.parserInfo;
 
   final caseInsensitive = _replaceSeparators(
-    formattedString.trim().toLowerCase(),
+    formattedString,
     info.allowedSeparators,
   );
   final i = info.copyWith(
     allowedSeparators: _usedSeparators.toList(),
   );
-  final p = DateParsingParameters(
-    formattedString: caseInsensitive,
-    parserInfo: i,
-    originalString: formattedString,
-  );
+  params
+    ..formattedString = caseInsensitive
+    ..simplifiedString = caseInsensitive
+    ..parserInfo = i;
 
   return null;
 });
 
-final _simplifyWeekday = SimpleRule((params) {
-  String trimSeparators(String formattedString, Iterable<String> separators) {
-    var result = formattedString;
-    for (final sep in separators) {
-      while (result.startsWith(sep)) {
-        result = result.substring(1).trim();
-      }
+final _expectWeekdayAndMonth = CleanupRule((params) {
+  params
+    ..weekday = _expectWeekday(params)
+    ..month = _expectMonth(params);
+  // print('params now have weekday $params');
 
-      while (result.endsWith(sep)) {
-        result = result.substring(0, result.length - 1).trim();
-      }
-    }
-    return result;
-  }
+  return null;
+});
 
-  String removeExcessiveSeparators(DateParsingParameters parameters) {
-    var formattedString = parameters.formattedString;
-    final separators = parameters.parserInfo.allowedSeparators;
-    formattedString = _replaceSeparators(formattedString, separators);
-    for (final sep in separators) {
-      // replace multiple separators with a single one
-      formattedString = formattedString.replaceAll(RegExp('[$sep]+'), sep);
-    }
+final _simplifyWeekday = CleanupRule((params) {
+  // print('params now are $params');
+  // String trimSeparators(String formattedString, Iterable<String> separators) {
+  //   var result = formattedString;
+  //   for (final sep in separators) {
+  //     while (result.startsWith(sep)) {
+  //       result = result.substring(1).trim();
+  //     }
 
-    return trimSeparators(formattedString, separators);
-  }
+  //     while (result.endsWith(sep)) {
+  //       result = result.substring(0, result.length - 1).trim();
+  //     }
+  //   }
+  //   return result;
+  // }
+
+  // String removeExcessiveSeparators(DateParsingParameters parameters) {
+  //   var formattedString = parameters.formattedString;
+  //   final separators = parameters.parserInfo.allowedSeparators;
+  //   formattedString = _replaceSeparators(formattedString, separators);
+  //   for (final sep in separators) {
+  //     // replace multiple separators with a single one
+  //     formattedString = formattedString.replaceAll(RegExp('[$sep]+'), sep);
+  //   }
+
+  //   return trimSeparators(formattedString, separators);
+  // }
 
   String removeWeekday() {
-    final parameters = params;
-    var formattedString = parameters.formattedString.toLowerCase();
-    for (final w in allWeekdays) {
-      formattedString = formattedString.replaceAll(w.name.toLowerCase(), '');
+    // print('removing weekday from $params');
+    if (params.weekday != null) {
+      // print('removing weekday ${params.weekday} from $params');
+      return params.formattedString
+          .replaceFirst(params.weekday!.name.toLowerCase(), '');
     }
 
-    return removeExcessiveSeparators(
-      parameters.copyWith(formattedString: formattedString),
-    );
+    return params.formattedString;
+    // final parameters = params;
+    // var formattedString = parameters.formattedString.toLowerCase();
+    // for (final w in allWeekdays) {
+    //   formattedString = formattedString.replaceAll(w.name.toLowerCase(), '');
+    // }
+
+    // return removeExcessiveSeparators(
+    //   parameters.copyWith(formattedString: formattedString),
+    // );
   }
 
-  params.simplifiedString = removeWeekday();
+  params
+    ..formattedString = removeWeekday()
+    ..simplifiedString = removeWeekday();
 
   return null;
 });
@@ -114,27 +143,75 @@ String _restoreMillisecons(String formattedString, String separator) {
 
 Month? _expectMonth(DateParsingParameters parameters) {
   final timestamp = parameters.formattedString.toLowerCase();
-  final month = allMonths.where(
+  final month = parameters.parserInfo.months.where(
+    (element) =>
+        element.name.tryToInt() == null &&
+        timestamp.contains(element.name.toLowerCase()),
+  );
+  final english = allMonths.where(
     (element) => timestamp.contains(element.name.toLowerCase()),
   );
 
-  if (month.isEmpty) {
-    return null;
-  }
-
-  return month.first;
+  return month.firstOrNullExtenstion ?? english.firstOrNullExtenstion;
 }
 
 Weekday? _expectWeekday(DateParsingParameters parameters) {
   final timestamp = parameters.formattedString.toLowerCase();
-  final weekday = allWeekdays.where(
-    (element) => timestamp.contains(element.name.toLowerCase()),
-  );
+  final weekday = parameters.parserInfo.weekdays
+      .where(
+        (element) => timestamp.startsWith(element.name.toLowerCase()),
+      )
+      .firstOrNullExtenstion;
+  final english = allWeekdays
+      .where(
+        (element) => timestamp.startsWith(element.name.toLowerCase()),
+      )
+      .firstOrNullExtenstion;
 
-  if (weekday.isEmpty) {
-    return null;
+  return weekday ?? english;
+}
+
+final _exprs = [...idealTimePatterns]..removeLast();
+final _betterTimeComponent = CleanupRule((params) {
+  String padLeft(String? original) => (original ?? '').padLeft(2, '0');
+  String padRight(String? original) => (original ?? '').padRight(3, '0');
+
+  for (final e in _exprs) {
+    final re = RegExp(e);
+    final matches = re.allMatches(params.formattedString);
+    // unsure what to do if many matches
+    if (matches.length == 1) {
+      final m = matches.first;
+      final newString = params.formattedString.replaceAllMapped(
+        re,
+        (match) => '${padLeft(m.namedGroup('hour'))}:'
+            '${padLeft(m.tryNamedGroup('minute'))}:'
+            '${padLeft(m.tryNamedGroup('second'))}'
+            '${m.tryNamedGroup('microsecond') != null ? '.' + padRight(m.tryNamedGroup('microsecond')) : ''}',
+      );
+      params
+        ..formattedString = newString
+        ..simplifiedString = newString;
+      // print(params);
+      break;
+    }
   }
 
-  return weekday.first;
+  // print('parsing $params');
+  return null;
+});
+
+extension _GroupNames on RegExpMatch {
+  String? tryNamedGroup(String name) {
+    try {
+      return namedGroup(name);
+    } catch (_) {
+      return null;
+    }
+  }
 }
-// TODO(gbassisp): consolidate all these extra pre-processing functions
+
+extension _IterableX<T> on Iterable<T> {
+  T? get firstOrNullExtenstion => isEmpty ? null : first;
+  T? get lastOrNull => isEmpty ? null : last;
+}

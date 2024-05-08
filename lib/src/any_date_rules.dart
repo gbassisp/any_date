@@ -21,16 +21,28 @@ const _secondPattern = r'(?<second>[0-5]?\d)';
 const _microsecondPattern = r'(?<microsecond>\d{1,6})';
 final _separatorPattern = '[${usedSeparators.reduce((v1, v2) => '$v1,$v2')}]+';
 final _s = _separatorPattern;
-final _timeSep = _s; // ':';
+// final _separatorPattern =
+// '(${usedSeparators.reduce((v1, v2) => '$v1|$v2')})+';
+// avoid const because this will be updated soon-ish
+String get _timeSep => ':';
 final _hmPattern = '$_hourPattern$_timeSep$_minutePattern';
 final _hmsPattern = '$_hmPattern$_timeSep$_secondPattern';
 final _hmsMsPattern = '$_hmsPattern.$_microsecondPattern';
-final _timePatterns = [
+
+/// ideal time expressions that uses only ':' as separators
+@internal
+final idealTimePatterns = [
   _hmsMsPattern,
-  _hmsPattern,
+  _hmsPattern, // + r'(\D|$)',
   _hmPattern,
   _hourPattern,
 ];
+
+/// original patterns used in implementation that allows non-sense separators,
+/// such as "-"
+/// this is not entirely supported because was never tested for "h" or "min"
+/// separators
+final _timePatterns = idealTimePatterns.map((e) => e.replaceAll(_timeSep, _s));
 
 /// default parsing rule from dart core
 DateTime? dateTimeTryParse(String formattedString) =>
