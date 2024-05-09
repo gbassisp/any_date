@@ -1,9 +1,8 @@
-// ignore_for_file: public_member_api_docs
-
 import 'package:any_date/src/any_date_base.dart';
 import 'package:any_date/src/extensions.dart';
-import 'package:any_date/src/time_zone_logic.dart';
+import 'package:meta/meta.dart';
 
+@internal
 abstract class DateParsingRule {
   DateParsingRule(this.rules);
   final List<DateParsingRule> rules;
@@ -11,6 +10,7 @@ abstract class DateParsingRule {
   DateTime? apply(DateParsingParameters parameters);
 }
 
+@internal
 class SimpleRule extends DateParsingRule {
   SimpleRule(this._rule, {this.validate = true}) : super([]);
   final DateTime? Function(DateParsingParameters params) _rule;
@@ -19,13 +19,9 @@ class SimpleRule extends DateParsingRule {
   @override
   DateTime? apply(DateParsingParameters parameters) {
     try {
-      final expectTz = hasTimezoneOffset(parameters.originalString);
-      final tz = getTimezoneOffset(parameters.originalString);
       final simplifiedString = parameters.simplifiedString;
-      // final param = parameters.copyWith(formattedString: simplifiedString);
       final expectedWeekday = parameters.weekday;
       final expectedMonth = parameters.month;
-      // var res = _rule(param);
       var res = _rule(parameters);
 
       if (res == null && simplifiedString != parameters.formattedString) {
@@ -42,7 +38,8 @@ class SimpleRule extends DateParsingRule {
       }
 
       // try timezone
-      if (tz != null && res != null && !res.isUtc && expectTz) {
+      final tz = parameters.timezoneOffset;
+      if (tz != null && res != null && !res.isUtc) {
         return res.copyWithOffset(tz);
       }
 
@@ -53,6 +50,7 @@ class SimpleRule extends DateParsingRule {
   }
 }
 
+@internal
 class MultipleRules extends DateParsingRule {
   MultipleRules(List<DateParsingRule> rules) : super(rules);
 
@@ -73,6 +71,7 @@ class MultipleRules extends DateParsingRule {
   }
 }
 
+@internal
 class CleanupRule extends SimpleRule {
   CleanupRule(DateTime? Function(DateParsingParameters params) rule)
       : super(rule);

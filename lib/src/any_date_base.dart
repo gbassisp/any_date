@@ -18,6 +18,8 @@ class DateParsingParameters {
     this.weekday,
     this.month,
     this.simplifiedString,
+    this.timezoneOffset,
+    this.timeComponent,
   });
 
   /// The date string to be parsed
@@ -38,6 +40,12 @@ class DateParsingParameters {
   /// simplified string
   String? simplifiedString;
 
+  /// indentified timezone offset
+  String? timezoneOffset;
+
+  /// identified time component
+  Duration? timeComponent;
+
   /// copy with
   DateParsingParameters copyWith({
     String? formattedString,
@@ -46,6 +54,8 @@ class DateParsingParameters {
     Weekday? weekday,
     Month? month,
     String? simplifiedString,
+    String? timezoneOffset,
+    Duration? timeComponent,
   }) {
     return DateParsingParameters(
       formattedString: formattedString ?? this.formattedString,
@@ -54,6 +64,8 @@ class DateParsingParameters {
       weekday: weekday ?? this.weekday,
       month: month ?? this.month,
       simplifiedString: simplifiedString ?? this.simplifiedString,
+      timezoneOffset: timezoneOffset ?? this.timezoneOffset,
+      timeComponent: timeComponent ?? this.timeComponent,
     );
   }
 
@@ -67,6 +79,7 @@ DateParsingParameters(
  weekday: $weekday,
  month: $month,
  simplifiedString: $simplifiedString,
+ timeComponent: $timeComponent,
     )''';
   }
 }
@@ -274,8 +287,9 @@ class AnyDate {
 DateParsingRule _entryPoint(DateParserInfo i) {
   return MultipleRules([
     isoRule,
-    cleanupRules,
+    basicSetup,
     rfcRules,
+    cleanupRules,
     nonsenseRules,
     ambiguousCase,
     MultipleRules(i.dayFirst ? _yearLastDayFirst : _yearLast),

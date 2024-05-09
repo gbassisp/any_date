@@ -5,11 +5,17 @@ import 'package:any_date/src/extensions.dart';
 import 'package:any_date/src/time_zone_logic.dart';
 import 'package:meta/meta.dart';
 
-/// entry point for all clean-up rules
+/// does the basic setup of [DateParsingParameters] for parsing logic
 @internal
-final cleanupRules = MultipleRules([
+final basicSetup = MultipleRules([
   _setBasicParam,
   _initialCleanup,
+  _timezoneCleanup,
+]);
+
+/// specific cleanup for messier formats
+@internal
+final cleanupRules = MultipleRules([
   _expectWeekdayAndMonth,
   _simplifyWeekday,
   _betterTimeComponent,
@@ -198,6 +204,21 @@ final _betterTimeComponent = CleanupRule((params) {
   }
 
   // print('parsing $params');
+  return null;
+});
+
+final _timezoneCleanup = CleanupRule((params) {
+  final timestamp = params.formattedString;
+  final expectTz = hasTimezoneOffset(timestamp);
+  if (expectTz) {
+    final tz = getTimezoneOffset(timestamp);
+    params.timezoneOffset = tz;
+    final noTz = removeTimezoneOffset(timestamp);
+    params
+      ..formattedString = noTz
+      ..simplifiedString = noTz;
+  }
+
   return null;
 });
 
