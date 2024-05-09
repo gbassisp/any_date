@@ -152,8 +152,8 @@ class DateParserInfo {
   })  : dayFirst = dayFirst ?? false,
         yearFirst = yearFirst ?? false,
         allowedSeparators = allowedSeparators ?? _defaultSeparators,
-        months = months ?? _allMonths,
-        weekdays = weekdays ?? _allWeekdays,
+        months = months ?? allMonths,
+        weekdays = weekdays ?? allWeekdays,
         customRules = customRules ?? const [];
 
   /// interpret the first value in an ambiguous case (e.g. 01/01/01)
