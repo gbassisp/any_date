@@ -1,6 +1,9 @@
 import 'package:any_date/any_date.dart';
+import 'package:intl/intl.dart';
 import 'package:lean_extensions/dart_essentials.dart';
 import 'package:test/test.dart';
+
+import 'test_values.dart';
 
 void main() {
   const parser = AnyDate();
@@ -77,8 +80,8 @@ void main() {
       },
     );
     test('timezone offset ahead with iso format', () {
-      const offset1 = '2024-04-27T13:22:15+05:00';
-      const offset2 = '2024-04-27T13:22:15+0500';
+      const offset1 = '2024-04-27T13:22:15+0500';
+      const offset2 = '2024-04-27T13:22:15+05:00';
       const offset3 = '2024-04-27T13:22:15+05';
       final date = DateTime.parse(offset1);
 
@@ -87,8 +90,8 @@ void main() {
       expect(parser.parse(offset3), equals(date));
     });
     test('timezone offset behind with iso format', () {
-      const offset1 = '2024-04-27T13:22:15-05:00';
-      const offset2 = '2024-04-27T13:22:15-0500';
+      const offset1 = '2024-04-27T13:22:15-0500';
+      const offset2 = '2024-04-27T13:22:15-05:00';
       const offset3 = '2024-04-27T13:22:15-05';
       final date = DateTime.parse(offset1);
 
@@ -96,5 +99,53 @@ void main() {
       expect(parser.parse(offset2), equals(date));
       expect(parser.parse(offset3), equals(date));
     });
+  });
+
+  const format = 'yyyy MMM dd hh:mm:ss';
+  group('$format with timezone offset', () {
+    final f = DateFormat(format);
+    const noOffset = '2024-04-27T13:22:15';
+    var date = DateTime.parse(noOffset);
+    final formatted = f.format(date);
+    // in case the format looses information (e.g., no seconds)
+    date = f.parse(formatted);
+    final isoNoOffset = date.toIso8601String();
+    const utc = [' Z', ' GMT', ' UTC'];
+    final tz = ['+0100', '+0700', '+0930', '+0000']
+        .expand(
+          (element) => [
+            element, // +0930
+            element.substring(0, 3), // +09
+            element.substring(0, 3) + element.substring(3), // +09:30
+          ],
+        )
+        .expand((element) => [element, element.replaceAll('+', '-')]) // -09...
+        .expand(
+          (element) => [
+            element,
+            ' $element',
+            '  $element',
+          ],
+        )
+        .toList();
+
+    for (final e in tz) {
+      final expected = DateTime.parse('$isoNoOffset${e.trim()}');
+      test('$format with TZ offset as "$formatted$e"', () {
+        for (final p in parsers) {
+          expect(p.parse('$formatted$e'), equals(expected));
+        }
+      });
+    }
+
+    for (final e in utc) {
+      final expected = DateTime.parse('${isoNoOffset}Z');
+      test('$format with UTC as "$formatted $e"', () {
+        for (final p in parsers) {
+          expect(p.parse('$isoNoOffset $e'), equals(expected));
+          expect(p.parse('$formatted $e'), equals(expected));
+        }
+      });
+    }
   });
 }

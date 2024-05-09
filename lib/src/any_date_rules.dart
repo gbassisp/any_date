@@ -4,32 +4,45 @@ import 'package:any_date/src/any_date_base.dart';
 import 'package:any_date/src/any_date_rules_model.dart';
 import 'package:any_date/src/extensions.dart';
 import 'package:any_date/src/time_zone_logic.dart';
+import 'package:meta/meta.dart';
 
 /// only these separators are known by the parser; others will be replaced
 const usedSeparators = {'-', ' ', ':'};
 const _longYearPattern = r'(?<year>\d{3,5})';
 const _yearPattern = r'(?<year>\d+)';
 const _ambiguousYearPattern = r'(?<year>\d{2})';
-const _dayPattern = r'(?<day>\d{1,2})';
+const _dayPattern = r'(?<day>[0-3]?\d)';
 const _textMonthPattern = r'(?<month>\w+)';
-const _monthPattern = r'(?<month>\d{1,2})';
+const _monthPattern = r'(?<month>[0-1]?\d)';
 // const _anyMonthPattern = r'(?<month>\d{1,2}|\w+)';
-const _hourPattern = r'(?<hour>\d{1,2})';
-const _minutePattern = r'(?<minute>\d{1,2})';
-const _secondPattern = r'(?<second>\d{1,2})';
+const _hourPattern = r'(?<hour>[0-2]?\d)';
+const _minutePattern = r'(?<minute>[0-5]?\d)';
+const _secondPattern = r'(?<second>[0-5]?\d)';
 const _microsecondPattern = r'(?<microsecond>\d{1,6})';
 final _separatorPattern = '[${usedSeparators.reduce((v1, v2) => '$v1,$v2')}]+';
 final _s = _separatorPattern;
-final _timeSep = _s; // ':';
+// final _separatorPattern =
+// '(${usedSeparators.reduce((v1, v2) => '$v1|$v2')})+';
+// avoid const because this will be updated soon-ish
+String get _timeSep => ':';
 final _hmPattern = '$_hourPattern$_timeSep$_minutePattern';
 final _hmsPattern = '$_hmPattern$_timeSep$_secondPattern';
 final _hmsMsPattern = '$_hmsPattern.$_microsecondPattern';
-final _timePatterns = [
+
+/// ideal time expressions that uses only ':' as separators
+@internal
+final idealTimePatterns = [
   _hmsMsPattern,
-  _hmsPattern,
+  _hmsPattern, // + r'(\D|$)',
   _hmPattern,
   _hourPattern,
 ];
+
+/// original patterns used in implementation that allows non-sense separators,
+/// such as "-"
+/// this is not entirely supported because was never tested for "h" or "min"
+/// separators
+final _timePatterns = idealTimePatterns.map((e) => e.replaceAll(_timeSep, _s));
 
 /// default parsing rule from dart core
 DateTime? dateTimeTryParse(String formattedString) =>
@@ -343,6 +356,16 @@ final DateParsingRule mdy = MultipleRules([
   mdyTextMonthRegex,
   mdyRegex,
 ]);
+
+/// ensure quick parsing of ISO-8601 in case it is a 100% match
+@internal
+final isoRule = SimpleRule((params) {
+  final parsed = DateTime.parse(params.originalString);
+  if (parsed.toIso8601String() == params.originalString) {
+    return parsed;
+  }
+  return null;
+});
 
 /// uses DateTime.parse if start with yyyy - temporary solution until
 /// package is complete

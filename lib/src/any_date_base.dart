@@ -2,40 +2,51 @@ import 'package:any_date/src/any_date_rules.dart';
 import 'package:any_date/src/any_date_rules_model.dart';
 import 'package:any_date/src/locale_based_rules.dart';
 import 'package:any_date/src/nonsense_formats.dart';
-import 'package:any_date/src/time_zone_logic.dart';
+import 'package:any_date/src/param_cleanup_rules.dart';
 import 'package:intl/locale.dart';
 import 'package:meta/meta.dart';
 
 /// Parameters passed to the parser
+///
+/// This class is mutable in order to easily update it from one rule to another
+/// adding and polishing information
 @internal
 class DateParsingParameters {
   /// default constructor
-  const DateParsingParameters({
+  DateParsingParameters({
     required this.formattedString,
     required this.parserInfo,
     required this.originalString,
     this.weekday,
     this.month,
     this.simplifiedString,
+    this.timezoneOffset,
+    this.timeComponent,
   });
 
   /// The date string to be parsed
-  final String formattedString;
+  String formattedString;
 
   /// The date string to be parsed
   final String originalString;
 
   /// The parser info to be used - see it as a configuration
-  final DateParserInfo parserInfo;
+  DateParserInfo parserInfo;
 
   /// expected weekday found on the string
-  final Weekday? weekday;
+  Weekday? weekday;
 
   /// expected month found on the string
-  final Month? month;
+  Month? month;
 
   /// simplified string
-  final String? simplifiedString;
+  String? simplifiedString;
+
+  /// indentified timezone offset
+  String? timezoneOffset;
+
+  /// identified time component
+  Duration? timeComponent;
 
   /// copy with
   DateParsingParameters copyWith({
@@ -45,6 +56,8 @@ class DateParsingParameters {
     Weekday? weekday,
     Month? month,
     String? simplifiedString,
+    String? timezoneOffset,
+    Duration? timeComponent,
   }) {
     return DateParsingParameters(
       formattedString: formattedString ?? this.formattedString,
@@ -53,7 +66,23 @@ class DateParsingParameters {
       weekday: weekday ?? this.weekday,
       month: month ?? this.month,
       simplifiedString: simplifiedString ?? this.simplifiedString,
+      timezoneOffset: timezoneOffset ?? this.timezoneOffset,
+      timeComponent: timeComponent ?? this.timeComponent,
     );
+  }
+
+  @override
+  String toString() {
+    return '''
+DateParsingParameters(
+ formattedString: $formattedString,
+ parserInfo: $parserInfo,
+ originalString: $originalString,
+ weekday: $weekday,
+ month: $month,
+ simplifiedString: $simplifiedString,
+ timeComponent: $timeComponent,
+    )''';
   }
 }
 
@@ -108,100 +137,6 @@ class Weekday {
   bool operator ==(Object other) {
     return other is Weekday && number == other.number && name == other.name;
   }
-}
-
-/// used on iso date spacing; can and will be replaced with space
-const _specialSeparators = {'t', 'T'};
-
-const _usedSeparators = usedSeparators;
-const _knownSeparators = {..._usedSeparators, ..._specialSeparators};
-
-/// these are the separators used by the default DateTime.parse
-String _replaceSeparators(String formattedString, Iterable<String> separators) {
-  var result = formattedString;
-  result = replaceUtc(result);
-  final unknownSeparators = separators.toSet().difference(_knownSeparators);
-
-  for (final sep in unknownSeparators) {
-    result = result.replaceAll(sep, '-');
-  }
-
-  return _restoreMillisecons(result);
-}
-
-String _restoreMillisecons(String formattedString) {
-  // regex with T00:00:00-000
-  final r = RegExp(r'[t,T]?(\d{2}:\d{2}:\d{2})-(\d+)');
-
-  // replace with 00:00:00.000
-  return formattedString.replaceAllMapped(
-    r,
-    (m) => ' ${m.group(1)}.${m.group(2)}',
-  );
-}
-
-Month? _expectMonth(DateParsingParameters parameters) {
-  final timestamp = parameters.formattedString.toLowerCase();
-  final month = _allMonths.where(
-    (element) => timestamp.contains(element.name.toLowerCase()),
-  );
-
-  if (month.isEmpty) {
-    return null;
-  }
-
-  return month.first;
-}
-
-Weekday? _expectWeekday(DateParsingParameters parameters) {
-  final timestamp = parameters.formattedString.toLowerCase();
-  final weekday = _allWeekdays.where(
-    (element) => timestamp.contains(element.name.toLowerCase()),
-  );
-
-  if (weekday.isEmpty) {
-    return null;
-  }
-
-  return weekday.first;
-}
-// TODO(gbassisp): consolidate all these extra pre-processing functions
-
-String _removeWeekday(DateParsingParameters parameters) {
-  var formattedString = parameters.formattedString.toLowerCase();
-  for (final w in _allWeekdays) {
-    formattedString = formattedString.replaceAll(w.name.toLowerCase(), '');
-  }
-
-  return _removeExcessiveSeparators(
-    parameters.copyWith(formattedString: formattedString),
-  );
-}
-
-String _removeExcessiveSeparators(DateParsingParameters parameters) {
-  var formattedString = parameters.formattedString;
-  final separators = parameters.parserInfo.allowedSeparators;
-  formattedString = _replaceSeparators(formattedString, separators);
-  for (final sep in separators) {
-    // replace multiple separators with a single one
-    formattedString = formattedString.replaceAll(RegExp('[$sep]+'), sep);
-  }
-
-  return _trimSeparators(formattedString, separators);
-}
-
-String _trimSeparators(String formattedString, Iterable<String> separators) {
-  var result = formattedString;
-  for (final sep in separators) {
-    while (result.startsWith(sep)) {
-      result = result.substring(1).trim();
-    }
-
-    while (result.endsWith(sep)) {
-      result = result.substring(0, result.length - 1).trim();
-    }
-  }
-  return result;
 }
 
 /// Configuration for the parser
@@ -353,32 +288,22 @@ class AnyDate {
   Iterable<DateTime?> _applyRules(
     String formattedString,
   ) sync* {
-    final caseInsensitive = _replaceSeparators(
-      formattedString.trim().toLowerCase(),
-      info.allowedSeparators,
-    );
-    final i = info.copyWith(
-      allowedSeparators: _usedSeparators.toList(),
-    );
-    var p = DateParsingParameters(
-      formattedString: caseInsensitive,
-      parserInfo: i,
+    final p = DateParsingParameters(
+      formattedString: formattedString,
+      parserInfo: info,
       originalString: formattedString,
     );
 
-    p = p.copyWith(
-      weekday: _expectWeekday(p),
-      month: _expectMonth(p),
-      simplifiedString: _removeWeekday(p),
-    );
-
-    yield _entryPoint(i).apply(p);
+    yield _entryPoint(info).apply(p);
   }
 }
 
 DateParsingRule _entryPoint(DateParserInfo i) {
   return MultipleRules([
+    isoRule,
+    basicSetup,
     rfcRules,
+    cleanupRules,
     // custom rules are only applied after rfc rules
     MultipleRules.fromFunctions(i.customRules),
     nonsenseRules,
@@ -441,12 +366,14 @@ const _shortMonths = [
   Month(number: 12, name: 'Dec'),
 ];
 
-const _allMonths = [..._months, ..._shortMonths];
+/// internal base values for all months in english
+@internal
+const allMonths = [..._months, ..._shortMonths];
 
 /// map of default months (english)
 @internal
 final monthsMap = {
-  for (final m in _allMonths) m.name: m.number,
+  for (final m in allMonths) m.name: m.number,
 };
 
 const _weekdays = [
@@ -469,7 +396,9 @@ const _shortWeekdays = [
   Weekday(number: 7, name: 'Sun'),
 ];
 
-const _allWeekdays = [..._weekdays, ..._shortWeekdays];
+/// internal base values for all weekdays in english
+@internal
+const allWeekdays = [..._weekdays, ..._shortWeekdays];
 
 // TODO(gbassisp): avoid messing up regex with special chars
 const _defaultSeparators = [
