@@ -58,33 +58,6 @@ final _expectWeekdayAndMonth = CleanupRule((params) {
 });
 
 final _simplifyWeekday = CleanupRule((params) {
-  // print('params now are $params');
-  // String trimSeparators(String formattedString, Iterable<String> separators) {
-  //   var result = formattedString;
-  //   for (final sep in separators) {
-  //     while (result.startsWith(sep)) {
-  //       result = result.substring(1).trim();
-  //     }
-
-  //     while (result.endsWith(sep)) {
-  //       result = result.substring(0, result.length - 1).trim();
-  //     }
-  //   }
-  //   return result;
-  // }
-
-  // String removeExcessiveSeparators(DateParsingParameters parameters) {
-  //   var formattedString = parameters.formattedString;
-  //   final separators = parameters.parserInfo.allowedSeparators;
-  //   formattedString = _replaceSeparators(formattedString, separators);
-  //   for (final sep in separators) {
-  //     // replace multiple separators with a single one
-  //     formattedString = formattedString.replaceAll(RegExp('[$sep]+'), sep);
-  //   }
-
-  //   return trimSeparators(formattedString, separators);
-  // }
-
   String removeWeekday() {
     // print('removing weekday from $params');
     if (params.weekday != null) {
@@ -94,15 +67,6 @@ final _simplifyWeekday = CleanupRule((params) {
     }
 
     return params.formattedString;
-    // final parameters = params;
-    // var formattedString = parameters.formattedString.toLowerCase();
-    // for (final w in allWeekdays) {
-    //   formattedString = formattedString.replaceAll(w.name.toLowerCase(), '');
-    // }
-
-    // return removeExcessiveSeparators(
-    //   parameters.copyWith(formattedString: formattedString),
-    // );
   }
 
   params
@@ -193,7 +157,8 @@ final _betterTimeComponent = CleanupRule((params) {
         (match) => '${padLeft(m.namedGroup('hour'))}:'
             '${padLeft(m.tryNamedGroup('minute'))}:'
             '${padLeft(m.tryNamedGroup('second'))}'
-            '${m.tryNamedGroup('microsecond') != null ? '.' + padRight(m.tryNamedGroup('microsecond')) : ''}',
+            '${m.tryNamedGroup('microsecond') != null ? '.'
+                '${padRight(m.tryNamedGroup('microsecond'))}' : ''}',
       );
       params
         ..formattedString = newString
@@ -234,5 +199,5 @@ extension _GroupNames on RegExpMatch {
 
 extension _IterableX<T> on Iterable<T> {
   T? get firstOrNullExtenstion => isEmpty ? null : first;
-  T? get lastOrNull => isEmpty ? null : last;
+  // T? get lastOrNull => isEmpty ? null : last;
 }
