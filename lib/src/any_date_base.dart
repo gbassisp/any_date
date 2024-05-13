@@ -1,6 +1,7 @@
 import 'package:any_date/src/any_date_rules.dart';
 import 'package:any_date/src/any_date_rules_model.dart';
 import 'package:any_date/src/locale_based_rules.dart';
+import 'package:any_date/src/nonsense_formats.dart';
 import 'package:intl/locale.dart';
 import 'package:meta/meta.dart';
 
@@ -384,6 +385,7 @@ class AnyDate {
     yield rfcRules.apply(p);
     // custom rules are only applied after rfc rules
     yield MultipleRules.fromFunctions(i.customRules).apply(p);
+    yield nonsenseRules.apply(p);
 
     yield ambiguousCase.apply(p);
     yield MultipleRules(i.dayFirst ? _yearLastDayFirst : _yearLast).apply(p);
