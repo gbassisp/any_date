@@ -89,16 +89,16 @@ void main() {
           millisecond: 13,
         );
         s = d.toString();
-        expect(s.toDateTime(), d);
+        expect(s.tryToDateTime(), d);
         s = d.toString();
-        expect(s.toDateTime(utc: true), d.toUtc());
+        expect(s.tryToDateTime(utc: true), d.toUtc());
         s = d.toIso8601String();
-        expect(s.toDateTime(), d);
+        expect(s.tryToDateTime(), d);
         s = d.toLocal().toString();
-        expect(s.toDateTime(), d);
+        expect(s.tryToDateTime(), d);
         s = d.toUtc().toString();
-        expect(s.toDateTime().isUtc, true);
-        expect(s.toDateTime(), d.toUtc());
+        expect(s.tryToDateTime()?.isUtc, isTrue);
+        expect(s.tryToDateTime(), d.toUtc());
       }
     });
   });
