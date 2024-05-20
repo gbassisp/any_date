@@ -147,19 +147,21 @@ final _betterTimeComponent = CleanupRule((params) {
   String padRight(String? original) => (original ?? '').padRight(3, '0');
 
   for (final e in _exprs) {
-    final re = RegExp(e);
+    const ampm = r'\s*(?<ampm>(a|p)\.?m\.?)?';
+    final re = RegExp(e + ampm);
     final matches = re.allMatches(params.formattedString);
     // unsure what to do if many matches
     if (matches.length == 1) {
       final m = matches.first;
-      final newString = params.formattedString.replaceAllMapped(
-        re,
-        (match) => '${padLeft(m.namedGroup('hour'))}:'
+      final newTime = ' ${padLeft(m.namedGroup('hour'))}:'
             '${padLeft(m.tryNamedGroup('minute'))}:'
             '${padLeft(m.tryNamedGroup('second'))}'
             '${m.tryNamedGroup('microsecond') != null ? '.'
-                '${padRight(m.tryNamedGroup('microsecond'))}' : ''}',
-      );
+              '${padRight(m.tryNamedGroup('microsecond'))}' : ''} '
+          '${m.tryNamedGroup('ampm') ?? ''}';
+      final newString =
+          params.formattedString.replaceAllMapped(re, (_) => '') + newTime;
+
       params
         ..formattedString = newString
         ..simplifiedString = newString;
