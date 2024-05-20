@@ -122,23 +122,38 @@ Month? _expectMonth(DateParsingParameters parameters) {
     (element) => timestamp.contains(element.name.toLowerCase()),
   );
 
-  return month.firstOrNullExtenstion ?? english.firstOrNullExtenstion;
+  return month.firstOrNullExtension ?? english.firstOrNullExtension;
 }
 
 Weekday? _expectWeekday(DateParsingParameters parameters) {
+  // TODO(gbassisp): allow weekday in any part of the string
+  // currently unsupported because some locales can have a conflict between
+  // month and weekday (e.g., "Mar" in French for Mardi and Mars)
   final timestamp = parameters.formattedString.toLowerCase();
-  final weekday = parameters.parserInfo.weekdays
+  var weekday = parameters.parserInfo.weekdays
       .where(
         (element) => timestamp.startsWith(element.name.toLowerCase()),
       )
-      .firstOrNullExtenstion;
-  final english = allWeekdays
-      .where(
-        (element) => timestamp.startsWith(element.name.toLowerCase()),
-      )
-      .firstOrNullExtenstion;
+      .firstOrNullExtension;
+  if (weekday != null) return weekday;
+  weekday = parameters.parserInfo.weekdays
+      .where((element) => timestamp.endsWith(element.name.toLowerCase()))
+      .firstOrNullExtension;
+  if (weekday != null) return weekday;
 
-  return weekday ?? english;
+// english
+  weekday = allWeekdays
+      .where(
+        (element) => timestamp.startsWith(element.name.toLowerCase()),
+      )
+      .firstOrNullExtension;
+  if (weekday != null) return weekday;
+
+  return allWeekdays
+      .where(
+        (element) => timestamp.endsWith(element.name.toLowerCase()),
+      )
+      .firstOrNullExtension;
 }
 
 final _exprs = [...idealTimePatterns]..removeLast();
@@ -154,9 +169,9 @@ final _betterTimeComponent = CleanupRule((params) {
     if (matches.length == 1) {
       final m = matches.first;
       final newTime = ' ${padLeft(m.namedGroup('hour'))}:'
-            '${padLeft(m.tryNamedGroup('minute'))}:'
-            '${padLeft(m.tryNamedGroup('second'))}'
-            '${m.tryNamedGroup('microsecond') != null ? '.'
+          '${padLeft(m.tryNamedGroup('minute'))}:'
+          '${padLeft(m.tryNamedGroup('second'))}'
+          '${m.tryNamedGroup('microsecond') != null ? '.'
               '${padRight(m.tryNamedGroup('microsecond'))}' : ''} '
           '${m.tryNamedGroup('ampm') ?? ''}';
       final newString =
@@ -200,6 +215,6 @@ extension _GroupNames on RegExpMatch {
 }
 
 extension _IterableX<T> on Iterable<T> {
-  T? get firstOrNullExtenstion => isEmpty ? null : first;
+  T? get firstOrNullExtension => isEmpty ? null : first;
   // T? get lastOrNull => isEmpty ? null : last;
 }
