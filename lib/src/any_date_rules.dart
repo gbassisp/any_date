@@ -13,12 +13,12 @@ const _yearPattern = r'(?<year>\d+)';
 const _ambiguousYearPattern = r'(?<year>\d{2})';
 const _dayPattern = r'(?<day>[0-3]?\d)';
 const _textMonthPattern = r'(?<month>\w+)';
-const _monthPattern = r'(?<month>[0-1]?\d)';
+const _monthPattern = r'(?<month>(0?\d)|(1[0-2]))';
 // const _anyMonthPattern = r'(?<month>\d{1,2}|\w+)';
 const _hourPattern = r'(?<hour>[0-2]?\d)';
 const _minutePattern = r'(?<minute>[0-5]?\d)';
 const _secondPattern = r'(?<second>[0-5]?\d)';
-const _microsecondPattern = r'(?<microsecond>\d{1,6})';
+const _microsecondPattern = r'(?<microsecond>\d+)';
 final _separatorPattern = '[${usedSeparators.reduce((v1, v2) => '$v1,$v2')}]+';
 final _s = _separatorPattern;
 // final _separatorPattern =

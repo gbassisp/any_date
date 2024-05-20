@@ -162,9 +162,10 @@ final _betterTimeComponent = CleanupRule((params) {
   String padRight(String? original) => (original ?? '').padRight(3, '0');
 
   for (final e in _exprs) {
-    const ampm = r'\s*(?<ampm>(a|p)\.?m\.?)?';
-    final re = RegExp(e + ampm);
-    final matches = re.allMatches(params.formattedString);
+    const ampm = r'\s*(?<ampm>(a|p)\.?m\.?\W)?';
+    final re = RegExp(e + ampm, caseSensitive: false);
+    final s = '${params.formattedString} ';
+    final matches = re.allMatches(s);
     // unsure what to do if many matches
     if (matches.length == 1) {
       final m = matches.first;
@@ -174,8 +175,7 @@ final _betterTimeComponent = CleanupRule((params) {
           '${m.tryNamedGroup('microsecond') != null ? '.'
               '${padRight(m.tryNamedGroup('microsecond'))}' : ''} '
           '${m.tryNamedGroup('ampm') ?? ''}';
-      final newString =
-          params.formattedString.replaceAllMapped(re, (_) => '') + newTime;
+      final newString = s.replaceAllMapped(re, (_) => '') + newTime;
 
       params
         ..formattedString = newString
