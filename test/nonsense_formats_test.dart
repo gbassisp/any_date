@@ -1,5 +1,8 @@
 import 'package:any_date/any_date.dart';
+import 'package:any_date/src/extensions.dart';
 import 'package:test/test.dart';
+
+import 'test_values.dart';
 
 void main() {
   group('lack of separators formats', () {
@@ -89,6 +92,24 @@ void main() {
     test('format 1 without seconds -0130', () {
       const formatted = 'Thu, 01 Jan 1970 00:30 -0230';
       final expected = DateTime.utc(1970, 1, 1, 3);
+
+      expect(parser.tryParse(formatted), equals(expected));
+    });
+  });
+
+  group('git', () {
+    final parser = parsers.first;
+    test('git default nonsense 1', () {
+      const formatted = 'Thu May 16 10:18:07 2024 +0930';
+      final expected =
+          DateTime.utc(2024, 5, 16, 10, 18, 7).copyWithOffset('+0930');
+
+      expect(parser.tryParse(formatted), equals(expected));
+    });
+    test('git default nonsense 2', () {
+      const formatted = 'Thu May 16 10:18:07 2024 -0930';
+      final expected =
+          DateTime.utc(2024, 5, 16, 10, 18, 7).copyWithOffset('-0930');
 
       expect(parser.tryParse(formatted), equals(expected));
     });
