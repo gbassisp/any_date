@@ -113,5 +113,45 @@ void main() {
 
       expect(parser.tryParse(formatted), equals(expected));
     });
+    for (final am in [
+      'am',
+      'AM',
+      'a.m.',
+      'a.m',
+      'A.M',
+      ' am',
+      ' AM',
+      ' a.m.',
+      ' a.m',
+      ' A.M',
+    ]) {
+      test('git default nonsense 3 - "$am"', () {
+        final formatted = 'Thu, May 16 10:18:07$am 2024 -0930';
+        final expected =
+            DateTime.utc(2024, 5, 16, 10, 18, 7).copyWithOffset('-0930');
+
+        expect(parser.tryParse(formatted), equals(expected));
+      });
+    }
+    for (final pm in [
+      'pm',
+      'PM',
+      'p.m.',
+      'p.m',
+      'P.M',
+      ' pm',
+      ' PM',
+      ' p.m.',
+      ' p.m',
+      ' P.M',
+    ]) {
+      test('git default nonsense 4 - "$pm"', () {
+        final formatted = 'Thu, May 16 10:18:07$pm 2024 -0930';
+        final expected =
+            DateTime.utc(2024, 5, 16, 22, 18, 7).copyWithOffset('-0930');
+
+        expect(parser.tryParse(formatted), equals(expected));
+      });
+    }
   });
 }

@@ -160,9 +160,11 @@ final _exprs = [...idealTimePatterns]..removeLast();
 final _betterTimeComponent = CleanupRule((params) {
   String padLeft(String? original) => (original ?? '').padLeft(2, '0');
   String padRight(String? original) => (original ?? '').padRight(3, '0');
+  String cleanAmpm(String? original) =>
+      original?.replaceAll(RegExp(r'(\.|-)'), '').toLowerCase() ?? '';
 
   for (final e in _exprs) {
-    const ampm = r'\s*(?<ampm>(a|p)\.?m\.?\W)?';
+    const ampm = r'\s*(?<ampm>(a|p)(\.|-)?m(\.|-)?\W)?';
     final re = RegExp(e + ampm, caseSensitive: false);
     final s = '${params.formattedString} ';
     final matches = re.allMatches(s);
@@ -174,7 +176,7 @@ final _betterTimeComponent = CleanupRule((params) {
           '${padLeft(m.tryNamedGroup('second'))}'
           '${m.tryNamedGroup('microsecond') != null ? '.'
               '${padRight(m.tryNamedGroup('microsecond'))}' : ''} '
-          '${m.tryNamedGroup('ampm') ?? ''}';
+          '${cleanAmpm(m.tryNamedGroup('ampm'))}';
       final newString = s.replaceAllMapped(re, (_) => '') + newTime;
 
       params
