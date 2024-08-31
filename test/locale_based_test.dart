@@ -103,13 +103,11 @@ Future<void> main() async {
     final englishMonths = AnyDate.defaultSettings.months;
     final englishWeekdays = AnyDate.defaultSettings.weekdays;
     final longWeekdays = englishWeekdays.sublist(0, 7);
-    final shortWeekdays = englishWeekdays.sublist(7)
-      ..removeWhere((element) => element.name == 'Sept');
+    final shortWeekdays = englishWeekdays.sublist(7);
     test('english speaking - american format', () {
       final locale = Locale.fromSubtags(languageCode: 'en', countryCode: 'US');
       final longMonths = englishMonths.sublist(0, 12);
-      final shortMonths = englishMonths.sublist(12)
-        ..removeWhere((element) => element.name == 'Sept');
+      final shortMonths = englishMonths.sublist(12);
 
       expect(locale.usesMonthFirst, isTrue);
       expect(locale.usesYearFirst, isFalse);
@@ -122,8 +120,7 @@ Future<void> main() async {
     test('english speaking - normal format', () {
       final locale = Locale.fromSubtags(languageCode: 'en', countryCode: 'AU');
       final longMonths = englishMonths.sublist(0, 12);
-      final shortMonths = englishMonths.sublist(12)
-        ..removeWhere((element) => element.name == 'Sep');
+      final shortMonths = englishMonths.sublist(12);
 
       expect(locale.usesMonthFirst, isFalse);
       expect(locale.usesYearFirst, isFalse);
@@ -135,6 +132,26 @@ Future<void> main() async {
   });
 
   group('locale specific cases', () {
+    // this is to ensure 日 is not mis-interpreted between day of the week and
+    // day of the month
+    test(
+        '2024年8月31日 on ja with format y年M月d日 resulted in null, '
+        'but expected 2024-08-31 00:00:00.000', () {
+      const locale = 'ja';
+      const formatted = '2024年8月31日';
+      const format = 'y年M月d日';
+      final formatter = DateFormat(format);
+      final expected = DateTime.parse('2024-08-31 00:00:00.000');
+      final parser = AnyDate.fromLocale(locale);
+
+      expect(
+        formatter.parseLoose(formatted),
+        equals(expected),
+        reason: 'sanity check that DateFormat $format can parse $formatted',
+      );
+      expect(parser.tryParse(formatted), equals(expected));
+    });
+
     const unambiguousEnglish = {
       'March 27, 2024',
       'March 27 2024',

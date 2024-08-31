@@ -122,44 +122,65 @@ Month? _expectMonth(DateParsingParameters parameters) {
     (element) => timestamp.contains(element.name.toLowerCase()),
   );
 
-  return month.firstOrNullExtenstion ?? english.firstOrNullExtenstion;
+  return month.firstOrNullExtension ?? english.firstOrNullExtension;
 }
 
 Weekday? _expectWeekday(DateParsingParameters parameters) {
+  // TODO(gbassisp): allow weekday in any part of the string
+  // currently unsupported because some locales can have a conflict between
+  // month and weekday (e.g., "Mar" in French for Mardi and Mars)
   final timestamp = parameters.formattedString.toLowerCase();
-  final weekday = parameters.parserInfo.weekdays
+  var weekday = parameters.parserInfo.weekdays
       .where(
         (element) => timestamp.startsWith(element.name.toLowerCase()),
+        // (element) => timestamp
+        //     .contains(RegExp('\\D${element.name}', caseSensitive: false)),
       )
-      .firstOrNullExtenstion;
-  final english = allWeekdays
-      .where(
-        (element) => timestamp.startsWith(element.name.toLowerCase()),
-      )
-      .firstOrNullExtenstion;
+      .firstOrNullExtension;
+  if (weekday != null) return weekday;
+//   weekday = parameters.parserInfo.weekdays
+//       .where((element) => timestamp.endsWith(element.name.toLowerCase()))
+//       .firstOrNullExtension;
+//   if (weekday != null) return weekday;
 
-  return weekday ?? english;
+// english
+  weekday = allWeekdays
+      .where(
+        (element) => timestamp.startsWith(element.name.toLowerCase()),
+      )
+      .firstOrNullExtension;
+  if (weekday != null) return weekday;
+
+  return allWeekdays
+      .where(
+        (element) => timestamp.endsWith(element.name.toLowerCase()),
+      )
+      .firstOrNullExtension;
 }
 
 final _exprs = [...idealTimePatterns]..removeLast();
 final _betterTimeComponent = CleanupRule((params) {
   String padLeft(String? original) => (original ?? '').padLeft(2, '0');
   String padRight(String? original) => (original ?? '').padRight(3, '0');
+  String cleanAmpm(String? original) =>
+      original?.replaceAll(RegExp(r'(\.|-)'), '').toLowerCase() ?? '';
 
   for (final e in _exprs) {
-    final re = RegExp(e);
-    final matches = re.allMatches(params.formattedString);
+    const ampm = r'\s*(?<ampm>(a|p)(\.|-)?m(\.|-)?\W)?';
+    final re = RegExp(e + ampm, caseSensitive: false);
+    final s = '${params.formattedString} ';
+    final matches = re.allMatches(s);
     // unsure what to do if many matches
     if (matches.length == 1) {
       final m = matches.first;
-      final newString = params.formattedString.replaceAllMapped(
-        re,
-        (match) => '${padLeft(m.namedGroup('hour'))}:'
-            '${padLeft(m.tryNamedGroup('minute'))}:'
-            '${padLeft(m.tryNamedGroup('second'))}'
-            '${m.tryNamedGroup('microsecond') != null ? '.'
-                '${padRight(m.tryNamedGroup('microsecond'))}' : ''}',
-      );
+      final newTime = ' ${padLeft(m.namedGroup('hour'))}:'
+          '${padLeft(m.tryNamedGroup('minute'))}:'
+          '${padLeft(m.tryNamedGroup('second'))}'
+          '${m.tryNamedGroup('microsecond') != null ? '.'
+              '${padRight(m.tryNamedGroup('microsecond'))}' : ''} '
+          '${cleanAmpm(m.tryNamedGroup('ampm'))}';
+      final newString = s.replaceAllMapped(re, (_) => '') + newTime;
+
       params
         ..formattedString = newString
         ..simplifiedString = newString;
@@ -198,6 +219,6 @@ extension _GroupNames on RegExpMatch {
 }
 
 extension _IterableX<T> on Iterable<T> {
-  T? get firstOrNullExtenstion => isEmpty ? null : first;
+  T? get firstOrNullExtension => isEmpty ? null : first;
   // T? get lastOrNull => isEmpty ? null : last;
 }
