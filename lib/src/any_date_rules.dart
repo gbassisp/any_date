@@ -13,28 +13,28 @@ const _yearPattern = r'(?<year>\d+)';
 const _ambiguousYearPattern = r'(?<year>\d{2})';
 const _dayPattern = r'(?<day>[0-3]?\d)';
 const _textMonthPattern = r'(?<month>\w+)';
-const _monthPattern = r'(?<month>[0-1]?\d)';
+const _monthPattern = r'(?<month>(0?\d)|(1[0-2]))';
 // const _anyMonthPattern = r'(?<month>\d{1,2}|\w+)';
 const _hourPattern = r'(?<hour>[0-2]?\d)';
 const _minutePattern = r'(?<minute>[0-5]?\d)';
 const _secondPattern = r'(?<second>[0-5]?\d)';
-const _microsecondPattern = r'(?<microsecond>\d{1,6})';
+const _microsecondPattern = r'(?<microsecond>\d+)';
 final _separatorPattern = '[${usedSeparators.reduce((v1, v2) => '$v1,$v2')}]+';
 final _s = _separatorPattern;
 // final _separatorPattern =
 // '(${usedSeparators.reduce((v1, v2) => '$v1|$v2')})+';
 // avoid const because this will be updated soon-ish
 String get _timeSep => ':';
-final _hmPattern = '$_hourPattern$_timeSep$_minutePattern';
-final _hmsPattern = '$_hmPattern$_timeSep$_secondPattern';
-final _hmsMsPattern = '$_hmsPattern.$_microsecondPattern';
+final _hmIdeal = '$_hourPattern$_timeSep$_minutePattern';
+final _hmsIdeal = '$_hmIdeal$_timeSep$_secondPattern';
+final _hmsMsIdeal = '$_hmsIdeal\\.$_microsecondPattern';
 
 /// ideal time expressions that uses only ':' as separators
 @internal
 final idealTimePatterns = [
-  _hmsMsPattern,
-  _hmsPattern, // + r'(\D|$)',
-  _hmPattern,
+  _hmsMsIdeal,
+  _hmsIdeal, // + r'(\D|$)',
+  _hmIdeal,
   _hourPattern,
 ];
 
@@ -42,7 +42,16 @@ final idealTimePatterns = [
 /// such as "-"
 /// this is not entirely supported because was never tested for "h" or "min"
 /// separators
-final _timePatterns = idealTimePatterns.map((e) => e.replaceAll(_timeSep, _s));
+final _hmPattern = '$_hourPattern$_s$_minutePattern';
+final _hmsPattern = '$_hmPattern$_s$_secondPattern';
+final _hmsMsPattern = '$_hmsPattern.$_microsecondPattern';
+
+final _timePatterns = [
+  _hmsMsPattern,
+  _hmsPattern, // + r'(\D|$)',
+  _hmPattern,
+  _hourPattern,
+];
 
 /// default parsing rule from dart core
 DateTime? dateTimeTryParse(String formattedString) =>
