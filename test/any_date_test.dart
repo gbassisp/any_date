@@ -88,7 +88,7 @@ void compare(DateFormat format, AnyDate anyDate, {bool randomDates = true}) {
       final e = f._tryParse(d);
       // expect(e, isNotNull, reason: 'DateFormat failed: $reason');
       final r = a.tryParse(d);
-      final reason = 'format: ${format.pattern}\n '
+      final reason = 'format: ${format.pattern}\n'
           'date: $d\n'
           'actual DateTime: $singleDate\n'
           'parsed DateTime: $r\n'

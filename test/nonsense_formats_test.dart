@@ -41,4 +41,56 @@ void main() {
       expect(parser.tryParse(formatted), equals(expected));
     });
   });
+
+  group('nasa formats from stack overflow', () {
+    const parser = AnyDate();
+    test('format 1 complete', () {
+      const formatted = 'Thu, 01 Jan 1970 00:00:00 +0000';
+      final expected = DateTime.utc(1970);
+
+      expect(parser.tryParse(formatted), equals(expected));
+    });
+    test('format 2 complete', () {
+      const formatted = 'Thu, 01 Jan 1970 00:00:00 GMT';
+      final expected = DateTime.utc(1970);
+
+      expect(parser.tryParse(formatted), equals(expected));
+    });
+    test('format 1 without seconds', () {
+      const formatted = 'Thu, 01 Jan 1970 00:00 +0000';
+      final expected = DateTime.utc(1970);
+
+      expect(parser.tryParse(formatted), equals(expected));
+    });
+    test('format 2 without seconds', () {
+      const formatted = 'Thu, 01 Jan 1970 00:00 GMT';
+      final expected = DateTime.utc(1970);
+
+      expect(parser.tryParse(formatted), equals(expected));
+    });
+    test('format 1 complete +0130', () {
+      const formatted = 'Thu, 01 Jan 1970 01:30:00 +0130';
+      final expected = DateTime.utc(1970);
+
+      expect(parser.tryParse(formatted), equals(expected));
+    });
+    test('format 1 without seconds +0130', () {
+      const formatted = 'Thu, 01 Jan 1970 01:30 +0130';
+      final expected = DateTime.utc(1970);
+
+      expect(parser.tryParse(formatted), equals(expected));
+    });
+    test('format 1 complete -0130', () {
+      const formatted = 'Thu, 01 Jan 1970 00:30:00 -0230';
+      final expected = DateTime.utc(1970, 1, 1, 3);
+
+      expect(parser.tryParse(formatted), equals(expected));
+    });
+    test('format 1 without seconds -0130', () {
+      const formatted = 'Thu, 01 Jan 1970 00:30 -0230';
+      final expected = DateTime.utc(1970, 1, 1, 3);
+
+      expect(parser.tryParse(formatted), equals(expected));
+    });
+  });
 }
