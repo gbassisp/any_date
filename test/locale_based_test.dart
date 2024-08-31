@@ -123,6 +123,26 @@ Future<void> main() async {
   });
 
   group('locale specific cases', () {
+    // this is to ensure 日 is not mis-interpreted between day of the week and
+    // day of the month
+    test(
+        '2024年8月31日 on ja with format y年M月d日 resulted in null, '
+        'but expected 2024-08-31 00:00:00.000', () {
+      const locale = 'ja';
+      const formatted = '2024年8月31日';
+      const format = 'y年M月d日';
+      final formatter = DateFormat(format);
+      final expected = DateTime.parse('2024-08-31 00:00:00.000');
+      final parser = AnyDate.fromLocale(locale);
+
+      expect(
+        formatter.parseLoose(formatted),
+        equals(expected),
+        reason: 'sanity check that DateFormat $format can parse $formatted',
+      );
+      expect(parser.tryParse(formatted), equals(expected));
+    });
+
     const unambiguousEnglish = {
       'March 27, 2024',
       'March 27 2024',
