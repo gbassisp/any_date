@@ -94,13 +94,11 @@ Future<void> main() async {
     final englishMonths = AnyDate.defaultSettings.months;
     final englishWeekdays = AnyDate.defaultSettings.weekdays;
     final longWeekdays = englishWeekdays.sublist(0, 7);
-    final shortWeekdays = englishWeekdays.sublist(7)
-      ..removeWhere((element) => element.name == 'Sept');
+    final shortWeekdays = englishWeekdays.sublist(7);
     test('english speaking - american format', () {
       final locale = Locale.fromSubtags(languageCode: 'en', countryCode: 'US');
       final longMonths = englishMonths.sublist(0, 12);
-      final shortMonths = englishMonths.sublist(12)
-        ..removeWhere((element) => element.name == 'Sept');
+      final shortMonths = englishMonths.sublist(12);
 
       expect(locale.usesMonthFirst, isTrue);
       expect(locale.usesYearFirst, isFalse);
@@ -113,8 +111,7 @@ Future<void> main() async {
     test('english speaking - normal format', () {
       final locale = Locale.fromSubtags(languageCode: 'en', countryCode: 'AU');
       final longMonths = englishMonths.sublist(0, 12);
-      final shortMonths = englishMonths.sublist(12)
-        ..removeWhere((element) => element.name == 'Sep');
+      final shortMonths = englishMonths.sublist(12);
 
       expect(locale.usesMonthFirst, isFalse);
       expect(locale.usesYearFirst, isFalse);
