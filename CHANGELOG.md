@@ -1,4 +1,8 @@
 
+## 1.0.4
+
+- Added support for git non-sense format, e.g., `Thu May 16 10:18:07 2024 +0930` and `Thu May 16 10:18:07pm 2024 +0930`
+
 ## 1.0.3
 
 - Merged in `0.1.14`:  
