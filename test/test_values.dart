@@ -31,6 +31,11 @@ final millennium = DateTimeRange(
   end: DateTime(now.year + _span3 - 1, 7),
 );
 
+final closeToToday = DateTimeRange(
+  start: DateTime(now.year - 40, 7),
+  end: DateTime(now.year + 40, 7),
+);
+
 const _step = Duration(
   hours: 1,
   minutes: 13,
