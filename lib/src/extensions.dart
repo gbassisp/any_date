@@ -1,7 +1,11 @@
 import 'package:any_date/any_date.dart';
+import 'package:meta/meta.dart';
 
 /// a collection of extensions on [DateTime]
+@internal
 extension DateTimeExtension on DateTime {
+  DateTime get dateOnly => DateTime(year, month, day);
+
   /// returns a [DateTime] as UTC after applying the offset
   DateTime copyWithOffset(String offset) {
     // TODO(gbassisp): assert valid offset (+xxxx)
