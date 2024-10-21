@@ -14,7 +14,7 @@ const parsers = [
 const exhaustiveTests = bool.fromEnvironment('exhaustive', defaultValue: true);
 const hugeRange = bool.fromEnvironment('huge');
 
-final now = DateTime(2000); // DateTime.now();
+final now = DateTime.now();
 const _span = 1;
 final dateRange = DateTimeRange(
   start: DateTime(now.year - _span, 7),
