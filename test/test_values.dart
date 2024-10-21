@@ -14,7 +14,7 @@ const parsers = [
 const exhaustiveTests = bool.fromEnvironment('exhaustive', defaultValue: true);
 const hugeRange = bool.fromEnvironment('huge');
 
-final now = DateTime(2000); // DateTime.now();
+final now = DateTime.now();
 const _span = 1;
 final dateRange = DateTimeRange(
   start: DateTime(now.year - _span, 7),
@@ -29,6 +29,11 @@ const _span3 = 1000;
 final millennium = DateTimeRange(
   start: DateTime(now.year - _span3, 7),
   end: DateTime(now.year + _span3 - 1, 7),
+);
+
+final closeToToday = DateTimeRange(
+  start: DateTime(now.year - 40, 7),
+  end: DateTime(now.year + 40, 7),
 );
 
 const _step = Duration(

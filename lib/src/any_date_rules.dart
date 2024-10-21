@@ -169,6 +169,11 @@ Map<String, dynamic> _parseMap(
   String formattedString, {
   List<Month> months = const [],
 }) {
+  final y = map['year'];
+  if (y != null && y is String && y.length < 3) {
+    map['year'] = _parseYear(y);
+  }
+
   if (months.isNotEmpty) {
     map['month'] = months
         .firstWhere((element) => element.name.toLowerCase() == map['month'])

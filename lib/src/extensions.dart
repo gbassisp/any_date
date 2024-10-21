@@ -1,7 +1,11 @@
 import 'package:any_date/any_date.dart';
+import 'package:meta/meta.dart';
 
 /// a collection of extensions on [DateTime]
+@internal
 extension DateTimeExtension on DateTime {
+  DateTime get dateOnly => DateTime(year, month, day);
+
   /// returns a [DateTime] as UTC after applying the offset
   DateTime copyWithOffset(String offset) {
     // TODO(gbassisp): assert valid offset (+xxxx)
@@ -115,6 +119,7 @@ extension DateTimeExtension on DateTime {
 const _parser = AnyDate();
 
 /// a collection of extensions on [String]
+@internal
 extension StringParsers on String {
   /// return the string parsed as a BigInt or null
   BigInt? tryToBigInt() => BigInt.tryParse(trim());
@@ -141,5 +146,16 @@ extension StringParsers on String {
       return res.toUtc();
     }
     return res;
+  }
+}
+
+@internal
+extension InternalIterableExtension<T extends Object> on Iterable<T?> {
+  Iterable<T> safeWhereNotNull() sync* {
+    for (final e in this) {
+      if (e != null) {
+        yield e;
+      }
+    }
   }
 }

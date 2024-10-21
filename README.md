@@ -10,8 +10,16 @@ For general information about developing packages, see the Dart guide for
 and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages). 
 -->
+[![style: very good analysis][very_good_analysis_badge]][very_good_analysis_link]
+[![License: BSD][license_badge]][license_link]
 
-Package to improve DateTime manipulation, especially by allowing parsing any format. Heavily inspired by python's [dateutil](https://dateutil.readthedocs.io/en/stable/parser.html) package.
+<a href="https://www.buymeacoffee.com/gbassisp" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+Package to improve DateTime manipulation, especially by allowing parsing any format.
+
+There are no new classes to represent `DateTime`. Don't reinvent the wheel, just make it easier to use `DateTime`.
+
+Heavily inspired by python's [dateutil](https://dateutil.readthedocs.io/en/stable/parser.html) package.
 
 ## Usage
 
@@ -51,3 +59,18 @@ final case3 = a.parse(ambiguousDate); // results in DateTime(2001, 2, 3);
 ```
 
 It currently has basic support for time component as well, but there is still some work in progress. Feedback appreciated.
+
+
+
+
+[dart_install_link]: https://dart.dev/get-dart
+[github_actions_link]: https://docs.github.com/en/actions/learn-github-actions
+[license_badge]: https://img.shields.io/badge/license-BSD3-blue.svg
+[license_link]: https://opensource.org/licenses/BSD-3
+[very_good_analysis_badge]: https://img.shields.io/badge/style-very_good_analysis-B22C89.svg
+[very_good_analysis_link]: https://pub.dev/packages/very_good_analysis
+[very_good_coverage_link]: https://github.com/marketplace/actions/very-good-coverage
+[very_good_ventures_link]: https://verygood.ventures
+[very_good_ventures_link_light]: https://verygood.ventures#gh-light-mode-only
+[very_good_ventures_link_dark]: https://verygood.ventures#gh-dark-mode-only
+[very_good_workflows_link]: https://github.com/VeryGoodOpenSource/very_good_workflows

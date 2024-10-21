@@ -6,7 +6,6 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:intl/intl.dart';
 import 'package:intl/locale.dart';
-import 'package:lean_extensions/collection_extensions.dart';
 import 'package:lean_extensions/dart_essentials.dart';
 import 'package:test/test.dart';
 
@@ -22,7 +21,7 @@ final _locales = availableLocalesForDateFormatting.map((e) => e).toList()
     }
     return false;
   });
-final _localeCodes = _locales.map(Locale.tryParse).whereNotNull().toList();
+final _localeCodes = _locales.map(Locale.tryParse).safeWhereNotNull().toList();
 
 extension _ListExtension<T> on Iterable<T> {
   int? indexOf(T element) {
