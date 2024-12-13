@@ -118,6 +118,17 @@ extension DateTimeExtension on DateTime {
 
 const _parser = AnyDate();
 
+@internal
+extension InternalIterableExtension<T extends Object> on Iterable<T?> {
+  Iterable<T> safeWhereNotNull() sync* {
+    for (final e in this) {
+      if (e != null) {
+        yield e;
+      }
+    }
+  }
+}
+
 /// a collection of extensions on [String]
 @internal
 extension StringParsers on String {
@@ -146,16 +157,5 @@ extension StringParsers on String {
       return res.toUtc();
     }
     return res;
-  }
-}
-
-@internal
-extension InternalIterableExtension<T extends Object> on Iterable<T?> {
-  Iterable<T> safeWhereNotNull() sync* {
-    for (final e in this) {
-      if (e != null) {
-        yield e;
-      }
-    }
   }
 }
