@@ -23,7 +23,17 @@ final _locales = availableLocalesForDateFormatting.map((e) => e).toList()
     }
     return false;
   });
-final _localeCodes = _locales.map(Locale.tryParse).safeWhereNotNull().toList();
+final _localeCodes = _locales.map(Locale.tryParse).whereIsNotNull().toList();
+
+/// taken from collection package to avoid deprecation warning and conflict
+/// with dart sdk
+extension _IterableNullableExtension<T extends Object> on Iterable<T?> {
+  Iterable<T> whereIsNotNull() sync* {
+    for (final element in this) {
+      if (element != null) yield element;
+    }
+  }
+}
 
 Future<void> main() async {
   await initializeDateFormatting();
