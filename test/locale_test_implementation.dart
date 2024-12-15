@@ -1,9 +1,9 @@
 // TODO(gbassisp): promote this to lib/ once we enable support for locale
 import 'package:any_date/any_date.dart';
+import 'package:any_date/src/extensions.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/locale.dart';
 import 'package:lean_extensions/dart_essentials.dart';
-import 'package:lean_extensions/lean_extensions.dart';
 
 extension LocaleExtensions on Locale {
   AnyDate get anyDate => AnyDate(
