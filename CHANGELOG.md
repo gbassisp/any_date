@@ -1,4 +1,8 @@
 
+## 0.1.16
+
+- Fix conflicts with version 1.x
+
 ## 0.1.15
 
 - Fix `dd-MMM-yy` format parsing
