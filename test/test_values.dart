@@ -2,38 +2,13 @@ import 'dart:math';
 
 import 'package:any_date/any_date.dart';
 import 'package:any_date/src/date_range.dart';
-import 'package:intl/date_symbol_data_local.dart' as intl;
-import 'package:intl/locale.dart';
 
-final parsers = [
-  const AnyDate(),
-  const AnyDate(info: DateParserInfo(dayFirst: true)),
-  const AnyDate(info: DateParserInfo(yearFirst: true)),
-  const AnyDate(info: DateParserInfo(dayFirst: true, yearFirst: true)),
-  AnyDate.fromLocale(Locale.parse('en')),
-  AnyDate.fromLocale(Locale.parse('en-US')),
-  AnyDate.fromLocale(Locale.parse('en-UK')),
-  AnyDate.fromLocale(Locale.parse('en-AU')),
-  AnyDate.fromLocale(Locale.parse('en-NZ')),
-  AnyDate.fromLocale(Locale.parse('en-CA')),
+const parsers = [
+  AnyDate(),
+  AnyDate(info: DateParserInfo(dayFirst: true)),
+  AnyDate(info: DateParserInfo(yearFirst: true)),
+  AnyDate(info: DateParserInfo(dayFirst: true, yearFirst: true)),
 ];
-
-bool _hasInitialized = false;
-Future<void> initializeDateFormatting() async {
-  if (!_hasInitialized) {
-    await intl.initializeDateFormatting();
-    _hasInitialized = true;
-  }
-  ensureDateFormattingInitialized();
-}
-
-void ensureDateFormattingInitialized() {
-  assert(
-    _hasInitialized,
-    'locale aware tests must initalize date formatting '
-    'by calling initializeDateFormatting on main()',
-  );
-}
 
 /// used to run tests on a wide range of dates
 const exhaustiveTests = bool.fromEnvironment('exhaustive', defaultValue: true);
@@ -89,15 +64,6 @@ Iterable<DateTime> getRandomDates([int? count]) sync* {
 }
 
 final singleDate = DateTime(2023, 1, 2, 3, 4, 5, 6, 7);
-
-final allFormats = {
-  ...otherFormats,
-  ...mdyFormats,
-  ...dmyFormats,
-  ...ymdFormats,
-};
-
-final textMonthFormats = allFormats.where((element) => element.contains('MMM'));
 
 const otherFormats = {
   'EEEE, MMMM d, y',

@@ -1,9 +1,7 @@
 import 'package:any_date/src/any_date_rules.dart';
 import 'package:any_date/src/any_date_rules_model.dart';
-import 'package:any_date/src/locale_based_rules.dart';
 import 'package:any_date/src/nonsense_formats.dart';
 import 'package:any_date/src/param_cleanup_rules.dart';
-import 'package:intl/locale.dart';
 import 'package:meta/meta.dart';
 
 /// Parameters passed to the parser
@@ -86,11 +84,12 @@ DateParsingParameters(
   }
 }
 
-/// A month, with its number and name.
-/// It seems far fetched to have this class, but it follows a similar
-/// approach to the Python dateutil package, without relying on a list index.
-/// See:
-/// [https://dateutil.readthedocs.io/en/stable/_modules/dateutil/parser/_parser.html](https://dateutil.readthedocs.io/en/stable/_modules/dateutil/parser/_parser.html#parserinfo)
+/// A month, with its number and name. Used to support multiple languages
+/// without adding another dependency.
+///
+/// It seems far fetched to have this class here, but it follows a similar
+/// approach to the Python dateutil package. See:
+/// https://dateutil.readthedocs.io/en/stable/_modules/dateutil/parser/_parser.html#parserinfo
 @immutable
 class Month {
   /// default constructor
@@ -114,17 +113,21 @@ class Month {
   }
 }
 
-/// A weekday with its number and name Must match DateTime.weekday;
+/// A weekday with its number and name. Used to support multiple languages
+/// without adding another dependency.
+///
+/// Must match DateTime().weekday
+///
 /// Reason for this is the same as for [Month]
 @immutable
 class Weekday {
   /// default constructor
   const Weekday({required this.number, required this.name});
 
-  /// weekday number that matches DateTime.weekday
+  /// month number
   final int number;
 
-  /// weekday name
+  /// month name
   final String name;
 
   @override
@@ -143,18 +146,23 @@ class Weekday {
 class DateParserInfo {
   /// default constructor
   const DateParserInfo({
-    bool? dayFirst,
-    bool? yearFirst,
-    List<String>? allowedSeparators,
-    List<Month>? months,
-    List<Weekday>? weekdays,
-    Iterable<DateParsingFunction>? customRules,
-  })  : dayFirst = dayFirst ?? false,
-        yearFirst = yearFirst ?? false,
-        allowedSeparators = allowedSeparators ?? _defaultSeparators,
-        months = months ?? allMonths,
-        weekdays = weekdays ?? allWeekdays,
-        customRules = customRules ?? const [];
+    this.dayFirst = false,
+    this.yearFirst = false,
+    // TODO(gbassisp): avoid messing up regex with special chars
+    this.allowedSeparators = const [
+      ' ',
+      't',
+      'T',
+      ':',
+      '.',
+      ',',
+      '_',
+      '/',
+      '-',
+    ],
+    this.months = allMonths,
+    this.weekdays = allWeekdays,
+  });
 
   /// interpret the first value in an ambiguous case (e.g. 01/01/01)
   /// as day true or month false.
@@ -179,25 +187,20 @@ class DateParserInfo {
   /// keywords to identify weekdays (to support multiple languages)
   final List<Weekday> weekdays;
 
-  /// allow passing extra rules to parse the timestamp
-  final Iterable<DateParsingFunction> customRules;
-
   /// copy with
   DateParserInfo copyWith({
     bool? dayFirst,
     bool? yearFirst,
-    Iterable<String>? allowedSeparators,
-    Iterable<Month>? months,
-    Iterable<Weekday>? weekdays,
-    Iterable<DateParsingFunction>? customRules,
+    List<String>? allowedSeparators,
+    List<Month>? months,
+    List<Weekday>? weekdays,
   }) {
     return DateParserInfo(
       dayFirst: dayFirst ?? this.dayFirst,
       yearFirst: yearFirst ?? this.yearFirst,
-      allowedSeparators: allowedSeparators?.toList() ?? this.allowedSeparators,
-      months: months?.toList() ?? this.months,
-      weekdays: weekdays?.toList() ?? this.weekdays,
-      customRules: customRules ?? this.customRules,
+      allowedSeparators: allowedSeparators ?? this.allowedSeparators,
+      months: months ?? this.months,
+      weekdays: weekdays ?? this.weekdays,
     );
   }
 
@@ -205,7 +208,7 @@ class DateParserInfo {
   String toString() {
     return 'DateParserInfo(dayFirst: $dayFirst, yearFirst: $yearFirst, '
         'allowedSeparators: $allowedSeparators, months: $months, '
-        'weekdays: $weekdays, customRules: $customRules)';
+        'weekdays: $weekdays)';
   }
 }
 
@@ -213,24 +216,6 @@ class DateParserInfo {
 class AnyDate {
   /// default constructor
   const AnyDate({DateParserInfo? info}) : _info = info;
-
-  /// factory constructor to create an [AnyDate] obj based on [locale]
-  factory AnyDate.fromLocale(Object? locale) {
-    if (locale is Locale) {
-      return locale.anyDate;
-    }
-
-    final localeString = locale?.toString();
-    if (localeString != null) {
-      final parsedLocale = Locale.tryParse(localeString);
-      if (parsedLocale != null) {
-        return parsedLocale.anyDate;
-      }
-    }
-
-    // TODO(gbassisp): add logging function to warn about invalid Locale
-    return const AnyDate();
-  }
 
   /// settings for parsing and resolving ambiguous cases
   // final DateParserInfo? info;
@@ -246,14 +231,16 @@ class AnyDate {
   /// parses a string in any format into a [DateTime] object.
   DateTime parse(
     /// required string representation of a date to be parsed
-    Object? timestamp,
+    Object? formattedString,
   ) {
     DateTime? res;
-    if (timestamp != null) {
-      res = timestamp is DateTime ? timestamp : _tryParse(timestamp.toString());
+    if (formattedString != null) {
+      res = formattedString is DateTime
+          ? formattedString
+          : _tryParse(formattedString.toString());
     }
     if (res == null) {
-      throw FormatException('Invalid date format', timestamp);
+      throw FormatException('Invalid date format', formattedString);
     }
     return res;
   }
@@ -263,21 +250,20 @@ class AnyDate {
   /// Returns null if the string is not a valid date.
   ///
   /// Does not handle other exceptions.
-  DateTime? tryParse(Object? timestamp) {
+  DateTime? tryParse(Object? formattedString) {
     try {
-      return parse(timestamp);
+      return parse(formattedString);
     } on FormatException {
       return null;
     }
   }
 
   DateTime? _tryParse(String formattedString) {
-    /* 
-      TODO(gbassisp): allow the following:
-        missing components will be assumed to default value:
-        e.g. 'Jan 2023' becomes DateTime(2023, 1), which is 1 Jan 2023
-        if year is missing, the closest result to today is chosen.
-    */
+    // TODO(gbassip): allow the following:
+    // missing components will be assumed to default value:
+    // e.g. 'Jan 2023' becomes DateTime(2023, 1), which is 1 Jan 2023
+    // if year is missing, the closest result to today is chosen.
+
     return _applyRules(formattedString).firstWhere(
       (e) => e != null,
       orElse: () => null,
@@ -304,8 +290,6 @@ DateParsingRule _entryPoint(DateParserInfo i) {
     basicSetup,
     rfcRules,
     cleanupRules,
-    // custom rules are only applied after rfc rules
-    MultipleRules.fromFunctions(i.customRules),
     nonsenseRules,
     ambiguousCase,
     MultipleRules(i.dayFirst ? _yearLastDayFirst : _yearLast),
@@ -399,16 +383,3 @@ const _shortWeekdays = [
 /// internal base values for all weekdays in english
 @internal
 const allWeekdays = [..._weekdays, ..._shortWeekdays];
-
-// TODO(gbassisp): avoid messing up regex with special chars
-const _defaultSeparators = [
-  ' ',
-  't',
-  'T',
-  ':',
-  '.',
-  ',',
-  '_',
-  '/',
-  '-',
-];
