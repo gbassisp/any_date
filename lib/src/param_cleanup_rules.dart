@@ -133,15 +133,13 @@ Weekday? _expectWeekday(DateParsingParameters parameters) {
   var weekday = parameters.parserInfo.weekdays
       .where(
         (element) => timestamp.startsWith(element.name.toLowerCase()),
-        // (element) => timestamp
-        //     .contains(RegExp('\\D${element.name}', caseSensitive: false)),
       )
       .firstOrNullExtension;
   if (weekday != null) return weekday;
-//   weekday = parameters.parserInfo.weekdays
-//       .where((element) => timestamp.endsWith(element.name.toLowerCase()))
-//       .firstOrNullExtension;
-//   if (weekday != null) return weekday;
+  weekday = parameters.parserInfo.weekdays
+      .where((element) => timestamp.endsWith(element.name.toLowerCase()))
+      .firstOrNullExtension;
+  if (weekday != null) return weekday;
 
 // english
   weekday = allWeekdays

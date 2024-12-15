@@ -1,6 +1,6 @@
 name: any_date
 description: A package for parsing String into DateTime in any format. Easy way to parse a date in any format and in any language, while always respecting ISO and RFC formats.
-version: 1.0.4
+version: 0.1.16
 repository: https://github.com/gbassisp/any_date
 homepage: https://github.com/gbassisp/any_date
 
@@ -8,11 +8,11 @@ environment:
   sdk: '>=2.12.0 <4.0.0'
 
 dependencies:
-  intl: ">=0.18.1 <0.20.0"
   meta: ^1.0.0
 
 dev_dependencies:
   http_multi_server: ">=2.2.0"
+  intl: ^0.18.1
   lean_extensions:  ">=0.7.0 <1.0.0"
   test: ^1.16.0
   very_good_analysis: any

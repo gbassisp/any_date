@@ -63,7 +63,7 @@ void main() {
           parser,
           (date, sep1, sep2) =>
               DateFormat('yyyy${sep1}MMMM${sep2}d H-m').format(date),
-          _range,
+          dateRange,
           false,
         );
       },
