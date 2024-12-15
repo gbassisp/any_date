@@ -159,3 +159,11 @@ extension StringParsers on String {
     return res;
   }
 }
+
+/// simple implementation of python-like iterator
+@internal
+Iterable<int> range(int size) sync* {
+  for (var i = 0; i < size; i++) {
+    yield i;
+  }
+}

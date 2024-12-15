@@ -1,4 +1,35 @@
 
+## 1.0.4
+
+- Added support for git non-sense format, e.g., `Thu May 16 10:18:07 2024 +0930` and `Thu May 16 10:18:07pm 2024 +0930`
+
+## 1.0.3
+
+- Merged in `0.1.14`:  
+  Added support for non-sense formats; at the moment only `yyyyMMdd'T'hhmmss` with no separator, including time variants
+
+## 1.0.2
+
+- Minor change to package description
+
+## 1.0.1
+
+- Added support for `intl` 0.19
+
+## 1.0.0
+
+Stable version release
+
+### Features
+
+- Supports any type of `Object` for parsing, such as `int` for unix epoch
+- Allows passing custom parsing rules to `AnyDate(customRules: ...)`
+- Added `AnyDate.fromLocale()` factory to support other languages. Essentially, any language can be used
+
+### Breaking changes
+
+- Requires `intl` dependency to support languages other than English
+
 ## 0.1.16
 
 - Fix conflicts with version 1.x

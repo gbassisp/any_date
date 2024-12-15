@@ -5,7 +5,8 @@ import 'package:test/test.dart';
 
 import 'test_values.dart';
 
-void main() {
+Future<void> main() async {
+  await initializeDateFormatting();
   const parser = AnyDate();
   const utcSymbol = 'Z';
   group('utc with iso format', () {

@@ -2,6 +2,18 @@ import 'package:any_date/src/any_date_base.dart';
 import 'package:any_date/src/extensions.dart';
 import 'package:meta/meta.dart';
 
+/// A function that takes a [String] and tries to convert
+/// to a [DateTime] object.
+typedef DateParsingFunction = DateTime? Function(String params);
+
+/// A function that takes the entire [DateParsingParameters] and converts to
+/// a [DateTime] object.
+@internal
+typedef CompleteDateParsingFunction = DateTime? Function(
+  DateParsingParameters params,
+);
+
+@internal
 @internal
 abstract class DateParsingRule {
   DateParsingRule(this.rules);
@@ -13,7 +25,7 @@ abstract class DateParsingRule {
 @internal
 class SimpleRule extends DateParsingRule {
   SimpleRule(this._rule, {this.validate = true}) : super([]);
-  final DateTime? Function(DateParsingParameters params) _rule;
+  final CompleteDateParsingFunction _rule;
   final bool validate;
 
   @override
@@ -53,6 +65,19 @@ class SimpleRule extends DateParsingRule {
 @internal
 class MultipleRules extends DateParsingRule {
   MultipleRules(List<DateParsingRule> rules) : super(rules);
+
+  factory MultipleRules.fromFunctions(Iterable<DateParsingFunction> functions) {
+    return MultipleRules(
+      functions
+          .map(
+            (e) => MultipleRules([
+              SimpleRule((params) => e(params.originalString)),
+              SimpleRule((params) => e(params.formattedString)),
+            ]),
+          )
+          .toList(),
+    );
+  }
 
   @override
   DateTime? apply(DateParsingParameters parameters) {
