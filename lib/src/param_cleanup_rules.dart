@@ -84,7 +84,7 @@ const _knownSeparators = {..._usedSeparators, ..._specialSeparators};
 
 /// these are the separators used by the default DateTime.parse
 String _replaceSeparators(String formattedString, Iterable<String> separators) {
-  var result = formattedString;
+  var result = _replaceComma(formattedString);
   result = replaceUtc(result);
   final unknownSeparators = separators.toSet().difference(_knownSeparators);
 
@@ -95,6 +95,17 @@ String _replaceSeparators(String formattedString, Iterable<String> separators) {
   }
 
   return _restoreMillisecons(result, separator).replaceAll(separator, '-');
+}
+
+String _replaceComma(String formattedString) {
+  final re1 = RegExp(r',\s+');
+  final re2 = RegExp(r',\s+');
+  final re3 = RegExp(r'\s+');
+
+  return formattedString
+      .replaceAll(re1, ' ')
+      .replaceAll(re2, ' ')
+      .replaceAll(re3, ' ');
 }
 
 String _restoreMillisecons(String formattedString, String separator) {
