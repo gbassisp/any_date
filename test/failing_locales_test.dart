@@ -43,6 +43,12 @@ Future<void> main() async {
 
         expect(parsed, equals(date));
       });
+
+      test('sanity check - locale $l can self-parse $formatted text month', () {
+        final parsed = format.tryParse(formatted);
+
+        expect(parsed, equals(date));
+      });
     }
   });
 }
