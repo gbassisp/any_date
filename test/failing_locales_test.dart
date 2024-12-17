@@ -10,8 +10,8 @@
 // mn
 // ja
 import 'package:any_date/any_date.dart';
+import 'package:any_date/src/extensions.dart';
 import 'package:intl/intl.dart';
-import 'package:lean_extensions/lean_extensions.dart';
 import 'package:test/test.dart';
 
 import 'test_values.dart';
