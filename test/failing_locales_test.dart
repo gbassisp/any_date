@@ -39,7 +39,7 @@ Future<void> main() async {
       test('locale $l can parse $formatted text month', () {
         final parser = AnyDate.fromLocale(l);
 
-        final parsed = parser.tryParse(formatted);
+        final parsed = parser.parse(formatted);
 
         expect(parsed, equals(date));
       });
