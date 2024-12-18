@@ -1,4 +1,8 @@
 
+## 1.1.1
+
+- Fix some failing test cases caused by `intl` upgrade
+
 ## 1.1.0
 
 - Added support for `intl 0.20`
