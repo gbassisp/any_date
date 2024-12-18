@@ -2,6 +2,7 @@ import 'package:any_date/any_date.dart';
 import 'package:meta/meta.dart';
 
 /// a collection of extensions on [DateTime]
+@internal
 extension DateTimeExtension on DateTime {
   /// returns a [DateTime] as UTC after applying the offset
   DateTime copyWithOffset(String offset) {
@@ -111,6 +112,8 @@ extension DateTimeExtension on DateTime {
       allowRollover: true,
     );
   }
+
+  DateTime get dateOnly => DateTime(year, month, day);
 }
 
 const _parser = AnyDate();

@@ -84,7 +84,7 @@ const _knownSeparators = {..._usedSeparators, ..._specialSeparators};
 
 /// these are the separators used by the default DateTime.parse
 String _replaceSeparators(String formattedString, Iterable<String> separators) {
-  var result = formattedString;
+  var result = _replaceComma(formattedString);
   result = replaceUtc(result);
   final unknownSeparators = separators.toSet().difference(_knownSeparators);
 
@@ -95,6 +95,17 @@ String _replaceSeparators(String formattedString, Iterable<String> separators) {
   }
 
   return _restoreMillisecons(result, separator).replaceAll(separator, '-');
+}
+
+String _replaceComma(String formattedString) {
+  final re1 = RegExp(r',\s+');
+  final re2 = RegExp(r',\s+');
+  final re3 = RegExp(r'\s+');
+
+  return formattedString
+      .replaceAll(re1, ' ')
+      .replaceAll(re2, ' ')
+      .replaceAll(re3, ' ');
 }
 
 String _restoreMillisecons(String formattedString, String separator) {
@@ -111,9 +122,19 @@ String _restoreMillisecons(String formattedString, String separator) {
   );
 }
 
+// .reversed because it works for disambiguation
+// (e.g., in vi locale try 'thang 12' before 'thang 1')
+Iterable<Month> _sortMonths(Iterable<Month> months) {
+  final sorted = months.toList()
+    ..sort((a, b) => a.name.length.compareTo(b.name.length))
+    ..sort((a, b) => a.number.compareTo(b.number));
+
+  return sorted.reversed;
+}
+
 Month? _expectMonth(DateParsingParameters parameters) {
   final timestamp = parameters.formattedString.toLowerCase();
-  final month = parameters.parserInfo.months.where(
+  final month = _sortMonths(parameters.parserInfo.months).where(
     (element) =>
         element.name.tryToInt() == null &&
         timestamp.contains(element.name.toLowerCase()),
@@ -125,12 +146,22 @@ Month? _expectMonth(DateParsingParameters parameters) {
   return month.firstOrNullExtension ?? english.firstOrNullExtension;
 }
 
+// .reversed because it works for disambiguation
+// (e.g., in vi locale try 'thang 12' before 'thang 1')
+Iterable<Weekday> _sortWeekdays(Iterable<Weekday> weekdays) {
+  final sorted = weekdays.toList()
+    ..sort((a, b) => a.name.length.compareTo(b.name.length))
+    ..sort((a, b) => a.number.compareTo(b.number));
+
+  return sorted.reversed;
+}
+
 Weekday? _expectWeekday(DateParsingParameters parameters) {
   // TODO(gbassisp): allow weekday in any part of the string
   // currently unsupported because some locales can have a conflict between
   // month and weekday (e.g., "Mar" in French for Mardi and Mars)
   final timestamp = parameters.formattedString.toLowerCase();
-  var weekday = parameters.parserInfo.weekdays
+  var weekday = _sortWeekdays(parameters.parserInfo.weekdays)
       .where(
         (element) => timestamp.startsWith(element.name.toLowerCase()),
         // (element) => timestamp
