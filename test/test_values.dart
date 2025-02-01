@@ -2,21 +2,30 @@ import 'dart:math';
 
 import 'package:any_date/any_date.dart';
 import 'package:any_date/src/date_range.dart';
+import 'package:intl/date_symbol_data_file.dart';
 import 'package:intl/date_symbol_data_local.dart' as intl;
 import 'package:intl/locale.dart';
 
-final parsers = [
-  const AnyDate(),
-  const AnyDate(info: DateParserInfo(dayFirst: true)),
-  const AnyDate(info: DateParserInfo(yearFirst: true)),
-  const AnyDate(info: DateParserInfo(dayFirst: true, yearFirst: true)),
-  AnyDate.fromLocale(Locale.parse('en')),
-  AnyDate.fromLocale(Locale.parse('en-US')),
-  AnyDate.fromLocale(Locale.parse('en-UK')),
-  AnyDate.fromLocale(Locale.parse('en-AU')),
-  AnyDate.fromLocale(Locale.parse('en-NZ')),
-  AnyDate.fromLocale(Locale.parse('en-CA')),
-];
+final _parsers = {
+  'default': const AnyDate(),
+  'dayFirst': const AnyDate(info: DateParserInfo(dayFirst: true)),
+  'yearFirst': const AnyDate(info: DateParserInfo(yearFirst: true)),
+  'day and year first':
+      const AnyDate(info: DateParserInfo(dayFirst: true, yearFirst: true)),
+  'en': AnyDate.fromLocale(Locale.parse('en')),
+  'en-US': AnyDate.fromLocale(Locale.parse('en-US')),
+  'en-UK': AnyDate.fromLocale(Locale.parse('en-UK')),
+  'en-AU': AnyDate.fromLocale(Locale.parse('en-AU')),
+  'en-NZ': AnyDate.fromLocale(Locale.parse('en-NZ')),
+  'en-CA': AnyDate.fromLocale(Locale.parse('en-CA')),
+};
+
+final allLocales = availableLocalesForDateFormatting;
+final allLocaleParsers = Map.fromEntries(
+  allLocales.map((e) => MapEntry(e, AnyDate.fromLocale(e))),
+);
+
+final parsers = {..._parsers, ...allLocaleParsers};
 
 bool _hasInitialized = false;
 Future<void> initializeDateFormatting() async {
