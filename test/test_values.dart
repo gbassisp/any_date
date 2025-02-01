@@ -39,7 +39,7 @@ void ensureDateFormattingInitialized() {
 const exhaustiveTests = bool.fromEnvironment('exhaustive', defaultValue: true);
 const hugeRange = bool.fromEnvironment('huge');
 
-final now = DateTime(2000); // DateTime.now();
+final now = DateTime.now();
 const _span = 1;
 final dateRange = DateTimeRange(
   start: DateTime(now.year - _span, 7),
@@ -54,6 +54,11 @@ const _span3 = 1000;
 final millennium = DateTimeRange(
   start: DateTime(now.year - _span3, 7),
   end: DateTime(now.year + _span3 - 1, 7),
+);
+const _span4 = 40;
+final closeToToday = DateTimeRange(
+  start: DateTime(now.year, now.month - _span4),
+  end: DateTime(now.year, now.month + _span4),
 );
 
 const _step = Duration(
@@ -352,4 +357,14 @@ Set<String> get hmsS {
     set.addAll(hms.map((e) => e.endsWith('s') ? '$e.$ms' : e));
   }
   return set;
+}
+
+extension DateRangeExtension on DateTimeRange {
+  Iterable<DateTime> every(Duration step) sync* {
+    var current = start;
+    while (current.isBefore(end)) {
+      yield current;
+      current = current.add(step);
+    }
+  }
 }
