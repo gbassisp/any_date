@@ -182,6 +182,8 @@ class DateParserInfo {
   /// allow passing extra rules to parse the timestamp
   final Iterable<DateParsingFunction> customRules;
 
+  static const _default = DateParserInfo();
+
   /// copy with
   DateParserInfo copyWith({
     bool? dayFirst,
@@ -231,6 +233,8 @@ class AnyDate {
     // TODO(gbassisp): add logging function to warn about invalid Locale
     return const AnyDate();
   }
+
+  // static const _default = AnyDate(info: DateParserInfo._default);
 
   /// settings for parsing and resolving ambiguous cases
   // final DateParserInfo? info;
@@ -293,8 +297,12 @@ class AnyDate {
       parserInfo: info,
       originalString: formattedString,
     );
+    const d = DateParserInfo._default;
+    final p2 = p.copyWith(parserInfo: d);
 
     yield _entryPoint(info).apply(p);
+    // TODO(gbassisp): refactor to avoid duplication
+    yield _entryPoint(DateParserInfo._default).apply(p2);
   }
 }
 
@@ -333,6 +341,8 @@ final List<DateParsingRule> _dayFirst = [
   ymd,
 ];
 
+// TODO(gbassisp): consolidate short and long months into a pattern that accepts
+// any substring of the month name
 const _months = [
   Month(number: 1, name: 'January'),
   Month(number: 2, name: 'February'),
