@@ -175,6 +175,10 @@ Map<String, dynamic> _parseMap(
         .number;
   }
 
+  if (map.containsKey('year')) {
+    map['year'] = _parseYear(map['year']!.toString());
+  }
+
   if (map.containsKey('hour')) {
     final hour = int.parse(map['hour']!.toString());
     map['hour'] = hour;
