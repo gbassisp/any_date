@@ -7,19 +7,17 @@ import '../test_values.dart';
 
 void main() async {
   await initializeDateFormatting();
+  // with english format
   final formats = {
     'dd-MMM-yy',
     'dd-MMM-yyyy',
   };
-  final notYearFirstParsers = {...parsers}
-    ..removeWhere((key, value) => value.info.yearFirst);
 
-  // print(notYearFirstParsers.length);
   for (final format in formats) {
     group('$format format', () {
-      for (final parser in notYearFirstParsers.entries) {
+      for (final parser in englishParsers.entries) {
         test('$format with parser #${parser.key}', () {
-          final f = DateFormat(format);
+          final f = DateFormat(format, 'en');
           compare(f, parser);
         });
       }
@@ -28,13 +26,14 @@ void main() async {
 }
 
 final dates = closeToToday.every(const Duration(days: 38));
+// final dates = [DateTime.now()];
 const separators = {'-', ' ', '/', '.'};
 void compare(DateFormat format, MapEntry<String, AnyDate> anyDate) {
   for (final d in dates) {
     final date = d.dateOnly;
     for (final separator in separators) {
       final formatted = format.format(date).replaceAll('_', separator);
-      final parsedDate = anyDate.value.tryParse(formatted)?.dateOnly;
+      final parsedDate = anyDate.value.parse(formatted).dateOnly;
       expect(
         parsedDate,
         equals(date),
@@ -44,7 +43,7 @@ void compare(DateFormat format, MapEntry<String, AnyDate> anyDate) {
       );
 
       final upper = formatted.toUpperCase();
-      final parsedUpper = anyDate.value.tryParse(upper)?.dateOnly;
+      final parsedUpper = anyDate.value.parse(upper).dateOnly;
       expect(
         parsedUpper,
         equals(date),
@@ -54,7 +53,7 @@ void compare(DateFormat format, MapEntry<String, AnyDate> anyDate) {
       );
 
       final lower = formatted.toLowerCase();
-      final parsedLower = anyDate.value.tryParse(lower)?.dateOnly;
+      final parsedLower = anyDate.value.parse(lower).dateOnly;
       expect(
         parsedLower,
         equals(date),
