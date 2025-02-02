@@ -234,8 +234,6 @@ class AnyDate {
     return const AnyDate();
   }
 
-  // static const _default = AnyDate(info: DateParserInfo._default);
-
   /// settings for parsing and resolving ambiguous cases
   // final DateParserInfo? info;
 
@@ -245,7 +243,7 @@ class AnyDate {
   DateParserInfo get info => _info ?? defaultSettings;
 
   /// static value for global setting
-  static DateParserInfo defaultSettings = const DateParserInfo();
+  static const DateParserInfo defaultSettings = DateParserInfo._default;
 
   /// parses a string in any format into a [DateTime] object.
   DateTime parse(
