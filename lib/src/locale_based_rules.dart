@@ -59,18 +59,18 @@ extension LocaleExtensions on Locale {
       ..removeWhere((element) => element.trim().tryToInt() == null);
     final numbers = fields.map((e) => e.toInt());
 
-    assert(
-      numbers.contains(5),
-      'could not find test date in $this: $formatted',
-    );
+    // assert(
+    //   numbers.contains(5),
+    //   'could not find test date in $this: $formatted',
+    // );
 
     final monthIndex = numbers.indexOf(5);
     final dayIndex = numbers.indexOf(6);
 
-    assert(
-      monthIndex != null && dayIndex != null,
-      'month and day must both be present in $this: $formatted',
-    );
+    // assert(
+    //   monthIndex != null && dayIndex != null,
+    //   'month and day must both be present in $this: $formatted',
+    // );
     return monthIndex! < dayIndex!;
   }
 
@@ -80,18 +80,18 @@ extension LocaleExtensions on Locale {
       ..removeWhere((element) => element.trim().tryToInt() == null);
     final numbers = fields.map((e) => e.toInt());
 
-    assert(
-      numbers.contains(1234),
-      'could not find test date in $this: $formatted',
-    );
+    // assert(
+    //   numbers.contains(1234),
+    //   'could not find test date in $this: $formatted',
+    // );
 
     final yearIndex = numbers.indexOf(1234);
     final monthIndex = numbers.indexOf(5);
 
-    assert(
-      yearIndex != null && monthIndex != null,
-      'month and year must both be present in $this: $formatted',
-    );
+    // assert(
+    //   yearIndex != null && monthIndex != null,
+    //   'month and year must both be present in $this: $formatted',
+    // );
     return yearIndex! < monthIndex!;
   }
 

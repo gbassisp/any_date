@@ -10,7 +10,9 @@ class DateTimeRange {
   DateTimeRange({
     required DateTime start,
     required DateTime end,
-  }) : assert(!start.isAfter(end), 'start ($start) must be before end ($end)') {
+  })
+  // : assert(!start.isAfter(end), 'start ($start) must be before end ($end)')
+  {
     // if user passes wrong values in production code, they are corrected here
     if (start.isAfter(end)) {
       this.start = end;

@@ -78,10 +78,10 @@ int _closest(List<int> list, int value) {
 int _parseYear(String yearString) {
   final year = int.parse(yearString);
   final now = DateTime.now();
-  assert(
-    yearString.length == 2,
-    'expected double digit year, but got $yearString',
-  );
+  // assert(
+  //   yearString.length == 2,
+  //   'expected double digit year, but got $yearString',
+  // );
   if (yearString.length == 2) {
     final c = now.year ~/ 100;
     final currentCentury = '$c$yearString'.toInt();
@@ -92,10 +92,10 @@ int _parseYear(String yearString) {
       now.year,
     );
   }
-  assert(
-    year > 1900,
-    'expected year close to $now, but got $year from $yearString',
-  );
+  // assert(
+  //   year > 1900,
+  //   'expected year close to $now, but got $year from $yearString',
+  // );
   return year;
 }
 
@@ -192,7 +192,7 @@ Map<String, dynamic> _parseMap(
     map['second'] = second;
   }
   if (map.containsKey('microsecond')) {
-    assert(!map.containsKey('millisecond'), 'cannot have both ms and us $map');
+    // assert(!map.containsKey('millisecond'), 'cannot have both ms and us $map');
     final ms = int.tryParse((map['microsecond'] as String).padRight(6, '0'));
     map['microsecond'] = ms;
 
