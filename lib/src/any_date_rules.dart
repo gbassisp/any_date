@@ -1,3 +1,4 @@
+// this entire file is internal; it is not exported
 // ignore_for_file: public_member_api_docs
 
 import 'package:any_date/src/any_date_base.dart';

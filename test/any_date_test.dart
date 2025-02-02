@@ -26,7 +26,7 @@ void testRange(
   AnyDate parser,
   String Function(DateTime date, String sep1, String sep2) formatter, [
   DateTimeRange? customRange,
-  // ignore: avoid_positional_boolean_parameters
+  // ignore: avoid_positional_boolean_parameters - testing only
   bool dayOnly = true,
 ]) {
   final cache = <String>{};
