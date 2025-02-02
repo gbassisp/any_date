@@ -99,13 +99,9 @@ String _replaceSeparators(String formattedString, Iterable<String> separators) {
 
 String _replaceComma(String formattedString) {
   final re1 = RegExp(r',\s+');
-  final re2 = RegExp(r',\s+');
   final re3 = RegExp(r'\s+');
 
-  return formattedString
-      .replaceAll(re1, ' ')
-      .replaceAll(re2, ' ')
-      .replaceAll(re3, ' ');
+  return formattedString.replaceAll(re1, ' ').replaceAll(re3, ' ');
 }
 
 String _restoreMillisecons(String formattedString, String separator) {
