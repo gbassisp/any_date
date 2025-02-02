@@ -35,6 +35,9 @@ final englishParsers = {
 
 final allParsers = {...englishParsers, ...allLocaleParsers};
 
+final nonEnglishParsers = {...allLocaleParsers}
+  ..removeWhere((key, value) => englishParsers.containsKey(key));
+
 bool _hasInitialized = false;
 Future<void> initializeDateFormatting() async {
   if (!_hasInitialized) {
