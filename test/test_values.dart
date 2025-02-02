@@ -6,7 +6,7 @@ import 'package:intl/date_symbol_data_file.dart';
 import 'package:intl/date_symbol_data_local.dart' as intl;
 import 'package:intl/locale.dart';
 
-final _parsers = {
+final defaultParsers = {
   'default': const AnyDate(),
   'dayFirst': const AnyDate(info: DateParserInfo(dayFirst: true)),
   'yearFirst': const AnyDate(info: DateParserInfo(yearFirst: true)),
@@ -25,7 +25,15 @@ final allLocaleParsers = Map.fromEntries(
   allLocales.map((e) => MapEntry(e, AnyDate.fromLocale(e))),
 );
 
-final parsers = {..._parsers, ...allLocaleParsers};
+final englishLocales = allLocales.where((element) => element.startsWith('en'));
+final englishParsers = {
+  ...defaultParsers,
+  ...Map.fromEntries(
+    englishLocales.map((e) => MapEntry(e, AnyDate.fromLocale(e))),
+  ),
+};
+
+final allParsers = {...englishParsers, ...allLocaleParsers};
 
 bool _hasInitialized = false;
 Future<void> initializeDateFormatting() async {

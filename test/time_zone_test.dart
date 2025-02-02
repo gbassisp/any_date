@@ -132,7 +132,7 @@ Future<void> main() async {
 
     for (final e in tz) {
       final expected = DateTime.parse('$isoNoOffset${e.trim()}');
-      for (final p in parsers.entries) {
+      for (final p in allParsers.entries) {
         test('$format with TZ offset as "$formatted$e" parser ${p.key}', () {
           expect(p.value.parse('$formatted$e'), equals(expected));
         });
@@ -141,7 +141,7 @@ Future<void> main() async {
 
     for (final e in utc) {
       final expected = DateTime.parse('${isoNoOffset}Z');
-      for (final p in parsers.entries) {
+      for (final p in allParsers.entries) {
         test('$format with UTC as "$formatted $e" parser ${p.key}', () {
           expect(p.value.parse('$isoNoOffset $e'), equals(expected));
           expect(p.value.parse('$formatted $e'), equals(expected));

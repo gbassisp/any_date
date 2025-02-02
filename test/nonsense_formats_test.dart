@@ -98,7 +98,7 @@ void main() {
   });
 
   group('git', () {
-    final parser = parsers.first;
+    final parser = allParsers.values.first;
     test('git default nonsense 1', () {
       const formatted = 'Thu May 16 10:18:07 2024 +0930';
       final expected =

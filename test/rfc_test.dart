@@ -9,7 +9,7 @@ import 'test_values.dart';
 Future<void> main() async {
   await initializeDateFormatting();
   group('main RFC tests', () {
-    for (final parser in parsers.entries) {
+    for (final parser in allParsers.entries) {
       rfcTests(parser);
     }
   });
