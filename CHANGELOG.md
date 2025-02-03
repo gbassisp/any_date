@@ -1,4 +1,8 @@
 
+## 1.1.2
+
+- Fix failing dd-MMM-yy in most locale-based parsers
+
 ## 1.1.1
 
 - Fix some failing test cases caused by `intl` upgrade

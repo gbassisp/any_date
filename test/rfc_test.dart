@@ -9,17 +9,17 @@ import 'test_values.dart';
 Future<void> main() async {
   await initializeDateFormatting();
   group('main RFC tests', () {
-    for (final parser in parsers) {
+    for (final parser in allParsers.entries) {
       rfcTests(parser);
     }
   });
 }
 
-void rfcTests(AnyDate parser) {
+void rfcTests(MapEntry<String, AnyDate> parser) {
   ensureDateFormattingInitialized();
-  final parse = parser.parse;
-  final info = parser.info;
-  final nameSuffix = info.toString();
+  final parse = parser.value.parse;
+  final info = parser.key;
+  final nameSuffix = info;
 
   const secondsLimit = 8640000000;
   final dates = {
@@ -52,7 +52,7 @@ void rfcTests(AnyDate parser) {
         final timestamp = date.secondsSinceEpoch;
         // removes rounding errors
         date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
-        final parsed = parser.tryParse(timestamp.toString());
+        final parsed = parser.value.tryParse(timestamp.toString());
         expect(
           parsed,
           date,
@@ -66,7 +66,7 @@ void rfcTests(AnyDate parser) {
         final timestamp = date.millisecondsSinceEpoch;
         // removes rounding errors
         date = DateTime.fromMillisecondsSinceEpoch(timestamp);
-        final parsed = parser.tryParse(timestamp.toString());
+        final parsed = parser.value.tryParse(timestamp.toString());
         expect(
           parsed,
           date,
@@ -80,7 +80,7 @@ void rfcTests(AnyDate parser) {
         final timestamp = date.microsecondsSinceEpoch;
         // removes rounding errors
         date = DateTime.fromMicrosecondsSinceEpoch(timestamp);
-        final parsed = parser.tryParse(timestamp.toString());
+        final parsed = parser.value.tryParse(timestamp.toString());
         expect(
           parsed,
           date,
@@ -94,7 +94,7 @@ void rfcTests(AnyDate parser) {
         final timestamp = date.nanosecondsSinceEpoch;
         // removes rounding errors
         date = DateTime.fromMicrosecondsSinceEpoch(timestamp ~/ 1000);
-        final parsed = parser.tryParse(timestamp.toString());
+        final parsed = parser.value.tryParse(timestamp.toString());
         expect(
           parsed,
           date,
@@ -115,7 +115,7 @@ void rfcTests(AnyDate parser) {
         end: DateTime(2138),
       ).random()) {
         final t = d.secondsSinceEpoch;
-        final s = parser.tryParse(t.toString());
+        final s = parser.value.tryParse(t.toString());
         final expected = d;
 
         expect(
@@ -136,9 +136,9 @@ void rfcTests(AnyDate parser) {
         final ms = d.millisecondsSinceEpoch;
         final us = d.microsecondsSinceEpoch;
         final ns = d.nanosecondsSinceEpoch;
-        final msd = parser.tryParse(ms.toString());
-        final usd = parser.tryParse(us.toString());
-        final nsd = parser.tryParse(ns.toString());
+        final msd = parser.value.tryParse(ms.toString());
+        final usd = parser.value.tryParse(us.toString());
+        final nsd = parser.value.tryParse(ns.toString());
         final reason = 'parsing $d resulted in:\n'
             'milli: $ms into $msd'
             'micro: $us into $usd'

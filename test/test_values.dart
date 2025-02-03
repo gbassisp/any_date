@@ -2,21 +2,41 @@ import 'dart:math';
 
 import 'package:any_date/any_date.dart';
 import 'package:any_date/src/date_range.dart';
+import 'package:intl/date_symbol_data_file.dart';
 import 'package:intl/date_symbol_data_local.dart' as intl;
 import 'package:intl/locale.dart';
 
-final parsers = [
-  const AnyDate(),
-  const AnyDate(info: DateParserInfo(dayFirst: true)),
-  const AnyDate(info: DateParserInfo(yearFirst: true)),
-  const AnyDate(info: DateParserInfo(dayFirst: true, yearFirst: true)),
-  AnyDate.fromLocale(Locale.parse('en')),
-  AnyDate.fromLocale(Locale.parse('en-US')),
-  AnyDate.fromLocale(Locale.parse('en-UK')),
-  AnyDate.fromLocale(Locale.parse('en-AU')),
-  AnyDate.fromLocale(Locale.parse('en-NZ')),
-  AnyDate.fromLocale(Locale.parse('en-CA')),
-];
+final defaultParsers = {
+  'default': const AnyDate(),
+  'dayFirst': const AnyDate(info: DateParserInfo(dayFirst: true)),
+  'yearFirst': const AnyDate(info: DateParserInfo(yearFirst: true)),
+  'day and year first':
+      const AnyDate(info: DateParserInfo(dayFirst: true, yearFirst: true)),
+  'en': AnyDate.fromLocale(Locale.parse('en')),
+  'en-US': AnyDate.fromLocale(Locale.parse('en-US')),
+  'en-UK': AnyDate.fromLocale(Locale.parse('en-UK')),
+  'en-AU': AnyDate.fromLocale(Locale.parse('en-AU')),
+  'en-NZ': AnyDate.fromLocale(Locale.parse('en-NZ')),
+  'en-CA': AnyDate.fromLocale(Locale.parse('en-CA')),
+};
+
+final allLocales = availableLocalesForDateFormatting;
+final allLocaleParsers = Map.fromEntries(
+  allLocales.map((e) => MapEntry(e, AnyDate.fromLocale(e))),
+);
+
+final englishLocales = allLocales.where((element) => element.startsWith('en'));
+final englishParsers = {
+  ...defaultParsers,
+  ...Map.fromEntries(
+    englishLocales.map((e) => MapEntry(e, AnyDate.fromLocale(e))),
+  ),
+};
+
+final allParsers = {...englishParsers, ...allLocaleParsers};
+
+final nonEnglishParsers = {...allLocaleParsers}
+  ..removeWhere((key, value) => englishParsers.containsKey(key));
 
 bool _hasInitialized = false;
 Future<void> initializeDateFormatting() async {
@@ -39,7 +59,7 @@ void ensureDateFormattingInitialized() {
 const exhaustiveTests = bool.fromEnvironment('exhaustive', defaultValue: true);
 const hugeRange = bool.fromEnvironment('huge');
 
-final now = DateTime(2000); // DateTime.now();
+final now = DateTime.now();
 const _span = 1;
 final dateRange = DateTimeRange(
   start: DateTime(now.year - _span, 7),
@@ -54,6 +74,11 @@ const _span3 = 1000;
 final millennium = DateTimeRange(
   start: DateTime(now.year - _span3, 7),
   end: DateTime(now.year + _span3 - 1, 7),
+);
+const _span4 = 40;
+final closeToToday = DateTimeRange(
+  start: DateTime(now.year, now.month - _span4),
+  end: DateTime(now.year, now.month + _span4),
 );
 
 const _step = Duration(
@@ -352,4 +377,14 @@ Set<String> get hmsS {
     set.addAll(hms.map((e) => e.endsWith('s') ? '$e.$ms' : e));
   }
   return set;
+}
+
+extension DateRangeExtension on DateTimeRange {
+  Iterable<DateTime> every(Duration step) sync* {
+    var current = start;
+    while (current.isBefore(end)) {
+      yield current;
+      current = current.add(step);
+    }
+  }
 }

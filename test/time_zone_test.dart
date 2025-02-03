@@ -132,21 +132,21 @@ Future<void> main() async {
 
     for (final e in tz) {
       final expected = DateTime.parse('$isoNoOffset${e.trim()}');
-      test('$format with TZ offset as "$formatted$e"', () {
-        for (final p in parsers) {
-          expect(p.parse('$formatted$e'), equals(expected));
-        }
-      });
+      for (final p in englishParsers.entries) {
+        test('$format with TZ offset as "$formatted$e" parser ${p.key}', () {
+          expect(p.value.parse('$formatted$e'), equals(expected));
+        });
+      }
     }
 
     for (final e in utc) {
       final expected = DateTime.parse('${isoNoOffset}Z');
-      test('$format with UTC as "$formatted $e"', () {
-        for (final p in parsers) {
-          expect(p.parse('$isoNoOffset $e'), equals(expected));
-          expect(p.parse('$formatted $e'), equals(expected));
-        }
-      });
+      for (final p in englishParsers.entries) {
+        test('$format with UTC as "$formatted $e" parser ${p.key}', () {
+          expect(p.value.parse('$isoNoOffset $e'), equals(expected));
+          expect(p.value.parse('$formatted $e'), equals(expected));
+        });
+      }
     }
   });
 }

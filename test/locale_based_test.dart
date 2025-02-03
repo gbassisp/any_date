@@ -70,12 +70,12 @@ Future<void> main() async {
   });
   group('all locales support rfc formats', () {
     for (final l in _localeCodes) {
-      final parser = l.anyDate;
+      final parser = MapEntry(l.toLanguageTag(), l.anyDate);
       rfcTests(parser);
     }
 
     // invalid locale
-    rfcTests(AnyDate.fromLocale(null));
+    rfcTests(MapEntry('no locale', AnyDate.fromLocale(null)));
   });
 
   group('all locales can parse text month formats', () {

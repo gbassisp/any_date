@@ -31,27 +31,31 @@ class SimpleRule extends DateParsingRule {
   @override
   DateTime? apply(DateParsingParameters parameters) {
     try {
-      final simplifiedString = parameters.simplifiedString;
+      // final simplifiedString = parameters.simplifiedString;
       final expectedWeekday = parameters.weekday;
       final expectedMonth = parameters.month;
-      var res = _rule(parameters);
+      final res = _rule(parameters);
 
-      if (res == null && simplifiedString != parameters.formattedString) {
-        res = _rule(parameters);
+      if (res == null) {
+        return null;
       }
 
+      // if (res == null && simplifiedString != parameters.formattedString) {
+      //   res = _rule(parameters);
+      // }
+
       if (validate) {
-        if (expectedWeekday != null && res?.weekday != expectedWeekday.number) {
+        if (expectedWeekday != null && res.weekday != expectedWeekday.number) {
           return null;
         }
-        if (expectedMonth != null && res?.month != expectedMonth.number) {
+        if (expectedMonth != null && res.month != expectedMonth.number) {
           return null;
         }
       }
 
       // try timezone
       final tz = parameters.timezoneOffset;
-      if (tz != null && res != null && !res.isUtc) {
+      if (tz != null && !res.isUtc) {
         return res.copyWithOffset(tz);
       }
 
