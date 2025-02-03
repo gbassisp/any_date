@@ -299,7 +299,8 @@ class AnyDate {
     final p2 = p.copyWith(parserInfo: d);
 
     yield _entryPoint(info).apply(p);
-    yield _bruteForce(DateParserInfo._default).apply(p2);
+    // TODO(gbassisp): refactor to avoid duplication
+    yield _entryPoint(DateParserInfo._default).apply(p2);
   }
 }
 
@@ -309,20 +310,15 @@ DateParsingRule _entryPoint(DateParserInfo i) {
     basicSetup,
     rfcRules,
     cleanupRules,
-    _bruteForce(i),
-
-    // default rule from DateTime
-    if (!i.dayFirst) maybeDateTimeParse,
-  ]);
-}
-
-DateParsingRule _bruteForce(DateParserInfo i) {
-  return MultipleRules([
+    // custom rules are only applied after rfc rules
     MultipleRules.fromFunctions(i.customRules),
     nonsenseRules,
     ambiguousCase,
     MultipleRules(i.dayFirst ? _yearLastDayFirst : _yearLast),
     MultipleRules(i.dayFirst ? _dayFirst : _defaultRules),
+
+    // default rule from DateTime
+    if (!i.dayFirst) maybeDateTimeParse,
   ]);
 }
 
