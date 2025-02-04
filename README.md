@@ -10,6 +10,8 @@ For general information about developing packages, see the Dart guide for
 and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages). 
 -->
+[![PubStats Popularity](https://pubstats.dev/badges/packages/any_date/popularity.svg)](https://pubstats.dev/packages/any_date)
+
 
 Package to improve DateTime manipulation, especially by allowing parsing any format. Heavily inspired by python's [dateutil](https://dateutil.readthedocs.io/en/stable/parser.html) package.
 
