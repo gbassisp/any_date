@@ -29,6 +29,7 @@ final allLocaleParsers = {
   ...Map.fromEntries(
     allLocales.map((e) => MapEntry('$e-function', _WrappedFunction(e))),
   ),
+  'simple-function': _WrappedFunction(null),
 };
 
 final englishLocales = allLocales.where((element) => element.startsWith('en'));
@@ -40,6 +41,7 @@ final englishParsers = {
   ...Map.fromEntries(
     englishLocales.map((e) => MapEntry('$e-function', _WrappedFunction(e))),
   ),
+  'simple-function': _WrappedFunction(null),
 };
 
 final allParsers = {...englishParsers, ...allLocaleParsers};
