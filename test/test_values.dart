@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:any_date/any_date.dart';
+import 'package:any_date/functions.dart';
 import 'package:any_date/src/date_range.dart';
 import 'package:intl/date_symbol_data_file.dart';
 import 'package:intl/date_symbol_data_local.dart' as intl;
@@ -21,15 +22,23 @@ final defaultParsers = {
 };
 
 final allLocales = availableLocalesForDateFormatting;
-final allLocaleParsers = Map.fromEntries(
-  allLocales.map((e) => MapEntry(e, AnyDate.fromLocale(e))),
-);
+final allLocaleParsers = {
+  ...Map.fromEntries(
+    allLocales.map((e) => MapEntry(e, AnyDate.fromLocale(e))),
+  ),
+  ...Map.fromEntries(
+    allLocales.map((e) => MapEntry('$e-function', _WrappedFunction(e))),
+  ),
+};
 
 final englishLocales = allLocales.where((element) => element.startsWith('en'));
 final englishParsers = {
   ...defaultParsers,
   ...Map.fromEntries(
     englishLocales.map((e) => MapEntry(e, AnyDate.fromLocale(e))),
+  ),
+  ...Map.fromEntries(
+    englishLocales.map((e) => MapEntry('$e-function', _WrappedFunction(e))),
   ),
 };
 
@@ -386,5 +395,20 @@ extension DateRangeExtension on DateTimeRange {
       yield current;
       current = current.add(step);
     }
+  }
+}
+
+class _WrappedFunction extends AnyDate {
+  _WrappedFunction(this.locale);
+  final Object? locale;
+
+  @override
+  DateTime parse(Object? timestamp) {
+    return parseAnyDateTime(timestamp, locale: locale);
+  }
+
+  @override
+  DateTime? tryParse(Object? timestamp) {
+    return tryParseAnyDateTime(timestamp, locale: locale);
   }
 }

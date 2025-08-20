@@ -230,7 +230,6 @@ class AnyDate {
       }
     }
 
-    // TODO(gbassisp): add logging function to warn about invalid Locale
     return const AnyDate();
   }
 
