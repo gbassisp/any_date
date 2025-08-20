@@ -1,4 +1,8 @@
 
+## 1.2.0
+
+- Added top-level functions through `any_date/functions.dart`
+
 ## 1.1.2
 
 - Fix failing dd-MMM-yy in most locale-based parsers
