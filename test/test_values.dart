@@ -21,8 +21,8 @@ final defaultParsers = {
   'en-CA': AnyDate.fromLocale(Locale.parse('en-CA')),
 };
 
-final allLocales = availableLocalesForDateFormatting;
-final allLocaleParsers = {
+final List<String> allLocales = availableLocalesForDateFormatting;
+final Map<String, AnyDate> allLocaleParsers = {
   ...Map.fromEntries(
     allLocales.map((e) => MapEntry(e, AnyDate.fromLocale(e))),
   ),
@@ -32,8 +32,9 @@ final allLocaleParsers = {
   'simple-function': _WrappedFunction(null),
 };
 
-final englishLocales = allLocales.where((element) => element.startsWith('en'));
-final englishParsers = {
+final Iterable<String> englishLocales =
+    allLocales.where((element) => element.startsWith('en'));
+final Map<String, AnyDate> englishParsers = {
   ...defaultParsers,
   ...Map.fromEntries(
     englishLocales.map((e) => MapEntry(e, AnyDate.fromLocale(e))),
@@ -44,9 +45,12 @@ final englishParsers = {
   'simple-function': _WrappedFunction(null),
 };
 
-final allParsers = {...englishParsers, ...allLocaleParsers};
+final Map<String, AnyDate> allParsers = {
+  ...englishParsers,
+  ...allLocaleParsers
+};
 
-final nonEnglishParsers = {...allLocaleParsers}
+final Map<String, AnyDate> nonEnglishParsers = {...allLocaleParsers}
   ..removeWhere((key, value) => englishParsers.containsKey(key));
 
 bool _hasInitialized = false;
@@ -121,14 +125,15 @@ Iterable<DateTime> getRandomDates([int? count]) sync* {
 
 final singleDate = DateTime(2023, 1, 2, 3, 4, 5, 6, 7);
 
-final allFormats = {
+final Set<String> allFormats = {
   ...otherFormats,
   ...mdyFormats,
   ...dmyFormats,
   ...ymdFormats,
 };
 
-final textMonthFormats = allFormats.where((element) => element.contains('MMM'));
+final Iterable<String> textMonthFormats =
+    allFormats.where((element) => element.contains('MMM'));
 
 const otherFormats = {
   'EEEE, MMMM d, y',
@@ -293,13 +298,20 @@ const dayFirstWithWeekday = {
   // 'EEEE, d',
 };
 
-final _years = List.generate(5, (index) => 'y' * (index + 1)).toSet();
-final _months = List.generate(2, (index) => 'M' * (index + 1)).toSet();
-final _days = List.generate(2, (index) => 'd' * (index + 1)).toSet();
-final _hours = List.generate(2, (index) => 'H' * (index + 1)).toSet();
-final _minutes = List.generate(2, (index) => 'm' * (index + 1)).toSet();
-final _seconds = List.generate(2, (index) => 's' * (index + 1)).toSet();
-final _milliseconds = List.generate(6, (index) => 'S' * (index + 1)).toSet();
+final Set<String> _years =
+    List.generate(5, (index) => 'y' * (index + 1)).toSet();
+final Set<String> _months =
+    List.generate(2, (index) => 'M' * (index + 1)).toSet();
+final Set<String> _days =
+    List.generate(2, (index) => 'd' * (index + 1)).toSet();
+final Set<String> _hours =
+    List.generate(2, (index) => 'H' * (index + 1)).toSet();
+final Set<String> _minutes =
+    List.generate(2, (index) => 'm' * (index + 1)).toSet();
+final Set<String> _seconds =
+    List.generate(2, (index) => 's' * (index + 1)).toSet();
+final Set<String> _milliseconds =
+    List.generate(6, (index) => 'S' * (index + 1)).toSet();
 
 extension SwapExtension on String {
   /// we assume it's used to replace yyyy with dd or similar;

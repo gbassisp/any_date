@@ -14,24 +14,26 @@ Iterable<DateFormat> _formatFactory(String locale) sync* {
   yield DateFormat.yMMMMd(locale);
 }
 
-final _englishLocales = _localeCodes.map((e) => e).toList()
+final List<Locale> _englishLocales = _localeCodes.map((e) => e).toList()
   ..removeWhere((element) => !element.toLanguageTag().startsWith('en'));
 
-final _locales = availableLocalesForDateFormatting.map((e) => e).toList()
-  ..removeWhere((element) {
-    final unsupported = ['ar', 'as', 'bn', 'fa', 'mr', 'my', 'ne', 'ps']
-      // maybe unsupported?
-      // ignore: prefer_inlined_adds
-      ..addAll(['am', 'be', 'bg', 'ca'])
-      ..clear();
-    for (final l in unsupported) {
-      if (element.startsWith(l)) {
-        return true;
-      }
-    }
-    return false;
-  });
-final _localeCodes = _locales.map(Locale.tryParse).whereIsNotNull().toList();
+final List<String> _locales =
+    availableLocalesForDateFormatting.map((e) => e).toList()
+      ..removeWhere((element) {
+        final unsupported = ['ar', 'as', 'bn', 'fa', 'mr', 'my', 'ne', 'ps']
+          // maybe unsupported?
+          // ignore: prefer_inlined_adds
+          ..addAll(['am', 'be', 'bg', 'ca'])
+          ..clear();
+        for (final l in unsupported) {
+          if (element.startsWith(l)) {
+            return true;
+          }
+        }
+        return false;
+      });
+final List<Locale> _localeCodes =
+    _locales.map(Locale.tryParse).whereIsNotNull().toList();
 
 /// taken from collection package to avoid deprecation warning and conflict
 /// with dart sdk

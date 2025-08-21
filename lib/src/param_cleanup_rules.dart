@@ -79,8 +79,11 @@ final _simplifyWeekday = CleanupRule((params) {
 /// used on iso date spacing; can and will be replaced with space
 const _specialSeparators = {'t', 'T'};
 const _forbiddenSeparators = {'^', r'$', '#'};
-const _usedSeparators = usedSeparators;
-const _knownSeparators = {..._usedSeparators, ..._specialSeparators};
+const Set<String> _usedSeparators = usedSeparators;
+const Set<String> _knownSeparators = {
+  ..._usedSeparators,
+  ..._specialSeparators
+};
 
 /// these are the separators used by the default DateTime.parse
 String _replaceSeparators(String formattedString, Iterable<String> separators) {
@@ -184,7 +187,7 @@ Weekday? _expectWeekday(DateParsingParameters parameters) {
       .firstOrNullExtension;
 }
 
-final _exprs = [...idealTimePatterns]..removeLast();
+final List<String> _exprs = [...idealTimePatterns]..removeLast();
 final _betterTimeComponent = CleanupRule((params) {
   String padLeft(String? original) => (original ?? '').padLeft(2, '0');
   String padRight(String? original) => (original ?? '').padRight(3, '0');
