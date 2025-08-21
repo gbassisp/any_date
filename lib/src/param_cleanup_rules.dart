@@ -122,8 +122,7 @@ String _restoreMillisecons(String formattedString, String separator) {
 // (e.g., in vi locale try 'thang 12' before 'thang 1')
 Iterable<Month> _sortMonths(Iterable<Month> months) {
   final sorted = months.toList()
-    ..sort((a, b) => a.name.length.compareTo(b.name.length))
-    ..sort((a, b) => a.number.compareTo(b.number));
+    ..sort((a, b) => a.name.length.compareTo(b.name.length));
 
   return sorted.reversed;
 }
