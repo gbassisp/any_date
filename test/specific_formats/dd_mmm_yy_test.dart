@@ -25,7 +25,7 @@ void main() async {
   }
 }
 
-final dates = closeToToday.every(const Duration(days: 38));
+final Iterable<DateTime> dates = closeToToday.every(const Duration(days: 38));
 // final dates = [DateTime.now()];
 const separators = {'-', ' ', '/', '.'};
 void compare(DateFormat format, MapEntry<String, AnyDate> anyDate) {

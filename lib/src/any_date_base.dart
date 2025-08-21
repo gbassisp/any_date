@@ -230,7 +230,6 @@ class AnyDate {
       }
     }
 
-    // TODO(gbassisp): add logging function to warn about invalid Locale
     return const AnyDate();
   }
 
@@ -376,11 +375,11 @@ const _shortMonths = [
 
 /// internal base values for all months in english
 @internal
-const allMonths = [..._months, ..._shortMonths];
+const List<Month> allMonths = [..._months, ..._shortMonths];
 
 /// map of default months (english)
 @internal
-final monthsMap = {
+final Map<String, int> monthsMap = {
   for (final m in allMonths) m.name: m.number,
 };
 
@@ -406,7 +405,7 @@ const _shortWeekdays = [
 
 /// internal base values for all weekdays in english
 @internal
-const allWeekdays = [..._weekdays, ..._shortWeekdays];
+const List<Weekday> allWeekdays = [..._weekdays, ..._shortWeekdays];
 
 // TODO(gbassisp): avoid messing up regex with special chars
 const _defaultSeparators = [

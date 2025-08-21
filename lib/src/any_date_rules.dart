@@ -21,7 +21,7 @@ const _minutePattern = r'(?<minute>[0-5]?\d)';
 const _secondPattern = r'(?<second>[0-5]?\d)';
 const _microsecondPattern = r'(?<microsecond>\d+)';
 final _separatorPattern = '[${usedSeparators.reduce((v1, v2) => '$v1,$v2')}]+';
-final _s = _separatorPattern;
+final String _s = _separatorPattern;
 // final _separatorPattern =
 // '(${usedSeparators.reduce((v1, v2) => '$v1|$v2')})+';
 // avoid const because this will be updated soon-ish
@@ -32,7 +32,7 @@ final _hmsMsIdeal = '$_hmsIdeal\\.$_microsecondPattern';
 
 /// ideal time expressions that uses only ':' as separators
 @internal
-final idealTimePatterns = [
+final List<String> idealTimePatterns = [
   _hmsMsIdeal,
   _hmsIdeal, // + r'(\D|$)',
   _hmIdeal,
@@ -47,7 +47,7 @@ final _hmPattern = '$_hourPattern$_s$_minutePattern';
 final _hmsPattern = '$_hmPattern$_s$_secondPattern';
 final _hmsMsPattern = '$_hmsPattern.$_microsecondPattern';
 
-final _timePatterns = [
+final List<String> _timePatterns = [
   _hmsMsPattern,
   _hmsPattern, // + r'(\D|$)',
   _hmPattern,
@@ -261,9 +261,9 @@ final DateParsingRule ambiguousCase = SimpleRule((params) {
 
 final _thousand = BigInt.from(1000);
 final _sLimit = BigInt.from(8640000000);
-final _msLimit = _sLimit * _thousand;
-final _usLimit = _msLimit * _thousand;
-final _nsLimit = _usLimit * _thousand;
+final BigInt _msLimit = _sLimit * _thousand;
+final BigInt _usLimit = _msLimit * _thousand;
+final BigInt _nsLimit = _usLimit * _thousand;
 final DateParsingRule _unixTime = SimpleRule((params) {
   final timestamp = params.originalString.trim();
   final number = timestamp.tryToBigInt();

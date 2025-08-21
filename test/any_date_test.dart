@@ -12,7 +12,7 @@ extension _DateFormatHacks on String {
 }
 
 const defaultParser = AnyDate();
-final separators = [
+final List<String> separators = [
   ' ',
   ',',
   '\n',

@@ -68,7 +68,7 @@ bool _hasTimeComponent(String timestamp) {
   return time != null;
 }
 
-final _expressions = {
+final Set<RegExp> _expressions = {
   // RegExp(r'\s*[\+]\d{2,4}', caseSensitive: false),
   RegExp(r'\s*utc', caseSensitive: false),
   RegExp(r'\s*gmt', caseSensitive: false),
