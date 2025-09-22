@@ -11,7 +11,6 @@ extension _DateFormatHacks on String {
   bool get isInvalid => isAlpha || this.isEmpty || this == '_';
 }
 
-const defaultParser = AnyDate();
 final List<String> separators = [
   ' ',
   ',',

@@ -82,7 +82,7 @@ const _forbiddenSeparators = {'^', r'$', '#'};
 const Set<String> _usedSeparators = usedSeparators;
 const Set<String> _knownSeparators = {
   ..._usedSeparators,
-  ..._specialSeparators
+  ..._specialSeparators,
 };
 
 /// these are the separators used by the default DateTime.parse

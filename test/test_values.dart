@@ -47,7 +47,7 @@ final Map<String, AnyDate> englishParsers = {
 
 final Map<String, AnyDate> allParsers = {
   ...englishParsers,
-  ...allLocaleParsers
+  ...allLocaleParsers,
 };
 
 final Map<String, AnyDate> nonEnglishParsers = {...allLocaleParsers}
