@@ -4,7 +4,9 @@ import 'package:test/test.dart';
 
 import 'test_values.dart';
 
-void main() {
+Future<void> main() async {
+  await initializeDateFormatting();
+
   group('lack of separators formats', () {
     const parser = AnyDate();
     test('yyyyMMddThhmmssSSSSSS', () {
