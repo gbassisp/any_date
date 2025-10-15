@@ -133,7 +133,7 @@ extension StringParsers on String {
   DateTime? tryToDateTime({bool utc = false}) {
     try {
       return toDateTime(utc: utc);
-    } catch (_) {
+    } on FormatException catch (_) {
       return null;
     }
   }
@@ -154,4 +154,10 @@ Iterable<int> range(int size) sync* {
   for (var i = 0; i < size; i++) {
     yield i;
   }
+}
+
+@internal
+extension IterableX<T> on Iterable<T> {
+  T? get firstOrNullExtension => isEmpty ? null : first;
+  // T? get lastOrNull => isEmpty ? null : last;
 }

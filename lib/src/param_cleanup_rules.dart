@@ -239,15 +239,10 @@ final _timezoneCleanup = CleanupRule((params) {
 
 extension _GroupNames on RegExpMatch {
   String? tryNamedGroup(String name) {
-    try {
+    if (groupNames.contains(name)) {
       return namedGroup(name);
-    } catch (_) {
-      return null;
     }
-  }
-}
 
-extension _IterableX<T> on Iterable<T> {
-  T? get firstOrNullExtension => isEmpty ? null : first;
-  // T? get lastOrNull => isEmpty ? null : last;
+    return null;
+  }
 }

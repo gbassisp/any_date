@@ -105,21 +105,21 @@ DateTime? _try(
   String formattedString, {
   bool shortYear = false,
 }) {
-  try {
-    final now = DateTime(DateTime.now().year);
-    final match = format.firstMatch(formattedString)!;
-    var map = <String, dynamic>{};
-    for (final n in match.groupNames) {
-      map[n] = match.namedGroup(n);
-    }
-    if (shortYear) {
-      map['year'] = _parseYear(map['year']!.toString());
-    }
-    map = _parseMap(map, formattedString);
-    return now.copyWithJson(map);
-  } catch (_) {}
-
-  return null;
+  final now = DateTime(DateTime.now().year);
+  final match = format.firstMatch(formattedString);
+  if (match == null) {
+    return null;
+  }
+  var map = <String, dynamic>{};
+  for (final n in match.groupNames) {
+    map[n] = match.namedGroup(n);
+  }
+  final y = map['year'];
+  if (shortYear && y != null) {
+    map['year'] = _parseYear(y.toString());
+  }
+  map = _parseMap(map, formattedString);
+  return now.copyWithJson(map);
 }
 
 DateTime? _tryTextMonth(
@@ -127,18 +127,17 @@ DateTime? _tryTextMonth(
   String formattedString,
   List<Month> months,
 ) {
-  try {
-    final now = DateTime(DateTime.now().year);
-    final match = format.firstMatch(formattedString)!;
-    var map = <String, dynamic>{};
-    for (final n in match.groupNames) {
-      map[n] = match.namedGroup(n);
-    }
-    map = _parseMap(map, formattedString, months: months);
-    return now.copyWithJson(map);
-  } catch (_) {}
-
-  return null;
+  final now = DateTime(DateTime.now().year);
+  final match = format.firstMatch(formattedString);
+  if (match == null) {
+    return null;
+  }
+  var map = <String, dynamic>{};
+  for (final n in match.groupNames) {
+    map[n] = match.namedGroup(n);
+  }
+  map = _parseMap(map, formattedString, months: months);
+  return now.copyWithJson(map);
 }
 
 int _amTo24(int hour) {
@@ -170,10 +169,18 @@ Map<String, dynamic> _parseMap(
   String formattedString, {
   List<Month> months = const [],
 }) {
-  if (months.isNotEmpty) {
-    map['month'] = months
-        .firstWhere((element) => element.name.toLowerCase() == map['month'])
-        .number;
+  final m = map['month'];
+  if (months.isNotEmpty && m is String) {
+    final mm = m.toLowerCase();
+    final month = months
+        .where(
+          (element) => element.name.toLowerCase() == mm,
+        )
+        .firstOrNullExtension;
+
+    if (month != null) {
+      map['month'] = month.number;
+    }
   }
 
   if (map.containsKey('year')) {

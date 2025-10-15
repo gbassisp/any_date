@@ -1,6 +1,6 @@
 import 'package:any_date/src/any_date_rules.dart';
 import 'package:any_date/src/any_date_rules_model.dart';
-import 'package:any_date/src/locale_based_rules.dart';
+import 'package:any_date/src/locale_extensions.dart';
 import 'package:any_date/src/nonsense_formats.dart';
 import 'package:any_date/src/param_cleanup_rules.dart';
 import 'package:intl/locale.dart';

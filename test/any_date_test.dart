@@ -60,7 +60,7 @@ extension _TryParse on DateFormat {
   DateTime? _tryParse(String input) {
     try {
       return parse(input);
-    } catch (_) {
+    } on FormatException catch (_) {
       return null;
     }
   }

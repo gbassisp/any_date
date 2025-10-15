@@ -30,39 +30,30 @@ class SimpleRule extends DateParsingRule {
 
   @override
   DateTime? apply(DateParsingParameters parameters) {
-    try {
-      // final simplifiedString = parameters.simplifiedString;
-      final expectedWeekday = parameters.weekday;
-      final expectedMonth = parameters.month;
-      final res = _rule(parameters);
+    final expectedWeekday = parameters.weekday;
+    final expectedMonth = parameters.month;
+    final res = _rule(parameters);
 
-      if (res == null) {
-        return null;
-      }
-
-      // if (res == null && simplifiedString != parameters.formattedString) {
-      //   res = _rule(parameters);
-      // }
-
-      if (validate) {
-        if (expectedWeekday != null && res.weekday != expectedWeekday.number) {
-          return null;
-        }
-        if (expectedMonth != null && res.month != expectedMonth.number) {
-          return null;
-        }
-      }
-
-      // try timezone
-      final tz = parameters.timezoneOffset;
-      if (tz != null && !res.isUtc) {
-        return res.copyWithOffset(tz);
-      }
-
-      return res;
-    } catch (_) {
+    if (res == null) {
       return null;
     }
+
+    if (validate) {
+      if (expectedWeekday != null && res.weekday != expectedWeekday.number) {
+        return null;
+      }
+      if (expectedMonth != null && res.month != expectedMonth.number) {
+        return null;
+      }
+    }
+
+    // try timezone
+    final tz = parameters.timezoneOffset;
+    if (tz != null && !res.isUtc) {
+      return res.copyWithOffset(tz);
+    }
+
+    return res;
   }
 }
 
@@ -95,7 +86,7 @@ class MultipleRules extends DateParsingRule {
     for (final r in rules) {
       try {
         yield r.apply(parameters);
-      } catch (_) {}
+      } on FormatException catch (_) {}
     }
   }
 }
