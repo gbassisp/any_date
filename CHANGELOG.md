@@ -1,4 +1,8 @@
 
+## 1.2.1
+
+- Fix static analysis issues
+
 ## 1.2.0
 
 - Added top-level functions through `any_date/functions.dart`
