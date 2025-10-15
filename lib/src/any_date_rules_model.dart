@@ -86,7 +86,7 @@ class MultipleRules extends DateParsingRule {
     for (final r in rules) {
       try {
         yield r.apply(parameters);
-      } catch (_) {}
+      } on FormatException catch (_) {}
     }
   }
 }
