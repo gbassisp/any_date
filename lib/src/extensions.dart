@@ -133,7 +133,7 @@ extension StringParsers on String {
   DateTime? tryToDateTime({bool utc = false}) {
     try {
       return toDateTime(utc: utc);
-    } catch (_) {
+    } on FormatException catch (_) {
       return null;
     }
   }
