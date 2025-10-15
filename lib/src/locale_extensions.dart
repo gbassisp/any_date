@@ -28,7 +28,7 @@ extension LocaleExtensions on Locale {
           customRules: _parsingRules,
         ),
       );
-    } catch (_) {
+    } on _InvalidAssumption catch (_) {
       return AnyDate(
         info: DateParserInfo(
           // error is likely to be on attempting to guess months and weekdays
@@ -48,7 +48,7 @@ extension LocaleExtensions on Locale {
       usesMonthFirst;
       usesYearFirst;
       return true;
-    } catch (_) {
+    } on _InvalidAssumption catch (_) {
       return false;
     }
   }
@@ -62,7 +62,13 @@ extension LocaleExtensions on Locale {
     final monthIndex = numbers.indexOf(5);
     final dayIndex = numbers.indexOf(6);
 
-    return monthIndex! < dayIndex!;
+    if (monthIndex == null || dayIndex == null) {
+      throw _InvalidAssumption(
+        'month and day must both be present in $this: $formatted',
+      );
+    }
+
+    return monthIndex < dayIndex;
   }
 
   bool get usesYearFirst {
@@ -71,19 +77,16 @@ extension LocaleExtensions on Locale {
       ..removeWhere((element) => element.trim().tryToInt() == null);
     final numbers = fields.map((e) => e.toInt());
 
-    // assert(
-    //   numbers.contains(1234),
-    //   'could not find test date in $this: $formatted',
-    // );
-
     final yearIndex = numbers.indexOf(1234);
     final monthIndex = numbers.indexOf(5);
 
-    // assert(
-    //   yearIndex != null && monthIndex != null,
-    //   'month and year must both be present in $this: $formatted',
-    // );
-    return yearIndex! < monthIndex!;
+    if (yearIndex == null || monthIndex == null) {
+      throw _InvalidAssumption(
+        'year and month must both be present in $this: $formatted',
+      );
+    }
+
+    return yearIndex < monthIndex;
   }
 
   Iterable<Month> get longMonths sync* {
@@ -162,4 +165,12 @@ extension _ListExtension<T> on Iterable<T> {
 
     return null;
   }
+}
+
+class _InvalidAssumption implements Exception {
+  _InvalidAssumption(this.message);
+  final String message;
+
+  @override
+  String toString() => 'InvalidAssumption: $message';
 }
