@@ -59,18 +59,9 @@ extension LocaleExtensions on Locale {
       ..removeWhere((element) => element.trim().tryToInt() == null);
     final numbers = fields.map((e) => e.toInt());
 
-    // assert(
-    //   numbers.contains(5),
-    //   'could not find test date in $this: $formatted',
-    // );
-
     final monthIndex = numbers.indexOf(5);
     final dayIndex = numbers.indexOf(6);
 
-    // assert(
-    //   monthIndex != null && dayIndex != null,
-    //   'month and day must both be present in $this: $formatted',
-    // );
     return monthIndex! < dayIndex!;
   }
 
