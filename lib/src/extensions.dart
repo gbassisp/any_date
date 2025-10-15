@@ -155,3 +155,9 @@ Iterable<int> range(int size) sync* {
     yield i;
   }
 }
+
+@internal
+extension IterableX<T> on Iterable<T> {
+  T? get firstOrNullExtension => isEmpty ? null : first;
+  // T? get lastOrNull => isEmpty ? null : last;
+}

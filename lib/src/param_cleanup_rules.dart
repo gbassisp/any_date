@@ -246,8 +246,3 @@ extension _GroupNames on RegExpMatch {
     return null;
   }
 }
-
-extension _IterableX<T> on Iterable<T> {
-  T? get firstOrNullExtension => isEmpty ? null : first;
-  // T? get lastOrNull => isEmpty ? null : last;
-}

@@ -176,7 +176,7 @@ Map<String, dynamic> _parseMap(
         .where(
           (element) => element.name.toLowerCase() == mm,
         )
-        .firstOrNull;
+        .firstOrNullExtension;
 
     if (month != null) {
       map['month'] = month.number;
