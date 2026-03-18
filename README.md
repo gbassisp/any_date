@@ -102,5 +102,6 @@ final parser2 = AnyDate.fromLocale('pt-BR');
 final date2 = parser.parse(ambiguousDate); // the ambiguous date results in Feb 1, 2003 (dd/mm/yy)
 ```
 
-
 Feedback appreciated 💙
+
+Read the docs at [https://el-darto.net/](https://el-darto.net/packages/project1/)
