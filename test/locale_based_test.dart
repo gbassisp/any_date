@@ -100,6 +100,25 @@ Future<void> main() async {
       }
     }
   });
+  group('fil local can parse text month formats', () {
+    final l = Locale.parse('fil');
+    for (final date in dateRange.days) {
+      final parser = AnyDate.fromLocale(l);
+      for (final format in _formatFactory(l.toLanguageTag())) {
+        final formatted = format.format(date);
+        final reason = '$formatted on $l with format ${format.pattern}';
+        test(reason, () {
+          final result = parser.tryParse(formatted);
+          final expected = format.parse(formatted);
+          expect(
+            result,
+            equals(expected),
+            reason: '$reason resulted in $result, but expected $expected',
+          );
+        });
+      }
+    }
+  });
 
   group('locale tests', () {
     final englishMonths = AnyDate.defaultSettings.months;
