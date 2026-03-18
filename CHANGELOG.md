@@ -1,4 +1,8 @@
 
+## 1.2.2
+
+- Fix `fil` locale bug
+
 ## 1.2.1
 
 - Fix static analysis issues
