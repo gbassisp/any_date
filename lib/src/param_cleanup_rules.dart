@@ -159,25 +159,24 @@ Weekday? _expectWeekday(DateParsingParameters parameters) {
   // currently unsupported because some locales can have a conflict between
   // month and weekday (e.g., "Mar" in French for Mardi and Mars)
   final timestamp = parameters.formattedString.toLowerCase();
+
+  bool matches(Weekday element) {
+    final name = element.name.toLowerCase();
+    if (!timestamp.startsWith(name)) return false;
+    if (timestamp.length == name.length) return true;
+    final nextChar = timestamp[name.length];
+
+    // if next char is not a word character, then it's a match
+    return !RegExp(r'\w').hasMatch(nextChar);
+  }
+
   var weekday = _sortWeekdays(parameters.parserInfo.weekdays)
-      .where(
-        (element) => timestamp.startsWith(element.name.toLowerCase()),
-        // (element) => timestamp
-        //     .contains(RegExp('\\D${element.name}', caseSensitive: false)),
-      )
+      .where(matches)
       .firstOrNullExtension;
   if (weekday != null) return weekday;
-//   weekday = parameters.parserInfo.weekdays
-//       .where((element) => timestamp.endsWith(element.name.toLowerCase()))
-//       .firstOrNullExtension;
-//   if (weekday != null) return weekday;
 
 // english
-  weekday = allWeekdays
-      .where(
-        (element) => timestamp.startsWith(element.name.toLowerCase()),
-      )
-      .firstOrNullExtension;
+  weekday = allWeekdays.where(matches).firstOrNullExtension;
   if (weekday != null) return weekday;
 
   return allWeekdays
